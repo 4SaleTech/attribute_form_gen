@@ -12,71 +12,61 @@ import (
 
 // Attributes CRUD
 func ListAttributesHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        rows, err := db.Query("SELECT `key`, label_json, default_position, status FROM attributes ORDER BY default_position ASC")
-        if err != nil {
-            log.Error("failed to query attributes", zap.Error(err))
-            c.JSON(http.StatusInternalServerError, gin.H{"error":"db"})
-            return
-        }
-        defer rows.Close()
-        out := []gin.H{}
-        for rows.Next() {
-            var key, status string
-            var labelRaw []byte
-            var pos int
-            if err := rows.Scan(&key, &labelRaw, &pos, &status); err != nil {
-                log.Error("failed to scan attribute", zap.Error(err))
-                continue
-            }
-            var label map[string]string
-            if len(labelRaw) > 0 {
-                if err := json.Unmarshal(labelRaw, &label); err != nil {
-                    log.Error("failed to unmarshal label", zap.Error(err))
-                    label = map[string]string{}
-                }
-            } else {
-                label = map[string]string{}
-            }
-            out = append(out, gin.H{"key": key, "label": label, "default_position": pos, "status": status})
-        }
-        if err := rows.Err(); err != nil {
-            log.Error("error iterating attributes", zap.Error(err))
-            c.JSON(http.StatusInternalServerError, gin.H{"error":"db"})
-            return
-        }
-        c.JSON(http.StatusOK, out)
-    }
+	return func(c *gin.Context) {
+		rows, err := db.Query("SELECT `key`, default_position FROM attributes ORDER BY default_position ASC")
+		if err != nil {
+			log.Error("failed to query attributes", zap.Error(err))
+			c.JSON(http.StatusInternalServerError, gin.H{"error":"db"})
+			return
+		}
+		defer rows.Close()
+		out := []gin.H{}
+		for rows.Next() {
+			var key string
+			var pos int
+			if err := rows.Scan(&key, &pos); err != nil {
+				log.Error("failed to scan attribute", zap.Error(err))
+				continue
+			}
+			out = append(out, gin.H{"key": key, "default_position": pos})
+		}
+		if err := rows.Err(); err != nil {
+			log.Error("error iterating attributes", zap.Error(err))
+			c.JSON(http.StatusInternalServerError, gin.H{"error":"db"})
+			return
+		}
+		c.JSON(http.StatusOK, out)
+	}
 }
 
 type attributeReq struct {
-    Key    string            `json:"key"`
-    Label  map[string]string `json:"label"`
-    Pos    int               `json:"default_position"`
-    Status string            `json:"status"`
+	Key    string            `json:"key"`
+	Label  map[string]string `json:"label"`
+	Pos    int               `json:"default_position"`
+	Status string            `json:"status"`
 }
 
 func CreateAttributeHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        var req attributeReq
-        if err := c.BindJSON(&req); err != nil { c.JSON(http.StatusBadRequest, gin.H{"error":"json"}); return }
-        label, _ := json.Marshal(req.Label)
-        _, err := db.Exec("INSERT INTO attributes(`key`,label_json,default_position,status) VALUES(?,?,?,?)", req.Key, string(label), req.Pos, req.Status)
-        if err != nil { c.JSON(http.StatusBadRequest, gin.H{"error":"insert"}); return }
-        c.Status(http.StatusCreated)
-    }
+	return func(c *gin.Context) {
+		var req attributeReq
+		if err := c.BindJSON(&req); err != nil { c.JSON(http.StatusBadRequest, gin.H{"error":"json"}); return }
+		label, _ := json.Marshal(req.Label)
+		_, err := db.Exec("INSERT INTO attributes(`key`,label_json,default_position,status) VALUES(?,?,?,?)", req.Key, string(label), req.Pos, req.Status)
+		if err != nil { c.JSON(http.StatusBadRequest, gin.H{"error":"insert"}); return }
+		c.Status(http.StatusCreated)
+	}
 }
 
 func UpdateAttributeHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        key := c.Param("key")
-        var req attributeReq
-        if err := c.BindJSON(&req); err != nil { c.JSON(http.StatusBadRequest, gin.H{"error":"json"}); return }
-        label, _ := json.Marshal(req.Label)
-        _, err := db.Exec("UPDATE attributes SET label_json=?, default_position=?, status=? WHERE `key`=?", string(label), req.Pos, req.Status, key)
-        if err != nil { c.JSON(http.StatusBadRequest, gin.H{"error":"update"}); return }
-        c.Status(http.StatusNoContent)
-    }
+	return func(c *gin.Context) {
+		key := c.Param("key")
+		var req attributeReq
+		if err := c.BindJSON(&req); err != nil { c.JSON(http.StatusBadRequest, gin.H{"error":"json"}); return }
+		label, _ := json.Marshal(req.Label)
+		_, err := db.Exec("UPDATE attributes SET label_json=?, default_position=?, status=? WHERE `key`=?", string(label), req.Pos, req.Status, key)
+		if err != nil { c.JSON(http.StatusBadRequest, gin.H{"error":"update"}); return }
+		c.Status(http.StatusNoContent)
+	}
 }
 
 func DeleteAttributeHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
@@ -90,12 +80,13 @@ func DeleteAttributeHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
 
 // Questions CRUD
 type questionReq struct {
-    AttributeKey string            `json:"attribute_key"`
-    Type         string            `json:"type"`
-    Name         string            `json:"name"`
-    Label        map[string]string `json:"label"`
-    Props        any               `json:"props"`
-    Status       string            `json:"status"`
+	AttributeKey      string            `json:"attribute_key"`
+	AttributePosition *int              `json:"attribute_position,omitempty"` // Position for attribute when creating new one
+	Type              string            `json:"type"`
+	Name              string            `json:"name"`
+	Label             map[string]string `json:"label"`
+	Props             any               `json:"props"`
+	Status            string            `json:"status"`
 }
 
 func ListQuestionsHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
@@ -184,13 +175,36 @@ func UpsertQuestionHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
         }
         l, _ := json.Marshal(req.Label)
         p, _ := json.Marshal(req.Props)
+        // Auto-create attribute if it doesn't exist
+        if req.AttributePosition != nil {
+            _, err := db.Exec(
+                "INSERT INTO attributes(`key`, label_json, default_position, status) VALUES(?, JSON_OBJECT(), ?, 'active') ON DUPLICATE KEY UPDATE default_position=?",
+                req.AttributeKey, *req.AttributePosition, *req.AttributePosition,
+            )
+            if err != nil {
+                log.Error("failed to create/update attribute", zap.String("attribute_key", req.AttributeKey), zap.Error(err))
+                c.JSON(http.StatusBadRequest, gin.H{"error": "attribute creation failed", "details": err.Error()})
+                return
+            }
+        } else {
+            _, err := db.Exec(
+                "INSERT INTO attributes(`key`, label_json, default_position, status) VALUES(?, JSON_OBJECT(), 0, 'active') ON DUPLICATE KEY UPDATE `key`=`key`",
+                req.AttributeKey,
+            )
+            if err != nil {
+                log.Error("failed to create/update attribute", zap.String("attribute_key", req.AttributeKey), zap.Error(err))
+                c.JSON(http.StatusBadRequest, gin.H{"error": "attribute creation failed", "details": err.Error()})
+                return
+            }
+        }
         // Enforce 1:1 via INSERT ... ON DUPLICATE KEY UPDATE
         _, err := db.Exec(
             "INSERT INTO questions(attribute_key,type,name,label_json,props_json,status,version) VALUES(?,?,?,?,?, ?, 1) ON DUPLICATE KEY UPDATE type=VALUES(type), name=VALUES(name), label_json=VALUES(label_json), props_json=VALUES(props_json), status=VALUES(status), version=version+1",
             req.AttributeKey, req.Type, req.Name, string(l), string(p), req.Status,
         )
         if err != nil {
-            c.JSON(http.StatusBadRequest, gin.H{"error": "upsert"})
+            log.Error("failed to upsert question", zap.String("attribute_key", req.AttributeKey), zap.String("type", req.Type), zap.String("name", req.Name), zap.Error(err))
+            c.JSON(http.StatusBadRequest, gin.H{"error": "upsert failed", "details": err.Error()})
             return
         }
         c.Status(http.StatusCreated)

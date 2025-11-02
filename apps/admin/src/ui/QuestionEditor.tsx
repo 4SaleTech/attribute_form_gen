@@ -13,7 +13,7 @@ export type Question = {
 }
 
 type Props = {
-  attributes: { key: string; label: ENAR }[]
+  attributes: { key: string; default_position?: number }[]
   value?: Question
   onClose: () => void
   onSaved: () => void
@@ -56,8 +56,13 @@ function OptionsEditor({ value, onChange }: { value: any[]; onChange: (v:any[])=
 }
 
 export const QuestionEditor: React.FC<Props> = ({ attributes, value, onClose, onSaved }) => {
+  const existingAttributeKeys = attributes.map(a => a.key)
+  
   const [q, setQ] = React.useState<Question>(value || { attribute_key:'', type:'text', name:'', label:{ en:'', ar:'' }, props:{ required:false }, status:'active' })
   const [error, setError] = React.useState<string>('')
+  const [newAttributePosition, setNewAttributePosition] = React.useState(0)
+  
+  const isExistingAttribute = existingAttributeKeys.includes(q.attribute_key)
 
   const save = async () => {
     setError('')
@@ -70,8 +75,30 @@ export const QuestionEditor: React.FC<Props> = ({ attributes, value, onClose, on
     if (['radio','select','multiselect'].includes(q.type) && Array.isArray(q.props?.options)) {
       for (const o of q.props.options) { if (!o.label?.en || !o.label?.ar) { setError('All options need EN/AR labels.'); return } }
     }
-    const res = await fetch('/api/questions', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer dev-admin-token' }, body: JSON.stringify({ attribute_key:q.attribute_key, type:q.type, name:q.name, label:q.label, props:q.props, status:q.status||'active' }) })
-    if (!res.ok) { const t = await res.text(); setError(t); return }
+    
+    const res = await fetch('/api/questions', { 
+      method:'POST', 
+      headers:{ 'Content-Type':'application/json', Authorization:'Bearer dev-admin-token' }, 
+      body: JSON.stringify({ 
+        attribute_key:q.attribute_key, 
+        attribute_position: !isExistingAttribute ? newAttributePosition : undefined,
+        type:q.type, 
+        name:q.name, 
+        label:q.label, 
+        props:q.props, 
+        status:q.status||'active' 
+      }) 
+    })
+    if (!res.ok) { 
+      const text = await res.text()
+      try {
+        const data = JSON.parse(text)
+        setError(data.details || data.error || 'Failed to save question')
+      } catch {
+        setError(text || 'Failed to save question')
+      }
+      return 
+    }
     onSaved(); onClose()
   }
 
@@ -139,6 +166,9 @@ export const QuestionEditor: React.FC<Props> = ({ attributes, value, onClose, on
               <Field label="Required"><input type="checkbox" checked={!!q.props?.required} onChange={e=>setProp('required', e.target.checked)} /></Field>
               <Field label="Searchable"><input type="checkbox" checked={!!q.props?.searchable} onChange={e=>setProp('searchable', e.target.checked)} /></Field>
               <Field label="Allow custom"><input type="checkbox" checked={!!q.props?.allow_custom} onChange={e=>setProp('allow_custom', e.target.checked)} /></Field>
+              {q.type === 'select' && (
+                <Field label="Allow other"><input type="checkbox" checked={!!q.props?.allow_other} onChange={e=>setProp('allow_other', e.target.checked)} /></Field>
+              )}
             </div>
             <div>
               <div className="font-medium mb-1">Static options</div>
@@ -190,10 +220,23 @@ export const QuestionEditor: React.FC<Props> = ({ attributes, value, onClose, on
         {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-2 mb-3">{error}</div>}
         <div className="grid grid-cols-2 gap-3">
           <Field label="Attribute key">
-            <select className="border p-1 w-full" value={q.attribute_key} onChange={e=>setQ(prev=>({ ...prev, attribute_key:e.target.value }))}>
-              <option value="">-- select --</option>
-              {attributes.map(a => <option key={a.key} value={a.key}>{a.key}</option>)}
-            </select>
+            <div className="space-y-2">
+              <input 
+                className="border p-1 w-full" 
+                placeholder="Enter attribute key" 
+                value={q.attribute_key} 
+                onChange={e=>setQ(prev=>({ ...prev, attribute_key:e.target.value }))} 
+              />
+              {!isExistingAttribute && (
+                <input 
+                  type="number" 
+                  className="border p-1 w-full" 
+                  placeholder="Position for ordering attributes (optional)" 
+                  value={newAttributePosition} 
+                  onChange={e=>setNewAttributePosition(Number(e.target.value) || 0)} 
+                />
+              )}
+            </div>
           </Field>
           <Field label="Type">
             <select className="border p-1 w-full" value={q.type} onChange={e=>setQ(prev=>({ ...prev, type:e.target.value }))}>

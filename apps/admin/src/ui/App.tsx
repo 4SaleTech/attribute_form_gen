@@ -1,13 +1,12 @@
 import React from 'react'
 import { Questions } from './Questions'
-import { Attributes } from './Attributes'
 import { Forms } from './Forms'
 import { FormBuilder } from './FormBuilder'
 import { Webhooks } from './Webhooks'
 import { Submissions } from './Submissions'
 
 export const App: React.FC = () => {
-  const [tab, setTab] = React.useState<'builder'|'attributes'|'questions'|'forms'|'webhooks'|'submissions'>('builder')
+  const [tab, setTab] = React.useState<'builder'|'questions'|'forms'|'webhooks'|'submissions'>('builder')
   const [darkMode, setDarkMode] = React.useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('darkMode')
@@ -41,13 +40,11 @@ export const App: React.FC = () => {
         </div>
         <div className="flex gap-2">
           <button className={`px-2 py-1 border rounded dark:border-slate-600 ${tab==='builder'?'bg-slate-200 dark:bg-slate-700':''}`} onClick={()=>setTab('builder')}>Form Builder</button>
-          <button className={`px-2 py-1 border rounded dark:border-slate-600 ${tab==='attributes'?'bg-slate-200 dark:bg-slate-700':''}`} onClick={()=>setTab('attributes')}>Attributes</button>
           <button className={`px-2 py-1 border rounded dark:border-slate-600 ${tab==='questions'?'bg-slate-200 dark:bg-slate-700':''}`} onClick={()=>setTab('questions')}>Questions</button>
           <button className={`px-2 py-1 border rounded dark:border-slate-600 ${tab==='forms'?'bg-slate-200 dark:bg-slate-700':''}`} onClick={()=>setTab('forms')}>Forms</button>
           <button className={`px-2 py-1 border rounded dark:border-slate-600 ${tab==='webhooks'?'bg-slate-200 dark:bg-slate-700':''}`} onClick={()=>setTab('webhooks')}>Webhooks</button>
           <button className={`px-2 py-1 border rounded dark:border-slate-600 ${tab==='submissions'?'bg-slate-200 dark:bg-slate-700':''}`} onClick={()=>setTab('submissions')}>Submissions</button>
         </div>
-        {tab==='attributes' && <Attributes />}
         {tab==='builder' && <FormBuilder />}
         {tab==='questions' && <Questions />}
         {tab==='forms' && <Forms />}

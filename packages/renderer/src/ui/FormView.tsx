@@ -61,10 +61,16 @@ function validateClient(form: FormConfig, answers: Record<string, any>, locale: 
         break
       case 'select':
         if (v == null) break
-        if (!(f as any).props?.allow_custom) {
+        if (!(f as any).props?.allow_custom && !(f as any).props?.allow_other) {
           const options: any[] = (f as any).props?.options || []
           const found = options.some(o => o.value === v?.value)
-          if (!found) errs.push({ field: f.name, code: 'NOT_ALLOWED', message: t('Not in options', 'غير موجود ضمن الخيارات') })
+          if (!found && v?.value !== 'other') {
+            errs.push({ field: f.name, code: 'NOT_ALLOWED', message: t('Not in options', 'غير موجود ضمن الخيارات') })
+          }
+        }
+        // If "other" is selected, validate that other text is provided
+        if (v?.value === 'other' && (!v?.other || v.other.trim() === '')) {
+          errs.push({ field: f.name, code: 'REQUIRED', message: t('Please provide details for "Other"', 'يرجى إدخال التفاصيل لـ "أخرى"') })
         }
         break
       case 'multiselect':

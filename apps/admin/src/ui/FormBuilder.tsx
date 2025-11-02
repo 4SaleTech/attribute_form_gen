@@ -2,7 +2,7 @@ import React from 'react'
 import { createRenderer } from '@pkg/renderer'
 
 type ENAR = { en: string; ar: string }
-type Attribute = { key: string; label: ENAR }
+type Attribute = { key: string; default_position?: number }
 
 export const FormBuilder: React.FC = () => {
   const [formId, setFormId] = React.useState('')

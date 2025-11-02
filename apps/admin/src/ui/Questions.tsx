@@ -1,7 +1,7 @@
 import React from 'react'
 import { QuestionEditor, type Question } from './QuestionEditor'
 
-type Attribute = { key: string; label: { en:string; ar:string } }
+type Attribute = { key: string; default_position?: number }
 
 export const Questions: React.FC = () => {
   const [attrs, setAttrs] = React.useState<Attribute[]>([])

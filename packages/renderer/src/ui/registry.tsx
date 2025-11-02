@@ -522,6 +522,9 @@ const Select: React.FC<any> = ({ name, label, props, locale, value, onChange, re
   const options = props?.options || [];
   const searchable = props?.searchable || false;
   const allowCustom = props?.allow_custom || false;
+  const allowOther = props?.allow_other || false;
+  const otherValue = typeof value === 'object' && value?.value === 'other' ? (value?.other || '') : '';
+  const isOtherSelected = typeof value === 'object' && value?.value === 'other';
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -548,7 +551,11 @@ const Select: React.FC<any> = ({ name, label, props, locale, value, onChange, re
     : options;
 
   const selectedOption = options.find((opt: any) => opt.value === (typeof value === 'object' ? value?.value : value));
-  const displayValue = selectedOption ? selectedOption.label?.[locale] : (allowCustom && typeof value === 'object' ? value?.value : '');
+  const displayValue = selectedOption 
+    ? selectedOption.label?.[locale] 
+    : isOtherSelected 
+      ? (locale === 'ar' ? 'أخرى' : 'Other')
+      : (allowCustom && typeof value === 'object' ? value?.value : '');
 
   const containerStyle: React.CSSProperties = {
     position: 'relative',
@@ -595,6 +602,18 @@ const Select: React.FC<any> = ({ name, label, props, locale, value, onChange, re
     ...optionStyle,
     backgroundColor: COLORS.bgHover,
     fontWeight: 500,
+  };
+
+  const textareaStyle: React.CSSProperties = {
+    ...(hasError ? errorInputStyle : baseInputStyle),
+    width: '100%',
+    minHeight: '100px',
+    padding: '0.875rem 1rem',
+    fontSize: '16px',
+    fontFamily: FONT_FAMILY,
+    resize: 'vertical',
+    marginTop: '0.75rem',
+    textAlign: isRTL ? 'right' : 'left',
   };
 
   return (
@@ -652,7 +671,25 @@ const Select: React.FC<any> = ({ name, label, props, locale, value, onChange, re
                 </div>
               );
             })}
-            {filteredOptions.length === 0 && (
+            {allowOther && (
+              <div
+                style={isOtherSelected ? selectedOptionStyle : optionStyle}
+                onMouseEnter={(e) => {
+                  if (!isOtherSelected) e.currentTarget.style.backgroundColor = COLORS.bgHover;
+                }}
+                onMouseLeave={(e) => {
+                  if (!isOtherSelected) e.currentTarget.style.backgroundColor = COLORS.white;
+                }}
+                onClick={() => {
+                  onChange({ value: 'other', other: otherValue });
+                  setShowDropdown(false);
+                  setSearchTerm('');
+                }}
+              >
+                {locale === 'ar' ? 'أخرى' : 'Other'}
+              </div>
+            )}
+            {filteredOptions.length === 0 && !allowOther && (
               <div style={{ padding: '0.875rem 1rem', color: COLORS.helper, textAlign: 'center', fontSize: '14px' }}>
                 {locale === 'ar' ? 'لا توجد خيارات' : 'No options'}
               </div>
@@ -674,6 +711,16 @@ const Select: React.FC<any> = ({ name, label, props, locale, value, onChange, re
           </div>
         )}
       </div>
+      {isOtherSelected && (
+        <textarea
+          style={textareaStyle}
+          value={otherValue}
+          onChange={(e) => onChange({ value: 'other', other: e.target.value })}
+          placeholder={locale === 'ar' ? 'يرجى إدخال التفاصيل...' : 'Please enter details...'}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+        />
+      )}
     </div>
   );
 };
