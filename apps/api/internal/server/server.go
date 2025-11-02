@@ -87,6 +87,7 @@ func (s *Server) registerRoutes() {
     admin.POST("/forms/:formId/:version/webhooks", serverhandlers.CreateWebhookHandler(s.db, s.log))
     admin.PUT("/forms/:formId/:version/webhooks/:id", serverhandlers.UpdateWebhookHandler(s.db, s.log))
     admin.DELETE("/forms/:formId/:version/webhooks/:id", serverhandlers.DeleteWebhookHandler(s.db, s.log))
+    admin.POST("/forms/:formId/:version/webhooks/:id/test", serverhandlers.TestWebhookHandler(s.db, s.cfg, s.log))
     
     // Admin form delete - must be AFTER webhooks routes to avoid conflicts
     admin.DELETE("/forms/:formId/:version", serverhandlers.DeleteFormSnapshotHandler(s.db, s.log))

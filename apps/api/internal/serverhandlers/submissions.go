@@ -102,30 +102,68 @@ func SubmitHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.HandlerF
 func nullIfEmpty(s string) any { if s == "" { return nil }; return s }
 
 func dispatchWebhooks(db *sql.DB, cfg *config.Config, log *zap.Logger, formId string, version int, submissionId uint64, body []byte) {
-    rows, err := db.Query("SELECT id,type,endpoint_url,http_method,content_type,headers_json,body_template,mode,enabled FROM form_webhooks WHERE form_id=? AND version=? AND enabled=1", formId, version)
+    rows, err := db.Query("SELECT id,type,endpoint_url,http_method,content_type,headers_json,body_template,selected_fields_json,mode,enabled FROM form_webhooks WHERE form_id=? AND version=? AND enabled=1", formId, version)
     if err != nil { log.Error("webhooks query", zap.Error(err)); return }
     defer rows.Close()
     allOk := true
     for rows.Next() {
-        var id uint64; var typ, url, method, contentType, mode string; var headersRaw []byte; var enabled bool; var bodyTpl *string
-        _ = rows.Scan(&id, &typ, &url, &method, &contentType, &headersRaw, &bodyTpl, &mode, &enabled)
+        var id uint64; var typ, url, method, contentType, mode string; var headersRaw []byte; var enabled bool; var bodyTpl *string; var selectedFieldsRaw []byte
+        _ = rows.Scan(&id, &typ, &url, &method, &contentType, &headersRaw, &bodyTpl, &selectedFieldsRaw, &mode, &enabled)
         var headers map[string]string
         _ = json.Unmarshal(headersRaw, &headers)
         if method == "" { method = "POST" }
         if contentType == "" { contentType = "application/json" }
 
+        // Parse selected fields
+        var selectedFields []string
+        if len(selectedFieldsRaw) > 0 {
+            _ = json.Unmarshal(selectedFieldsRaw, &selectedFields)
+        }
+
+        // Parse base submission data
+        var base map[string]any
+        _ = json.Unmarshal(body, &base)
+        allAnswers, _ := base["answers"].(map[string]any)
+
+        // Filter answers based on selected fields
+        selectedAnswers := make(map[string]any)
+        if len(selectedFields) > 0 {
+            // Only include selected fields
+            for _, field := range selectedFields {
+                if val, ok := allAnswers[field]; ok {
+                    selectedAnswers[field] = val
+                }
+            }
+        } else {
+            // If no fields selected, send empty (user must explicitly select)
+            selectedAnswers = make(map[string]any)
+        }
+
         // Build body: template if provided else raw
         bodyToSend := body
         if bodyTpl != nil && *bodyTpl != "" {
-            // Build template context from raw submission + system fields
-            var base map[string]any
-            _ = json.Unmarshal(body, &base)
+            // Build template context with individual fields as top-level variables
             ctx := map[string]any{
                 "formId": formId,
                 "version": version,
                 "submissionId": submissionId,
+                "submittedAt": base["submittedAt"],
+                "meta": base["meta"],
+                // Individual fields as top-level variables (from selected)
+                "selected": selectedAnswers,
+                // Backward compatible - all answers
+                "answers": allAnswers,
             }
-            for k, v := range base { ctx[k] = v }
+            // Add each selected field as a top-level variable
+            for field, value := range selectedAnswers {
+                ctx[field] = value
+            }
+            // Include all fields from base (for backward compatibility)
+            for k, v := range base {
+                if _, exists := ctx[k]; !exists {
+                    ctx[k] = v
+                }
+            }
             funcMap := template.FuncMap{
                 "json": func(v any) string { b, _ := json.Marshal(v); return string(b) },
             }
@@ -135,6 +173,9 @@ func dispatchWebhooks(db *sql.DB, cfg *config.Config, log *zap.Logger, formId st
                     bodyToSend = buf.Bytes()
                 }
             }
+        } else {
+            // No template: send empty body by default (user must design their own body template)
+            bodyToSend = []byte("{}")
         }
 
         // HMAC header
