@@ -930,6 +930,195 @@ const Checkbox: React.FC<any> = ({ name, label, props, locale, value, onChange, 
   );
 };
 
+const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string>('');
+  const isRTL = locale === 'ar';
+  
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setError(locale === 'ar' ? 'الموقع الجغرافي غير مدعوم في هذا المتصفح' : 'Geolocation is not supported by your browser');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const location = {
+          lat: lat,
+          lng: lng,
+          accuracy: position.coords.accuracy,
+          url: `https://www.google.com/maps?q=${lat},${lng}`,
+        };
+        onChange(location);
+        setLoading(false);
+      },
+      (err) => {
+        setLoading(false);
+        let errorMsg = '';
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            errorMsg = locale === 'ar' ? 'تم رفض طلب الموقع الجغرافي' : 'Location request denied';
+            break;
+          case err.POSITION_UNAVAILABLE:
+            errorMsg = locale === 'ar' ? 'معلومات الموقع غير متاحة' : 'Location information unavailable';
+            break;
+          case err.TIMEOUT:
+            errorMsg = locale === 'ar' ? 'انتهت مهلة طلب الموقع' : 'Location request timed out';
+            break;
+          default:
+            errorMsg = locale === 'ar' ? 'حدث خطأ في الحصول على الموقع' : 'An error occurred while retrieving location';
+        }
+        setError(errorMsg);
+      },
+      {
+        enableHighAccuracy: props?.high_accuracy || false,
+        timeout: props?.timeout || 10000,
+        maximumAge: props?.maximum_age || 0,
+      }
+    );
+  };
+
+  const getMapsUrl = (lat: number, lng: number, label?: string): string => {
+    // Detect if iOS (will prefer Apple Maps) or Android/Desktop (will prefer Google Maps)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const locationLabel = label || encodeURIComponent(`${lat},${lng}`);
+    
+    if (isIOS) {
+      // Apple Maps URL
+      return `https://maps.apple.com/?ll=${lat},${lng}&q=${locationLabel}`;
+    } else {
+      // Google Maps URL
+      return `https://www.google.com/maps?q=${lat},${lng}`;
+    }
+  };
+
+  const containerStyle: React.CSSProperties = {
+    border: `1px solid ${hasError ? COLORS.borderError : COLORS.border}`,
+    borderRadius: '16px',
+    padding: '1rem',
+    backgroundColor: hasError ? COLORS.bgError : COLORS.white,
+    transition: 'all 0.2s ease',
+  };
+
+  const buttonStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '0.875rem 1rem',
+    backgroundColor: COLORS.primary,
+    color: COLORS.white,
+    border: 'none',
+    borderRadius: '12px',
+    fontSize: '16px',
+    fontWeight: 500,
+    cursor: loading ? 'not-allowed' : 'pointer',
+    opacity: loading ? 0.6 : 1,
+    transition: 'all 0.2s ease',
+    fontFamily: FONT_FAMILY,
+    marginBottom: value ? '1rem' : '0',
+  };
+
+  const linkStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    color: COLORS.primary,
+    textDecoration: 'none',
+    fontSize: '16px',
+    fontWeight: 500,
+    padding: '0.5rem 1rem',
+    borderRadius: '8px',
+    backgroundColor: COLORS.bgHover,
+    transition: 'all 0.2s ease',
+  };
+
+  return (
+    <div>
+      <label style={labelStyle}>
+        {label?.[locale]}
+        {required && <span style={requiredStyle}>*</span>}
+      </label>
+      {props?.help?.[locale] && <p style={helperStyle}>{props?.help?.[locale]}</p>}
+      <div style={containerStyle}>
+        {!value ? (
+          <>
+            <button
+              type="button"
+              onClick={getCurrentLocation}
+              disabled={loading}
+              style={buttonStyle}
+              onMouseEnter={(e) => {
+                if (!loading) e.currentTarget.style.backgroundColor = COLORS.primaryHover;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = COLORS.primary;
+              }}
+            >
+              {loading 
+                ? (locale === 'ar' ? 'جاري الحصول على الموقع...' : 'Getting location...')
+                : (locale === 'ar' ? '📍 الحصول على موقعي' : '📍 Get My Location')
+              }
+            </button>
+            {error && (
+              <div style={{ fontSize: '14px', color: COLORS.borderError, marginTop: '0.5rem' }}>
+                {error}
+              </div>
+            )}
+          </>
+        ) : (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <a
+                href={getMapsUrl(value.lat, value.lng, label?.[locale])}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={linkStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = COLORS.border;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = COLORS.bgHover;
+                }}
+              >
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {locale === 'ar' ? 'افتح في الخرائط' : 'Open in Maps'}
+              </a>
+              <button
+                type="button"
+                onClick={() => onChange(null)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  color: COLORS.helper,
+                  backgroundColor: 'transparent',
+                  border: `1px solid ${COLORS.border}`,
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = COLORS.bgHover;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+              >
+                {locale === 'ar' ? 'تغيير' : 'Change'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const Switch: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
   const isRTL = locale === 'ar';
   const isChecked = value === true || value === 'true';
@@ -1186,4 +1375,5 @@ export const DefaultComponents: Record<string, (props: any) => React.ReactNode> 
   file_upload: (p) => <FileUpload {...p} />,
   date: (p) => <DateInput {...p} />,
   time: (p) => <TimeInput {...p} />,
+  location: (p) => <LocationPicker {...p} />,
 };

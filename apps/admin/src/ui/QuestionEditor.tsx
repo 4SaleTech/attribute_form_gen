@@ -165,6 +165,16 @@ export const QuestionEditor: React.FC<Props> = ({ attributes, value, onClose, on
             <Field label="Capture (camera)"><input type="checkbox" checked={!!q.props?.capture} onChange={e=>setProp('capture', e.target.checked)} /></Field>
           </div>
         )
+      case 'location':
+        return (
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Help (EN/AR)"><TabsENAR value={q.props?.help||{en:'',ar:''}} onChange={v=>setProp('help', v)} /></Field>
+            <Field label="Required"><input type="checkbox" checked={!!q.props?.required} onChange={e=>setProp('required', e.target.checked)} /></Field>
+            <Field label="High accuracy"><input type="checkbox" checked={!!q.props?.high_accuracy} onChange={e=>setProp('high_accuracy', e.target.checked)} /></Field>
+            <Field label="Timeout (ms)"><input className="border p-1" type="number" value={q.props?.timeout||10000} onChange={e=>setProp('timeout', e.target.value===''?10000:Number(e.target.value))} /></Field>
+            <Field label="Maximum age (ms)"><input className="border p-1" type="number" value={q.props?.maximum_age||0} onChange={e=>setProp('maximum_age', e.target.value===''?0:Number(e.target.value))} /></Field>
+          </div>
+        )
       default:
         return <div className="text-sm text-slate-500">No additional settings for this type yet.</div>
     }
@@ -187,7 +197,7 @@ export const QuestionEditor: React.FC<Props> = ({ attributes, value, onClose, on
           </Field>
           <Field label="Type">
             <select className="border p-1 w-full" value={q.type} onChange={e=>setQ(prev=>({ ...prev, type:e.target.value }))}>
-              {['text','textarea','number','email','phone','radio','select','multiselect','checkbox','switch','file_upload'].map(t=> <option key={t} value={t}>{t}</option>)}
+              {['text','textarea','number','email','phone','radio','select','multiselect','checkbox','switch','file_upload','date','time','location'].map(t=> <option key={t} value={t}>{t}</option>)}
             </select>
           </Field>
           <Field label="Name (submission key)"><input className="border p-1 w-full" value={q.name} onChange={e=>setQ(prev=>({ ...prev, name:e.target.value }))} /></Field>

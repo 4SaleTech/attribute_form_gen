@@ -119,6 +119,16 @@ func validateSubmission(fields []types.Field, answers any) []FieldError {
             if _, err := time.Parse(time.RFC3339, s); err != nil {
                 errs = append(errs, fe(f.Name, "INVALID", "Invalid date/time", "تاريخ/وقت غير صالح", nil))
             }
+        case "location":
+            if !has { break }
+            m, ok := val.(map[string]any); if !ok { errs = append(errs, fe(f.Name, "INVALID", "Invalid location", "موقع غير صالح", nil)); break }
+            lat, latOk := toFloat(m["lat"]); lng, lngOk := toFloat(m["lng"])
+            if !latOk || !lngOk {
+                errs = append(errs, fe(f.Name, "INVALID", "Invalid coordinates", "إحداثيات غير صالحة", nil))
+            } else {
+                if lat < -90 || lat > 90 { errs = append(errs, fe(f.Name, "INVALID", "Invalid latitude", "خط عرض غير صالح", nil)) }
+                if lng < -180 || lng > 180 { errs = append(errs, fe(f.Name, "INVALID", "Invalid longitude", "خط طول غير صالح", nil)) }
+            }
         }
     }
     return errs

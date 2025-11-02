@@ -302,6 +302,8 @@ func TestWebhookHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
 				mockAnswers[name] = time.Now().Format(time.RFC3339)
 			case "time":
 				mockAnswers[name] = time.Now().Format(time.RFC3339)
+			case "location":
+				mockAnswers[name] = map[string]any{"lat": 29.3759, "lng": 47.9774, "accuracy": 10, "url": "https://www.google.com/maps?q=29.3759,47.9774"} // Kuwait coordinates
 			case "file_upload":
 				mockAnswers[name] = []map[string]any{{"id": "test_file_id", "url": "https://example.com/test.jpg"}}
 			case "checkbox", "switch":

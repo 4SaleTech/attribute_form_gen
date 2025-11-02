@@ -222,11 +222,13 @@ func validateBilingual(title map[string]string, fields []types.Field, thank *typ
         }
     }
     if thank != nil {
-        if thank.Title["en"] == "" || thank.Title["ar"] == "" {
-            errs = append(errs, "/thankYou/title: missing en/ar")
-        }
-        if thank.Message["en"] == "" || thank.Message["ar"] == "" {
-            errs = append(errs, "/thankYou/message: missing en/ar")
+        if thank.Show {
+            if thank.Title == nil || thank.Title["en"] == "" || thank.Title["ar"] == "" {
+                errs = append(errs, "/thankYou/title: missing en/ar (required when show=true)")
+            }
+            if thank.Message == nil || thank.Message["en"] == "" || thank.Message["ar"] == "" {
+                errs = append(errs, "/thankYou/message: missing en/ar (required when show=true)")
+            }
         }
     }
     return errs

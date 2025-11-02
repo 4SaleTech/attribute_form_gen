@@ -45,6 +45,12 @@ export const FormBuilder: React.FC = () => {
     if (!title.en.trim()) { alert('Title (EN) is required'); return }
     if (!title.ar.trim()) { alert('Title (AR) is required'); return }
     if (selected.length === 0) { alert('At least one attribute must be selected'); return }
+    if (thank.show) {
+      if (!thank.title.en.trim()) { alert('Thank you Title (EN) is required when "Show after submit" is checked'); return }
+      if (!thank.title.ar.trim()) { alert('Thank you Title (AR) is required when "Show after submit" is checked'); return }
+      if (!thank.message.en.trim()) { alert('Thank you Message (EN) is required when "Show after submit" is checked'); return }
+      if (!thank.message.ar.trim()) { alert('Thank you Message (AR) is required when "Show after submit" is checked'); return }
+    }
     const enabled = submit.actions.filter((a:any)=>a.enabled)
     if (enabled.length===0) { alert('Enable at least one action'); return }
     const red = submit.actions.find((a:any)=>a.type==='redirect')
@@ -110,10 +116,46 @@ export const FormBuilder: React.FC = () => {
         <div className="col-span-1">
           <h3 className="font-semibold mb-2">Thank you</h3>
           <label className="block mb-2"><input type="checkbox" checked={thank.show} onChange={e=>setThank(prev=>({ ...prev, show:e.target.checked }))} /> Show after submit</label>
-          <label className="block">Title EN<input className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" value={thank.title.en} onChange={e=>setThank(prev=>({ ...prev, title:{ ...prev.title, en:e.target.value }}))} /></label>
-          <label className="block">Title AR<input className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" value={thank.title.ar} onChange={e=>setThank(prev=>({ ...prev, title:{ ...prev.title, ar:e.target.value }}))} /></label>
-          <label className="block">Message EN<input className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" value={thank.message.en} onChange={e=>setThank(prev=>({ ...prev, message:{ ...prev.message, en:e.target.value }}))} /></label>
-          <label className="block">Message AR<input className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" value={thank.message.ar} onChange={e=>setThank(prev=>({ ...prev, message:{ ...prev.message, ar:e.target.value }}))} /></label>
+          <label className="block">
+            Title EN
+            {thank.show && <span className="text-red-500 ml-1">*</span>}
+            <input 
+              className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+              value={thank.title.en} 
+              onChange={e=>setThank(prev=>({ ...prev, title:{ ...prev.title, en:e.target.value }}))} 
+              placeholder={thank.show ? "Required" : "Optional"}
+            />
+          </label>
+          <label className="block">
+            Title AR
+            {thank.show && <span className="text-red-500 ml-1">*</span>}
+            <input 
+              className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+              value={thank.title.ar} 
+              onChange={e=>setThank(prev=>({ ...prev, title:{ ...prev.title, ar:e.target.value }}))} 
+              placeholder={thank.show ? "Required" : "Optional"}
+            />
+          </label>
+          <label className="block">
+            Message EN
+            {thank.show && <span className="text-red-500 ml-1">*</span>}
+            <input 
+              className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+              value={thank.message.en} 
+              onChange={e=>setThank(prev=>({ ...prev, message:{ ...prev.message, en:e.target.value }}))} 
+              placeholder={thank.show ? "Required" : "Optional"}
+            />
+          </label>
+          <label className="block">
+            Message AR
+            {thank.show && <span className="text-red-500 ml-1">*</span>}
+            <input 
+              className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+              value={thank.message.ar} 
+              onChange={e=>setThank(prev=>({ ...prev, message:{ ...prev.message, ar:e.target.value }}))} 
+              placeholder={thank.show ? "Required" : "Optional"}
+            />
+          </label>
         </div>
 
         <div className="col-span-1">

@@ -103,6 +103,21 @@ function validateClient(form: FormConfig, answers: Record<string, any>, locale: 
         const maxFiles = (f as any).props?.max_files || 1
         if (arr.length > maxFiles) errs.push({ field: f.name, code: 'TOO_MANY', message: t('Too many files', 'عدد ملفات كبير') })
         break
+      case 'location':
+        if (v == null) break
+        if (typeof v !== 'object' || v === null || Array.isArray(v)) {
+          errs.push({ field: f.name, code: 'INVALID', message: t('Invalid location', 'موقع غير صالح') })
+          break
+        }
+        const lat = v.lat
+        const lng = v.lng
+        if (typeof lat !== 'number' || typeof lng !== 'number') {
+          errs.push({ field: f.name, code: 'INVALID', message: t('Invalid coordinates', 'إحداثيات غير صالحة') })
+        } else {
+          if (lat < -90 || lat > 90) errs.push({ field: f.name, code: 'INVALID', message: t('Invalid latitude', 'خط عرض غير صالح') })
+          if (lng < -180 || lng > 180) errs.push({ field: f.name, code: 'INVALID', message: t('Invalid longitude', 'خط طول غير صالح') })
+        }
+        break
     }
   }
   return errs
@@ -264,24 +279,6 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
       <div style={headerStyle}>
         <div style={headerInnerStyle}>
           <h1 style={titleStyle}>{form.title?.[effectiveLocale]}</h1>
-          <button
-            onClick={() => window.close()}
-            style={{
-              color: COLORS.heading,
-              fontWeight: 500,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.375rem',
-              fontSize: '14px',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-            }}
-          >
-            <span>{effectiveLocale === 'ar' ? 'إغلاق' : 'Exit'}</span>
-            <span style={{ fontSize: '20px', lineHeight: 1 }}>×</span>
-          </button>
         </div>
       </div>
 

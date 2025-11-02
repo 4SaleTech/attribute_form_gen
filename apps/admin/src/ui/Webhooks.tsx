@@ -164,6 +164,9 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
         case 'time':
           allMockAnswers[field.name] = new Date().toISOString()
           break
+        case 'location':
+          allMockAnswers[field.name] = { lat: 29.3759, lng: 47.9774, accuracy: 10, url: 'https://www.google.com/maps?q=29.3759,47.9774' } // Kuwait coordinates
+          break
         case 'file_upload':
           allMockAnswers[field.name] = [{ id: 'test_file_id', url: 'https://example.com/test.jpg' }]
           break
@@ -208,6 +211,10 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
               switch (field.type) {
                 case 'phone':
                   mockContext[fieldName] = { ...fieldValue, value: fieldValue.e164 || '+96550000000' }
+                  break
+                case 'location':
+                  // For location, .value is the Google Maps URL
+                  mockContext[fieldName] = { ...fieldValue, value: fieldValue.url || `https://www.google.com/maps?q=${fieldValue.lat},${fieldValue.lng}` }
                   break
                 case 'file_upload':
                   // file_upload is an array, so we wrap it in an object with .value
@@ -265,6 +272,10 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
                 case 'phone':
                   mockContext[fieldName] = { ...fieldValue, value: fieldValue.e164 || '+96550000000' }
                   break
+                case 'location':
+                  // For location, .value is the Google Maps URL
+                  mockContext[fieldName] = { ...fieldValue, value: fieldValue.url || `https://www.google.com/maps?q=${fieldValue.lat},${fieldValue.lng}` }
+                  break
                 case 'file_upload':
                   // file_upload is an array, so we wrap it in an object with .value
                   mockContext[fieldName] = { 
@@ -281,6 +292,9 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
               if ('e164' in fieldValue) {
                 // Looks like a phone field
                 mockContext[fieldName] = { ...fieldValue, value: fieldValue.e164 || '+96550000000' }
+              } else if ('lat' in fieldValue && 'lng' in fieldValue) {
+                // Looks like a location field
+                mockContext[fieldName] = { ...fieldValue, value: fieldValue.url || `https://www.google.com/maps?q=${fieldValue.lat},${fieldValue.lng}` }
               } else {
                 // Default: stringify the object
                 mockContext[fieldName] = { ...fieldValue, value: JSON.stringify(fieldValue) }

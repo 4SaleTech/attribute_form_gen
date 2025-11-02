@@ -9,7 +9,7 @@ function Editor({ initial, onClose, onSaved }: { initial?: Attribute; onClose: (
   const save = async () => {
     setErr('')
     if (!a.key) { setErr('Key required'); return }
-    if (!a.label.en || !a.label.ar) { setErr('EN/AR labels required'); return }
+    if (!a.label.en) { setErr('EN label required'); return }
     const body = { key:a.key, label:a.label, default_position:a.default_position, status:a.status }
     const res = await fetch('/api/attributes' + (initial? '/' + encodeURIComponent(initial.key): ''), {
       method: initial? 'PUT':'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer dev-admin-token' }, body: JSON.stringify(body)
@@ -26,7 +26,7 @@ function Editor({ initial, onClose, onSaved }: { initial?: Attribute; onClose: (
           <label className="block">Key<input className="border p-1 w-full" value={a.key} disabled={!!initial} onChange={e=>setA(prev=>({ ...prev, key:e.target.value }))} /></label>
           <label className="block">Position<input type="number" className="border p-1 w-full" value={a.default_position} onChange={e=>setA(prev=>({ ...prev, default_position:Number(e.target.value) }))} /></label>
           <label className="block">Label EN<input className="border p-1 w-full" value={a.label.en} onChange={e=>setA(prev=>({ ...prev, label:{ ...prev.label, en:e.target.value }}))} /></label>
-          <label className="block">Label AR<input className="border p-1 w-full" value={a.label.ar} onChange={e=>setA(prev=>({ ...prev, label:{ ...prev.label, ar:e.target.value }}))} /></label>
+          <label className="block">Label AR (Optional)<input className="border p-1 w-full" value={a.label.ar} onChange={e=>setA(prev=>({ ...prev, label:{ ...prev.label, ar:e.target.value }}))} /></label>
           <label className="block">Status<select className="border p-1 w-full" value={a.status} onChange={e=>setA(prev=>({ ...prev, status:e.target.value }))}><option>active</option><option>inactive</option></select></label>
         </div>
         <div className="mt-3 flex gap-2"><button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={save}>Save</button><button className="px-3 py-1 border rounded" onClick={onClose}>Cancel</button></div>
