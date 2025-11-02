@@ -73,15 +73,36 @@ function validateClient(form: FormConfig, answers: Record<string, any>, locale: 
           errs.push({ field: f.name, code: 'REQUIRED', message: t('Please provide details for "Other"', 'يرجى إدخال التفاصيل لـ "أخرى"') })
         }
         break
+      case 'radio':
+        if (v == null) break
+        if (!(f as any).props?.allow_other) {
+          const options: any[] = (f as any).props?.options || []
+          const found = options.some(o => o.value === v?.value)
+          if (!found && v?.value !== 'other') {
+            errs.push({ field: f.name, code: 'NOT_ALLOWED', message: t('Not in options', 'غير موجود ضمن الخيارات') })
+          }
+        }
+        // If "other" is selected, validate that other text is provided
+        if (v?.value === 'other' && (!v?.other || v.other.trim() === '')) {
+          errs.push({ field: f.name, code: 'REQUIRED', message: t('Please provide details for "Other"', 'يرجى إدخال التفاصيل لـ "أخرى"') })
+        }
+        break
       case 'multiselect':
         if (v == null) break
-        if (!(f as any).props?.allow_custom) {
+        if (!(f as any).props?.allow_custom && !(f as any).props?.allow_other) {
           const options: any[] = (f as any).props?.options || []
           for (const it of (Array.isArray(v)?v:[])) {
-            if (!options.some(o => o.value === it?.value)) {
+            if (!options.some(o => o.value === it?.value) && it?.value !== 'other') {
               errs.push({ field: f.name, code: 'NOT_ALLOWED', message: t('Not in options', 'غير موجود ضمن الخيارات') })
               break
             }
+          }
+        }
+        // Validate "other" text if "other" is selected
+        for (const it of (Array.isArray(v)?v:[])) {
+          if (it?.value === 'other' && (!it?.other || it.other.trim() === '')) {
+            errs.push({ field: f.name, code: 'REQUIRED', message: t('Please provide details for "Other"', 'يرجى إدخال التفاصيل لـ "أخرى"') })
+            break
           }
         }
         break

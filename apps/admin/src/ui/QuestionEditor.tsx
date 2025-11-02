@@ -166,7 +166,7 @@ export const QuestionEditor: React.FC<Props> = ({ attributes, value, onClose, on
               <Field label="Required"><input type="checkbox" checked={!!q.props?.required} onChange={e=>setProp('required', e.target.checked)} /></Field>
               <Field label="Searchable"><input type="checkbox" checked={!!q.props?.searchable} onChange={e=>setProp('searchable', e.target.checked)} /></Field>
               <Field label="Allow custom"><input type="checkbox" checked={!!q.props?.allow_custom} onChange={e=>setProp('allow_custom', e.target.checked)} /></Field>
-              {q.type === 'select' && (
+              {(q.type === 'select' || q.type === 'radio' || q.type === 'multiselect') && (
                 <Field label="Allow other"><input type="checkbox" checked={!!q.props?.allow_other} onChange={e=>setProp('allow_other', e.target.checked)} /></Field>
               )}
             </div>

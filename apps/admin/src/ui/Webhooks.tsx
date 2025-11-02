@@ -4,7 +4,7 @@ type Item = { id: number; type: 'http'; endpoint_url: string; http_method: strin
 
 type FormSnapshot = { formId: string; version: number; title: { en:string; ar:string }; createdAt: string }
 
-type FormField = { name: string; type: string; label_json?: { en?: string; ar?: string } }
+type FormField = { name: string; type: string; label_json?: { en?: string; ar?: string }; props?: any }
 
 function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; onCancel: ()=>void; onSaved: ()=>void; formId: string; version: number }) {
   const [w, setW] = React.useState<Item>(value || { id: 0, type:'http', endpoint_url:'', http_method:'POST', content_type:'application/json', headers:{}, body_template:'', selected_fields:[], mode:'raw', enabled:true })
@@ -152,13 +152,28 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
           allMockAnswers[field.name] = { e164: '+96550000000', country: 'KW' }
           break
         case 'radio':
-          allMockAnswers[field.name] = { value: 'example_option' }
+          // If allow_other is enabled, mock an "other" selection with text
+          if (field.props?.allow_other) {
+            allMockAnswers[field.name] = { value: 'other', other: 'Mock other details' }
+          } else {
+            allMockAnswers[field.name] = { value: 'example_option' }
+          }
           break
         case 'select':
-          allMockAnswers[field.name] = { value: 'example_option' }
+          // If allow_other is enabled, mock an "other" selection with text
+          if (field.props?.allow_other) {
+            allMockAnswers[field.name] = { value: 'other', other: 'Mock other details' }
+          } else {
+            allMockAnswers[field.name] = { value: 'example_option' }
+          }
           break
         case 'multiselect':
-          allMockAnswers[field.name] = [{ value: 'example_option_1' }, { value: 'example_option_2' }]
+          // If allow_other is enabled, mock an "other" selection with text
+          if (field.props?.allow_other) {
+            allMockAnswers[field.name] = [{ value: 'example_option_1' }, { value: 'other', other: 'Mock other details' }]
+          } else {
+            allMockAnswers[field.name] = [{ value: 'example_option_1' }, { value: 'example_option_2' }]
+          }
           break
         case 'date':
         case 'time':

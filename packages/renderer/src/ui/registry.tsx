@@ -98,11 +98,33 @@ const validatePhoneNumber = (number: string, countryCode: string): boolean => {
 const DateInput: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
   const [focused, setFocused] = React.useState(false);
   const isRTL = locale === 'ar';
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  
   const inputStyle: React.CSSProperties = {
     ...(hasError ? errorInputStyle : baseInputStyle),
-    ...(isRTL ? { paddingRight: '2.75rem' } : { paddingLeft: '2.75rem' }),
     textAlign: isRTL ? 'right' : 'left',
+    cursor: 'pointer',
     ...(focused ? (hasError ? errorInputFocusStyle : baseInputFocusStyle) : {}),
+  };
+  
+  const handleClick = () => {
+    // Open the date picker when clicking on the input
+    if (inputRef.current) {
+      inputRef.current.showPicker?.();
+    }
+  };
+  
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow arrow keys and Tab for navigation, but prevent typing
+    if (e.key === 'Tab' || e.key.startsWith('Arrow') || e.key === 'Enter') {
+      return;
+    }
+    // Prevent all other keyboard input
+    e.preventDefault();
+    // Open picker on Enter or Space
+    if (e.key === ' ' || e.key === 'Enter') {
+      inputRef.current?.showPicker?.();
+    }
   };
   
   return (
@@ -113,16 +135,14 @@ const DateInput: React.FC<any> = ({ name, label, props, locale, value, onChange,
       </label>
       {props?.help?.[locale] && <p style={helperStyle}>{props?.help?.[locale]}</p>}
       <div style={{ position: 'relative' }}>
-        <div style={{ position: 'absolute', ...(isRTL ? { right: '1rem' } : { left: '1rem' }), top: '50%', transform: 'translateY(-50%)', color: COLORS.helper, pointerEvents: 'none', zIndex: 10 }}>
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-          </svg>
-        </div>
         <input
+          ref={inputRef}
           type="date"
           name={name}
           value={value || ''}
           onChange={e => onChange(e.target.value)}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           style={inputStyle}
@@ -135,11 +155,33 @@ const DateInput: React.FC<any> = ({ name, label, props, locale, value, onChange,
 const TimeInput: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
   const [focused, setFocused] = React.useState(false);
   const isRTL = locale === 'ar';
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  
   const inputStyle: React.CSSProperties = {
     ...(hasError ? errorInputStyle : baseInputStyle),
-    ...(isRTL ? { paddingRight: '2.75rem' } : { paddingLeft: '2.75rem' }),
     textAlign: isRTL ? 'right' : 'left',
+    cursor: 'pointer',
     ...(focused ? (hasError ? errorInputFocusStyle : baseInputFocusStyle) : {}),
+  };
+  
+  const handleClick = () => {
+    // Open the time picker when clicking on the input
+    if (inputRef.current) {
+      inputRef.current.showPicker?.();
+    }
+  };
+  
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow arrow keys and Tab for navigation, but prevent typing
+    if (e.key === 'Tab' || e.key.startsWith('Arrow') || e.key === 'Enter') {
+      return;
+    }
+    // Prevent all other keyboard input
+    e.preventDefault();
+    // Open picker on Enter or Space
+    if (e.key === ' ' || e.key === 'Enter') {
+      inputRef.current?.showPicker?.();
+    }
   };
   
   return (
@@ -150,16 +192,14 @@ const TimeInput: React.FC<any> = ({ name, label, props, locale, value, onChange,
       </label>
       {props?.help?.[locale] && <p style={helperStyle}>{props?.help?.[locale]}</p>}
       <div style={{ position: 'relative' }}>
-        <div style={{ position: 'absolute', ...(isRTL ? { right: '1rem' } : { left: '1rem' }), top: '50%', transform: 'translateY(-50%)', color: COLORS.helper, pointerEvents: 'none', zIndex: 10 }}>
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
         <input
+          ref={inputRef}
           type="time"
           name={name}
           value={value || ''}
           onChange={e => onChange(e.target.value)}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           style={inputStyle}
@@ -734,6 +774,12 @@ const MultiSelect: React.FC<any> = ({ name, label, props, locale, value, onChang
   const options = props?.options || [];
   const searchable = props?.searchable || false;
   const allowCustom = props?.allow_custom || false;
+  const allowOther = props?.allow_other || false;
+  
+  // Find "other" value if selected
+  const otherItem = Array.isArray(value) ? value.find((v: any) => typeof v === 'object' && v?.value === 'other') : null;
+  const otherValue = otherItem?.other || '';
+  const isOtherSelected = !!otherItem;
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -754,6 +800,10 @@ const MultiSelect: React.FC<any> = ({ name, label, props, locale, value, onChang
 
   const selectedValues = Array.isArray(value) ? value.map((v: any) => typeof v === 'object' ? v?.value : v) : [];
   const selectedOptions = options.filter((opt: any) => selectedValues.includes(opt.value));
+  // Add "other" to selected options display if it's selected
+  if (isOtherSelected) {
+    selectedOptions.push({ value: 'other', label: { en: 'Other', ar: 'أخرى' } });
+  }
 
   const filteredOptions = searchable && searchTerm
     ? options.filter((opt: any) => 
@@ -821,10 +871,60 @@ const MultiSelect: React.FC<any> = ({ name, label, props, locale, value, onChang
     const currentValues = Array.isArray(value) ? value.map((v: any) => typeof v === 'object' ? v?.value : v) : [];
     if (currentValues.includes(optValue)) {
       const newValues = currentValues.filter((v: string) => v !== optValue);
-      onChange(newValues.map((v: string) => ({ value: v })));
+      // Preserve "other" text if "other" is still selected
+      const otherItem = Array.isArray(value) ? value.find((v: any) => typeof v === 'object' && v?.value === 'other') : null;
+      const updatedValues = newValues.map((v: string) => {
+        if (v === 'other' && otherItem) {
+          return { value: 'other', other: otherItem.other || '' };
+        }
+        return { value: v };
+      });
+      onChange(updatedValues);
     } else {
-      onChange([...currentValues, optValue].map((v: string) => ({ value: v })));
+      const newValues = [...currentValues, optValue];
+      // Preserve "other" text if it was already selected
+      const otherItem = Array.isArray(value) ? value.find((v: any) => typeof v === 'object' && v?.value === 'other') : null;
+      const updatedValues = newValues.map((v: string) => {
+        if (v === 'other' && otherItem) {
+          return { value: 'other', other: otherItem.other || '' };
+        }
+        return { value: v };
+      });
+      onChange(updatedValues);
     }
+  };
+  
+  const toggleOther = () => {
+    const currentValues = Array.isArray(value) ? value.map((v: any) => typeof v === 'object' ? v?.value : v).filter((v: string) => v !== 'other') : [];
+    if (isOtherSelected) {
+      // Remove "other"
+      onChange(currentValues.map((v: string) => ({ value: v })));
+    } else {
+      // Add "other"
+      onChange([...currentValues, 'other'].map((v: string) => ({ value: v })));
+    }
+  };
+  
+  const handleOtherTextChange = (text: string) => {
+    const currentValues = Array.isArray(value) ? value.map((v: any) => typeof v === 'object' ? v?.value : v).filter((v: string) => v !== 'other') : [];
+    onChange([...currentValues, 'other'].map((v: string) => {
+      if (v === 'other') {
+        return { value: 'other', other: text };
+      }
+      return { value: v };
+    }));
+  };
+  
+  const textareaStyle: React.CSSProperties = {
+    ...(hasError ? errorInputStyle : baseInputStyle),
+    width: '100%',
+    minHeight: '100px',
+    padding: '0.875rem 1rem',
+    fontSize: '16px',
+    fontFamily: FONT_FAMILY,
+    resize: 'vertical',
+    marginTop: '0.75rem',
+    textAlign: isRTL ? 'right' : 'left',
   };
 
   return (
@@ -842,21 +942,28 @@ const MultiSelect: React.FC<any> = ({ name, label, props, locale, value, onChang
           onBlur={() => setFocused(false)}
         >
           {selectedOptions.length > 0 ? (
-            selectedOptions.map((opt: any) => (
-              <span key={opt.value} style={tagStyle}>
-                {opt.label?.[locale] || opt.value}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleOption(opt.value);
-                  }}
-                  style={{ background: 'none', border: 'none', color: COLORS.helper, cursor: 'pointer', fontSize: '16px', padding: 0, lineHeight: 1 }}
-                >
-                  ×
-                </button>
-              </span>
-            ))
+            selectedOptions.map((opt: any) => {
+              const isOther = opt.value === 'other';
+              return (
+                <span key={opt.value} style={tagStyle}>
+                  {isOther ? (locale === 'ar' ? 'أخرى' : 'Other') : (opt.label?.[locale] || opt.value)}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isOther) {
+                        toggleOther();
+                      } else {
+                        toggleOption(opt.value);
+                      }
+                    }}
+                    style={{ background: 'none', border: 'none', color: COLORS.helper, cursor: 'pointer', fontSize: '16px', padding: 0, lineHeight: 1 }}
+                  >
+                    ×
+                  </button>
+                </span>
+              );
+            })
           ) : (
             <span style={{ color: COLORS.placeholder }}>
               {props?.placeholder?.[locale] || (locale === 'ar' ? 'اختر...' : 'Select...')}
@@ -922,9 +1029,37 @@ const MultiSelect: React.FC<any> = ({ name, label, props, locale, value, onChang
                 {locale === 'ar' ? `إضافة "${searchTerm}"` : `Add "${searchTerm}"`}
               </div>
             )}
+            {allowOther && (
+              <div
+                style={isOtherSelected ? { ...optionStyle, backgroundColor: COLORS.bgHover, fontWeight: 500 } : optionStyle}
+                onMouseEnter={(e) => {
+                  if (!isOtherSelected) e.currentTarget.style.backgroundColor = COLORS.bgHover;
+                }}
+                onMouseLeave={(e) => {
+                  if (!isOtherSelected) e.currentTarget.style.backgroundColor = COLORS.white;
+                }}
+                onClick={toggleOther}
+              >
+                <input
+                  type="checkbox"
+                  checked={isOtherSelected}
+                  onChange={() => {}}
+                  style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: COLORS.primary }}
+                />
+                {locale === 'ar' ? 'أخرى' : 'Other'}
+              </div>
+            )}
           </div>
         )}
       </div>
+      {isOtherSelected && (
+        <textarea
+          style={textareaStyle}
+          value={otherValue}
+          onChange={(e) => handleOtherTextChange(e.target.value)}
+          placeholder={locale === 'ar' ? 'يرجى إدخال التفاصيل...' : 'Please enter details...'}
+        />
+      )}
     </div>
   );
 };
@@ -1240,6 +1375,10 @@ const Switch: React.FC<any> = ({ name, label, props, locale, value, onChange, re
 
 const Radio: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
   const isRTL = locale === 'ar';
+  const allowOther = props?.allow_other || false;
+  const otherValue = typeof value === 'object' && value?.value === 'other' ? (value?.other || '') : '';
+  const isOtherSelected = typeof value === 'object' && value?.value === 'other';
+  
   const optionStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
@@ -1250,6 +1389,18 @@ const Radio: React.FC<any> = ({ name, label, props, locale, value, onChange, req
     transition: 'all 0.2s ease',
     backgroundColor: hasError ? COLORS.bgError : COLORS.white,
     marginBottom: '0.625rem',
+  };
+  
+  const textareaStyle: React.CSSProperties = {
+    ...(hasError ? errorInputStyle : baseInputStyle),
+    width: '100%',
+    minHeight: '100px',
+    padding: '0.875rem 1rem',
+    fontSize: '16px',
+    fontFamily: FONT_FAMILY,
+    resize: 'vertical',
+    marginTop: '0.75rem',
+    textAlign: isRTL ? 'right' : 'left',
   };
   
   return (
@@ -1282,7 +1433,36 @@ const Radio: React.FC<any> = ({ name, label, props, locale, value, onChange, req
             <span style={{ color: COLORS.heading, fontSize: '16px' }}>{opt.label?.[locale]}</span>
           </label>
         ))}
+        {allowOther && (
+          <label
+            style={optionStyle}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = hasError ? COLORS.bgErrorHover : COLORS.bgHover;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = hasError ? COLORS.bgError : COLORS.white;
+            }}
+          >
+            <input
+              type="radio"
+              name={name}
+              value="other"
+              checked={isOtherSelected}
+              onChange={() => onChange({ value: 'other', other: otherValue })}
+              style={{ width: '16px', height: '16px', ...(isRTL ? { marginLeft: '1rem' } : { marginRight: '1rem' }), cursor: 'pointer', accentColor: COLORS.primary }}
+            />
+            <span style={{ color: COLORS.heading, fontSize: '16px' }}>{locale === 'ar' ? 'أخرى' : 'Other'}</span>
+          </label>
+        )}
       </div>
+      {isOtherSelected && (
+        <textarea
+          style={textareaStyle}
+          value={otherValue}
+          onChange={(e) => onChange({ value: 'other', other: e.target.value })}
+          placeholder={locale === 'ar' ? 'يرجى إدخال التفاصيل...' : 'Please enter details...'}
+        />
+      )}
     </div>
   );
 };
