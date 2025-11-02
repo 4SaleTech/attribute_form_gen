@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Sakr Font */
+@font-face {
+  font-family: 'Sakr';
+  src: url('/fonts/sakrPro-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sakr';
+  src: url('/fonts/sakrPro-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sakr';
+  src: url('/fonts/sakrPro-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sakr';
+  src: url('/fonts/sakrPro-Bold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+body { font-family: 'Sakr', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+body { @apply bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100; }
+
+
+

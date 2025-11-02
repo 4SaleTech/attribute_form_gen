@@ -1,0 +1,234 @@
+/* Form Renderer Styles - Brand Design System */
+
+/* Base Input Styles */
+.form-input-base {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  color: #0D1635;
+  background-color: white;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.form-input-base::placeholder {
+  color: #9CA3AF;
+}
+
+.form-input-base:focus {
+  outline: none;
+  border-color: #2E4BFF;
+  box-shadow: 0 0 0 2px rgba(46, 75, 255, 0.2);
+}
+
+.form-input-error {
+  border-color: #EF4444;
+  background-color: #FEF2F2;
+}
+
+.form-input-error:focus {
+  border-color: #EF4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+/* Button Styles */
+.form-button-primary {
+  width: 100%;
+  background-color: #2E4BFF;
+  color: white;
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  border-radius: 32px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.form-button-primary:hover {
+  background-color: #2640E6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.form-button-primary:active {
+  transform: scale(0.98);
+}
+
+.form-button-primary:disabled {
+  background-color: rgba(46, 75, 255, 0.5);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Label Styles */
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0D1635;
+  margin-bottom: 0.5rem;
+}
+
+.form-label-required {
+  color: #EF4444;
+  margin-left: 0.25rem;
+  font-weight: 400;
+}
+
+/* Helper Text */
+.form-helper {
+  font-size: 15px;
+  color: #6B7280;
+  margin-bottom: 0.625rem;
+  line-height: 1.6;
+}
+
+/* Error Message */
+.form-error {
+  font-size: 14px;
+  color: #EF4444;
+  margin-left: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+/* Container */
+.form-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Header */
+.form-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  border-bottom: 1px solid #F3F4F6;
+  z-index: 10;
+  padding: 1rem 1.5rem;
+}
+
+.form-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0D1635;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+/* Radio Button Container */
+.form-radio-container {
+  display: flex;
+  align-items: center;
+  padding: 0.875rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+
+.form-radio-container:hover {
+  background-color: #F9FAFB;
+}
+
+.form-radio-container-error {
+  border-color: #EF4444;
+  background-color: #FEF2F2;
+}
+
+.form-radio-container-error:hover {
+  background-color: #FEE2E2;
+}
+
+/* Phone Input */
+.form-phone-container {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.form-phone-container:focus-within {
+  border-color: #2E4BFF;
+  box-shadow: 0 0 0 2px rgba(46, 75, 255, 0.2);
+}
+
+.form-phone-container-error {
+  border-color: #EF4444;
+  background-color: #FEF2F2;
+}
+
+.form-phone-code {
+  display: flex;
+  align-items: center;
+  padding: 0.875rem 1rem;
+  border-right: 1px solid #E5E7EB;
+  background-color: #F9FAFB;
+}
+
+.form-phone-input {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  border: none;
+  outline: none;
+  color: #0D1635;
+  background-color: transparent;
+  font-size: 16px;
+}
+
+.form-phone-input::placeholder {
+  color: #9CA3AF;
+}
+
+/* File Upload */
+.form-file-upload {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px dashed #E5E7EB;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+
+.form-file-upload:hover {
+  background-color: #F9FAFB;
+  border-color: #D1D5DB;
+}
+
+.form-file-upload-error {
+  border-color: #EF4444;
+  background-color: #FEF2F2;
+}
+
+.form-file-upload-error:hover {
+  background-color: #FEE2E2;
+  border-color: #EF4444;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .form-header {
+    position: static;
+    border-bottom: none;
+    padding: 0;
+  }
+  
+  .form-container {
+    padding: 0;
+  }
+  
+  .form-title {
+    font-size: 24px;
+  }
+}
+

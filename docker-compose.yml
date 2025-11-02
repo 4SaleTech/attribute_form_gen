@@ -1,0 +1,19 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: formdev-mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: formdev
+      MYSQL_USER: formdev
+      MYSQL_PASSWORD: formdevpw
+      MYSQL_ROOT_PASSWORD: rootpw
+    command: ["--default-authentication-plugin=mysql_native_password", "--sql-mode="]
+    volumes:
+      - mysql_data:/var/lib/mysql
+volumes:
+  mysql_data:
+
+
+

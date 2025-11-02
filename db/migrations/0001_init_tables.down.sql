@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS submissions;
+DROP TABLE IF EXISTS form_webhooks;
+DROP TABLE IF EXISTS forms;
+DROP TABLE IF EXISTS questions;
+DROP TABLE IF EXISTS attributes;
+
+
+
