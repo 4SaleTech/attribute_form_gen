@@ -156,6 +156,26 @@ func dispatchWebhooks(db *sql.DB, cfg *config.Config, log *zap.Logger, formId st
             }
             // Add each selected field as a top-level variable
             for field, value := range selectedAnswers {
+                // Transform "other" values to show the custom text in .value
+                if valMap, ok := value.(map[string]any); ok {
+                    if v, _ := valMap["value"].(string); v == "other" {
+                        if otherText, ok := valMap["other"].(string); ok && otherText != "" {
+                            // Replace .value with the "other" text for easier template access
+                            valMap["value"] = otherText
+                        }
+                    }
+                } else if valArr, ok := value.([]any); ok {
+                    // Handle multiselect arrays - transform "other" items
+                    for _, item := range valArr {
+                        if itemMap, ok := item.(map[string]any); ok {
+                            if v, _ := itemMap["value"].(string); v == "other" {
+                                if otherText, ok := itemMap["other"].(string); ok && otherText != "" {
+                                    itemMap["value"] = otherText
+                                }
+                            }
+                        }
+                    }
+                }
                 ctx[field] = value
             }
             // Include all fields from base (for backward compatibility)

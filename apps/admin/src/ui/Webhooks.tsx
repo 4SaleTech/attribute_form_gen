@@ -218,8 +218,13 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
         // Add .value property for fields that don't have it naturally
         if (typeof fieldValue === 'object' && fieldValue !== null && !Array.isArray(fieldValue)) {
           if ('value' in fieldValue) {
-            // Already has .value (e.g., radio fields)
-            mockContext[fieldName] = fieldValue
+            // Already has .value (e.g., radio, select fields)
+            // If value is "other", use the "other" text for display
+            if (fieldValue.value === 'other' && fieldValue.other) {
+              mockContext[fieldName] = { ...fieldValue, value: fieldValue.other }
+            } else {
+              mockContext[fieldName] = fieldValue
+            }
           } else {
             // Add .value based on field type
             if (field) {
@@ -247,7 +252,7 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
             }
           }
         } else if (Array.isArray(fieldValue)) {
-          // Handle arrays (like file_upload)
+          // Handle arrays (like file_upload, multiselect)
           const field = formFields.find(f => f.name === fieldName)
           if (field?.type === 'file_upload') {
             // For file_upload, .value is a comma-separated list of URLs
@@ -255,6 +260,18 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
               value: fieldValue.length > 0 
                 ? fieldValue.map((f: any) => f.url || f.id || '').join(', ') 
                 : '' 
+            }
+          } else if (field?.type === 'multiselect') {
+            // For multiselect, .value is a comma-separated list of values
+            // If any item has value="other", use the "other" text instead
+            const values = fieldValue.map((item: any) => {
+              if (item?.value === 'other' && item?.other) {
+                return item.other
+              }
+              return item?.value || ''
+            }).filter(Boolean)
+            mockContext[fieldName] = { 
+              value: values.length > 0 ? values.join(', ') : '' 
             }
           } else {
             // Other arrays: wrap in object with .value
@@ -278,8 +295,13 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
         // Add .value even if field metadata isn't loaded yet (fallback to type detection)
         if (typeof fieldValue === 'object' && fieldValue !== null && !Array.isArray(fieldValue)) {
           if ('value' in fieldValue) {
-            // Already has .value (e.g., radio fields)
-            mockContext[fieldName] = fieldValue
+            // Already has .value (e.g., radio, select fields)
+            // If value is "other", use the "other" text for display
+            if (fieldValue.value === 'other' && fieldValue.other) {
+              mockContext[fieldName] = { ...fieldValue, value: fieldValue.other }
+            } else {
+              mockContext[fieldName] = fieldValue
+            }
           } else {
             // Add .value based on field type (if available) or structure
             if (field) {
@@ -317,7 +339,7 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
             }
           }
         } else if (Array.isArray(fieldValue)) {
-          // Handle arrays (like file_upload)
+          // Handle arrays (like file_upload, multiselect)
           const field = formFields.find(f => f.name === fieldName)
           if (field?.type === 'file_upload') {
             // For file_upload, .value is a comma-separated list of URLs
@@ -325,6 +347,18 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
               value: fieldValue.length > 0 
                 ? fieldValue.map((f: any) => f.url || f.id || '').join(', ') 
                 : '' 
+            }
+          } else if (field?.type === 'multiselect') {
+            // For multiselect, .value is a comma-separated list of values
+            // If any item has value="other", use the "other" text instead
+            const values = fieldValue.map((item: any) => {
+              if (item?.value === 'other' && item?.other) {
+                return item.other
+              }
+              return item?.value || ''
+            }).filter(Boolean)
+            mockContext[fieldName] = { 
+              value: values.length > 0 ? values.join(', ') : '' 
             }
           } else {
             // Other arrays: wrap in object with .value
