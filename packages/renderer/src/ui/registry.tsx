@@ -513,6 +513,495 @@ const Hero: React.FC<any> = ({ label, locale, props }) => (
   </div>
 );
 
+const Select: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+  const [focused, setFocused] = React.useState(false);
+  const [showDropdown, setShowDropdown] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const isRTL = locale === 'ar';
+  const options = props?.options || [];
+  const searchable = props?.searchable || false;
+  const allowCustom = props?.allow_custom || false;
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+        setSearchTerm('');
+      }
+    };
+    
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDropdown]);
+
+  const filteredOptions = searchable && searchTerm
+    ? options.filter((opt: any) => 
+        opt.label?.[locale]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        opt.value?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : options;
+
+  const selectedOption = options.find((opt: any) => opt.value === (typeof value === 'object' ? value?.value : value));
+  const displayValue = selectedOption ? selectedOption.label?.[locale] : (allowCustom && typeof value === 'object' ? value?.value : '');
+
+  const containerStyle: React.CSSProperties = {
+    position: 'relative',
+  };
+
+  const inputStyle: React.CSSProperties = {
+    ...(hasError ? errorInputStyle : baseInputStyle),
+    textAlign: isRTL ? 'right' : 'left',
+    cursor: 'pointer',
+    ...(focused ? (hasError ? errorInputFocusStyle : baseInputFocusStyle) : {}),
+    paddingRight: '2.75rem',
+  };
+
+  const dropdownStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: COLORS.white,
+    border: `1px solid ${COLORS.border}`,
+    borderRadius: '16px',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    maxHeight: '300px',
+    overflowY: 'auto',
+    zIndex: 10000,
+    marginTop: '4px',
+  };
+
+  const optionStyle: React.CSSProperties = {
+    padding: '0.875rem 1rem',
+    cursor: 'pointer',
+    fontSize: '16px',
+    color: COLORS.heading,
+    borderBottom: `1px solid ${COLORS.border}`,
+    textAlign: isRTL ? 'right' : 'left',
+  };
+
+  const optionHoverStyle: React.CSSProperties = {
+    ...optionStyle,
+    backgroundColor: COLORS.bgHover,
+  };
+
+  const selectedOptionStyle: React.CSSProperties = {
+    ...optionStyle,
+    backgroundColor: COLORS.bgHover,
+    fontWeight: 500,
+  };
+
+  return (
+    <div>
+      <label style={labelStyle}>
+        {label?.[locale]}
+        {required && <span style={requiredStyle}>*</span>}
+      </label>
+      {props?.help?.[locale] && <p style={helperStyle}>{props?.help?.[locale]}</p>}
+      <div style={containerStyle} ref={dropdownRef}>
+        <div
+          style={inputStyle}
+          onClick={() => setShowDropdown(!showDropdown)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+        >
+          {displayValue || (props?.placeholder?.[locale] || (locale === 'ar' ? 'اختر...' : 'Select...'))}
+          <span style={{ position: 'absolute', ...(isRTL ? { left: '1rem' } : { right: '1rem' }), top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: COLORS.helper, pointerEvents: 'none' }}>
+            {showDropdown ? '▲' : '▼'}
+          </span>
+        </div>
+        {showDropdown && (
+          <div style={dropdownStyle} onMouseDown={(e) => e.preventDefault()}>
+            {searchable && (
+              <div style={{ padding: '0.75rem', borderBottom: `1px solid ${COLORS.border}` }}>
+                <input
+                  type="text"
+                  placeholder={locale === 'ar' ? 'بحث...' : 'Search...'}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{ width: '100%', padding: '0.5rem', border: `1px solid ${COLORS.border}`, borderRadius: '8px', fontSize: '14px' }}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            )}
+            {filteredOptions.map((opt: any) => {
+              const isSelected = opt.value === (typeof value === 'object' ? value?.value : value);
+              return (
+                <div
+                  key={opt.value}
+                  style={isSelected ? selectedOptionStyle : optionStyle}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) e.currentTarget.style.backgroundColor = COLORS.bgHover;
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) e.currentTarget.style.backgroundColor = COLORS.white;
+                  }}
+                  onClick={() => {
+                    onChange({ value: opt.value });
+                    setShowDropdown(false);
+                    setSearchTerm('');
+                  }}
+                >
+                  {opt.label?.[locale] || opt.value}
+                </div>
+              );
+            })}
+            {filteredOptions.length === 0 && (
+              <div style={{ padding: '0.875rem 1rem', color: COLORS.helper, textAlign: 'center', fontSize: '14px' }}>
+                {locale === 'ar' ? 'لا توجد خيارات' : 'No options'}
+              </div>
+            )}
+            {allowCustom && searchTerm && !filteredOptions.some((opt: any) => opt.value === searchTerm) && (
+              <div
+                style={optionStyle}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.bgHover}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.white}
+                onClick={() => {
+                  onChange({ value: searchTerm });
+                  setShowDropdown(false);
+                  setSearchTerm('');
+                }}
+              >
+                {locale === 'ar' ? `إضافة "${searchTerm}"` : `Add "${searchTerm}"`}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const MultiSelect: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+  const [focused, setFocused] = React.useState(false);
+  const [showDropdown, setShowDropdown] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const isRTL = locale === 'ar';
+  const options = props?.options || [];
+  const searchable = props?.searchable || false;
+  const allowCustom = props?.allow_custom || false;
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+        setSearchTerm('');
+      }
+    };
+    
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDropdown]);
+
+  const selectedValues = Array.isArray(value) ? value.map((v: any) => typeof v === 'object' ? v?.value : v) : [];
+  const selectedOptions = options.filter((opt: any) => selectedValues.includes(opt.value));
+
+  const filteredOptions = searchable && searchTerm
+    ? options.filter((opt: any) => 
+        opt.label?.[locale]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        opt.value?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : options;
+
+  const containerStyle: React.CSSProperties = {
+    position: 'relative',
+  };
+
+  const inputStyle: React.CSSProperties = {
+    ...(hasError ? errorInputStyle : baseInputStyle),
+    textAlign: isRTL ? 'right' : 'left',
+    cursor: 'pointer',
+    minHeight: '3rem',
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '0.5rem 2.75rem 0.5rem 1rem',
+    ...(focused ? (hasError ? errorInputFocusStyle : baseInputFocusStyle) : {}),
+  };
+
+  const tagStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '0.375rem 0.75rem',
+    backgroundColor: COLORS.bgHover,
+    borderRadius: '8px',
+    fontSize: '14px',
+    color: COLORS.heading,
+  };
+
+  const dropdownStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: COLORS.white,
+    border: `1px solid ${COLORS.border}`,
+    borderRadius: '16px',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    maxHeight: '300px',
+    overflowY: 'auto',
+    zIndex: 10000,
+    marginTop: '4px',
+  };
+
+  const optionStyle: React.CSSProperties = {
+    padding: '0.875rem 1rem',
+    cursor: 'pointer',
+    fontSize: '16px',
+    color: COLORS.heading,
+    borderBottom: `1px solid ${COLORS.border}`,
+    textAlign: isRTL ? 'right' : 'left',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+  };
+
+  const toggleOption = (optValue: string) => {
+    const currentValues = Array.isArray(value) ? value.map((v: any) => typeof v === 'object' ? v?.value : v) : [];
+    if (currentValues.includes(optValue)) {
+      const newValues = currentValues.filter((v: string) => v !== optValue);
+      onChange(newValues.map((v: string) => ({ value: v })));
+    } else {
+      onChange([...currentValues, optValue].map((v: string) => ({ value: v })));
+    }
+  };
+
+  return (
+    <div>
+      <label style={labelStyle}>
+        {label?.[locale]}
+        {required && <span style={requiredStyle}>*</span>}
+      </label>
+      {props?.help?.[locale] && <p style={helperStyle}>{props?.help?.[locale]}</p>}
+      <div style={containerStyle} ref={dropdownRef}>
+        <div
+          style={inputStyle}
+          onClick={() => setShowDropdown(!showDropdown)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+        >
+          {selectedOptions.length > 0 ? (
+            selectedOptions.map((opt: any) => (
+              <span key={opt.value} style={tagStyle}>
+                {opt.label?.[locale] || opt.value}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleOption(opt.value);
+                  }}
+                  style={{ background: 'none', border: 'none', color: COLORS.helper, cursor: 'pointer', fontSize: '16px', padding: 0, lineHeight: 1 }}
+                >
+                  ×
+                </button>
+              </span>
+            ))
+          ) : (
+            <span style={{ color: COLORS.placeholder }}>
+              {props?.placeholder?.[locale] || (locale === 'ar' ? 'اختر...' : 'Select...')}
+            </span>
+          )}
+          <span style={{ position: 'absolute', ...(isRTL ? { left: '1rem' } : { right: '1rem' }), top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: COLORS.helper, pointerEvents: 'none' }}>
+            {showDropdown ? '▲' : '▼'}
+          </span>
+        </div>
+        {showDropdown && (
+          <div style={dropdownStyle} onMouseDown={(e) => e.preventDefault()}>
+            {searchable && (
+              <div style={{ padding: '0.75rem', borderBottom: `1px solid ${COLORS.border}` }}>
+                <input
+                  type="text"
+                  placeholder={locale === 'ar' ? 'بحث...' : 'Search...'}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{ width: '100%', padding: '0.5rem', border: `1px solid ${COLORS.border}`, borderRadius: '8px', fontSize: '14px' }}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            )}
+            {filteredOptions.map((opt: any) => {
+              const isSelected = selectedValues.includes(opt.value);
+              return (
+                <div
+                  key={opt.value}
+                  style={isSelected ? { ...optionStyle, backgroundColor: COLORS.bgHover, fontWeight: 500 } : optionStyle}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) e.currentTarget.style.backgroundColor = COLORS.bgHover;
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) e.currentTarget.style.backgroundColor = COLORS.white;
+                  }}
+                  onClick={() => toggleOption(opt.value)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => {}}
+                    style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: COLORS.primary }}
+                  />
+                  {opt.label?.[locale] || opt.value}
+                </div>
+              );
+            })}
+            {filteredOptions.length === 0 && (
+              <div style={{ padding: '0.875rem 1rem', color: COLORS.helper, textAlign: 'center', fontSize: '14px' }}>
+                {locale === 'ar' ? 'لا توجد خيارات' : 'No options'}
+              </div>
+            )}
+            {allowCustom && searchTerm && !filteredOptions.some((opt: any) => opt.value === searchTerm) && !selectedValues.includes(searchTerm) && (
+              <div
+                style={optionStyle}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = COLORS.bgHover}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = COLORS.white}
+                onClick={() => {
+                  toggleOption(searchTerm);
+                  setSearchTerm('');
+                }}
+              >
+                {locale === 'ar' ? `إضافة "${searchTerm}"` : `Add "${searchTerm}"`}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const Checkbox: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+  const isRTL = locale === 'ar';
+  const isChecked = value === true || value === 'true';
+
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'flex-start',
+    padding: '0.875rem',
+    border: `1px solid ${hasError ? COLORS.borderError : COLORS.border}`,
+    borderRadius: '16px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    backgroundColor: hasError ? COLORS.bgError : COLORS.white,
+    marginBottom: '0.625rem',
+    flexDirection: isRTL ? 'row-reverse' : 'row',
+  };
+
+  return (
+    <div>
+      <label style={labelStyle}>
+        {label?.[locale]}
+        {required && <span style={requiredStyle}>*</span>}
+      </label>
+      {props?.help?.[locale] && <p style={helperStyle}>{props?.help?.[locale]}</p>}
+      <label
+        style={containerStyle}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = hasError ? COLORS.bgErrorHover : COLORS.bgHover;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = hasError ? COLORS.bgError : COLORS.white;
+        }}
+      >
+        <input
+          type="checkbox"
+          name={name}
+          checked={isChecked}
+          onChange={(e) => onChange(e.target.checked)}
+          style={{ width: '16px', height: '16px', ...(isRTL ? { marginLeft: '1rem' } : { marginRight: '1rem' }), cursor: 'pointer', accentColor: COLORS.primary, marginTop: '2px' }}
+        />
+        <span style={{ color: COLORS.heading, fontSize: '16px', flex: 1 }}>
+          {props?.label?.[locale] || (locale === 'ar' ? 'موافق' : 'I agree')}
+        </span>
+      </label>
+    </div>
+  );
+};
+
+const Switch: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+  const isRTL = locale === 'ar';
+  const isChecked = value === true || value === 'true';
+
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0.875rem',
+    border: `1px solid ${hasError ? COLORS.borderError : COLORS.border}`,
+    borderRadius: '16px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    backgroundColor: hasError ? COLORS.bgError : COLORS.white,
+    marginBottom: '0.625rem',
+    justifyContent: 'space-between',
+    flexDirection: isRTL ? 'row-reverse' : 'row',
+  };
+
+  const switchStyle: React.CSSProperties = {
+    width: '44px',
+    height: '24px',
+    borderRadius: '12px',
+    backgroundColor: isChecked ? COLORS.primary : COLORS.border,
+    position: 'relative',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    flexShrink: 0,
+  };
+
+  const switchThumbStyle: React.CSSProperties = {
+    width: '20px',
+    height: '20px',
+    borderRadius: '50%',
+    backgroundColor: COLORS.white,
+    position: 'absolute',
+    top: '2px',
+    ...(isChecked ? (isRTL ? { right: '2px' } : { left: '22px' }) : (isRTL ? { right: '22px' } : { left: '2px' })),
+    transition: 'all 0.2s ease',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+  };
+
+  return (
+    <div>
+      <label style={labelStyle}>
+        {label?.[locale]}
+        {required && <span style={requiredStyle}>*</span>}
+      </label>
+      {props?.help?.[locale] && <p style={helperStyle}>{props?.help?.[locale]}</p>}
+      <label
+        style={containerStyle}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = hasError ? COLORS.bgErrorHover : COLORS.bgHover;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = hasError ? COLORS.bgError : COLORS.white;
+        }}
+        onClick={(e) => {
+          e.preventDefault();
+          onChange(!isChecked);
+        }}
+      >
+        <span style={{ color: COLORS.heading, fontSize: '16px', flex: 1 }}>
+          {props?.label?.[locale] || (locale === 'ar' ? 'تفعيل' : 'Enable')}
+        </span>
+        <div style={switchStyle}>
+          <div style={switchThumbStyle} />
+        </div>
+      </label>
+    </div>
+  );
+};
+
 const Radio: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
   const isRTL = locale === 'ar';
   const optionStyle: React.CSSProperties = {
@@ -690,6 +1179,10 @@ export const DefaultComponents: Record<string, (props: any) => React.ReactNode> 
   email: (p) => <Email {...p} />,
   phone: (p) => <Phone {...p} />,
   radio: (p) => <Radio {...p} />,
+  select: (p) => <Select {...p} />,
+  multiselect: (p) => <MultiSelect {...p} />,
+  checkbox: (p) => <Checkbox {...p} />,
+  switch: (p) => <Switch {...p} />,
   file_upload: (p) => <FileUpload {...p} />,
   date: (p) => <DateInput {...p} />,
   time: (p) => <TimeInput {...p} />,

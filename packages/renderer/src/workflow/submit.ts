@@ -15,24 +15,35 @@ async function nativeBridge(payload: Payload) {
     // @ts-ignore
     if (window.ReactNativeWebView?.postMessage) {
       // @ts-ignore
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'form_submit', payload }));
+      const message = JSON.stringify({ type: 'form_submit', payload });
+      window.ReactNativeWebView.postMessage(message);
+      console.log('[Native Bridge] Sent to React Native:', message);
       return true;
     }
     // iOS WKWebView
     // @ts-ignore
     if (window.webkit?.messageHandlers?.bridge) {
       // @ts-ignore
-      window.webkit.messageHandlers.bridge.postMessage({ type: 'form_submit', payload });
+      const message = { type: 'form_submit', payload };
+      window.webkit.messageHandlers.bridge.postMessage(message);
+      console.log('[Native Bridge] Sent to iOS:', message);
       return true;
     }
     // Android interface
     // @ts-ignore
     if (window.AndroidBridge?.postMessage) {
       // @ts-ignore
-      window.AndroidBridge.postMessage(JSON.stringify({ type: 'form_submit', payload }));
+      const message = JSON.stringify({ type: 'form_submit', payload });
+      window.AndroidBridge.postMessage(message);
+      console.log('[Native Bridge] Sent to Android:', message);
       return true;
     }
-  } catch {}
+  } catch (e) {
+    console.error('[Native Bridge] Error:', e);
+    throw e;
+  }
+  // No bridge available - this is normal in web browsers
+  console.log('[Native Bridge] No native bridge detected - this is normal in web browsers');
   return true; // no-op when not available
 }
 

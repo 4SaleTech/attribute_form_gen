@@ -294,6 +294,10 @@ func TestWebhookHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
 				mockAnswers[name] = map[string]any{"e164": "+96550000000", "country": "KW"}
 			case "radio":
 				mockAnswers[name] = map[string]any{"value": "test_option"}
+			case "select":
+				mockAnswers[name] = map[string]any{"value": "test_option"}
+			case "multiselect":
+				mockAnswers[name] = []map[string]any{{"value": "test_option_1"}, {"value": "test_option_2"}}
 			case "date":
 				mockAnswers[name] = time.Now().Format(time.RFC3339)
 			case "time":

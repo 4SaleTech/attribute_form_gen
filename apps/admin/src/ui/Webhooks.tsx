@@ -154,6 +154,12 @@ function Editor({ value, onCancel, onSaved, formId, version }: { value?: Item; o
         case 'radio':
           allMockAnswers[field.name] = { value: 'example_option' }
           break
+        case 'select':
+          allMockAnswers[field.name] = { value: 'example_option' }
+          break
+        case 'multiselect':
+          allMockAnswers[field.name] = [{ value: 'example_option_1' }, { value: 'example_option_2' }]
+          break
         case 'date':
         case 'time':
           allMockAnswers[field.name] = new Date().toISOString()
