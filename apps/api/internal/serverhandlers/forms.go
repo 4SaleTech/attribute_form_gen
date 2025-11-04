@@ -1,7 +1,9 @@
 package serverhandlers
 
 import (
+    "crypto/sha256"
     "database/sql"
+    "encoding/hex"
     "encoding/json"
     "fmt"
     "net/http"
@@ -162,8 +164,37 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
         normalizedSubmit := normalizeSubmitJSON(req.Submit)
         submitJSON, _ := json.Marshal(normalizedSubmit)
 
-        _, err = db.Exec(`INSERT INTO forms(form_id,version,title_json,fields_json,attributes_json,thank_you_json,submit_json,supported_locales_json,default_locale,status) VALUES(?,?,?,?,?,?,?,JSON_ARRAY('en','ar'),'en','active')`,
-            req.FormID, nextVersion, string(titleJSON), string(fieldsJSON), string(attrsJSON), string(thankJSON), string(submitJSON))
+        // Generate config hash for duplicate detection
+        configHash := generateConfigHash(req.Attributes, normalizedSubmit, req.ThankYou)
+
+        // Check if a form with the same configuration already exists
+        var existingFormID string
+        var existingVersion int
+        row = db.QueryRow("SELECT form_id, version FROM forms WHERE config_hash = ? ORDER BY version DESC LIMIT 1", configHash)
+        if err := row.Scan(&existingFormID, &existingVersion); err == nil {
+            // Found existing form with same configuration
+            baseURL := getBaseURL(c, cfg)
+            existingFormIDEncoded := url.PathEscape(existingFormID)
+            log.Info("duplicate form detected", zap.String("existing_form_id", existingFormID), zap.Int("existing_version", existingVersion), zap.String("requested_form_id", req.FormID))
+            c.JSON(http.StatusOK, gin.H{
+                "formId": existingFormID,
+                "version": existingVersion,
+                "isDuplicate": true,
+                "urls": gin.H{
+                    "en": fmt.Sprintf("%s/%s/%d?lang=en", baseURL, existingFormIDEncoded, existingVersion),
+                    "ar": fmt.Sprintf("%s/%s/%d?lang=ar", baseURL, existingFormIDEncoded, existingVersion),
+                },
+            })
+            return
+        } else if err != sql.ErrNoRows {
+            // Unexpected database error
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "db error"})
+            return
+        }
+
+        // No duplicate found, create new form
+        _, err = db.Exec(`INSERT INTO forms(form_id,version,title_json,fields_json,attributes_json,thank_you_json,submit_json,config_hash,supported_locales_json,default_locale,status) VALUES(?,?,?,?,?,?,?,?,JSON_ARRAY('en','ar'),'en','active')`,
+            req.FormID, nextVersion, string(titleJSON), string(fieldsJSON), string(attrsJSON), string(thankJSON), string(submitJSON), configHash)
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "insert failed"})
             return
@@ -176,6 +207,7 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
         c.JSON(http.StatusOK, gin.H{
             "formId": req.FormID,
             "version": nextVersion,
+            "isDuplicate": false,
             "urls": gin.H{
                 "en": fmt.Sprintf("%s/%s/%d?lang=en", baseURL, formIDEncoded, nextVersion),
                 "ar": fmt.Sprintf("%s/%s/%d?lang=ar", baseURL, formIDEncoded, nextVersion),
@@ -295,6 +327,34 @@ func normalizeSubmitJSON(submit *types.SubmitPipeline) *types.SubmitPipeline {
     if submit.TimeoutMs == 0 { submit.TimeoutMs = 6000 }
     if submit.OnError == "" { submit.OnError = "continue" }
     return submit
+}
+
+// generateConfigHash creates a SHA256 hash from attributes, submit config, and thank you config
+// This is used to detect duplicate form configurations
+func generateConfigHash(attributes []string, submit *types.SubmitPipeline, thankYou *types.ThankYou) string {
+    // Create a struct that represents the configuration (excluding form_id and title)
+    type configForHash struct {
+        Attributes []string                `json:"attributes"`
+        Submit     *types.SubmitPipeline   `json:"submit"`
+        ThankYou   *types.ThankYou         `json:"thankYou"`
+    }
+    
+    cfg := configForHash{
+        Attributes: attributes,
+        Submit:     submit,
+        ThankYou:   thankYou,
+    }
+    
+    // Marshal to JSON (sorted keys for consistency)
+    jsonBytes, err := json.Marshal(cfg)
+    if err != nil {
+        // Fallback: create hash from string representation
+        jsonBytes = []byte(fmt.Sprintf("%v|%v|%v", attributes, submit, thankYou))
+    }
+    
+    // Generate SHA256 hash
+    hash := sha256.Sum256(jsonBytes)
+    return hex.EncodeToString(hash[:])
 }
 
 // small helpers (avoid pulling extra packages)

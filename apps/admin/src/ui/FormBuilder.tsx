@@ -10,6 +10,7 @@ export const FormBuilder: React.FC = () => {
   const [attrs, setAttrs] = React.useState<Attribute[]>([])
   const [selected, setSelected] = React.useState<string[]>([])
   const [locale, setLocale] = React.useState<'en'|'ar'>('en')
+  const [attrSearch, setAttrSearch] = React.useState('')
   const [thank, setThank] = React.useState<{ show:boolean; title:ENAR; message:ENAR }>({ show:false, title:{ en:'', ar:'' }, message:{ en:'', ar:'' } })
   const [submit, setSubmit] = React.useState<any>({
     actions:[
@@ -57,7 +58,12 @@ export const FormBuilder: React.FC = () => {
     if (red?.enabled && !(String(red.url||'').startsWith('http://') || String(red.url||'').startsWith('https://') || String(red.url||'').startsWith('/'))) { alert('Redirect URL must be http(s) or a relative path'); return }
     const body = { formId, title, attributes:selected, thankYou: thank, submit }
     const res = await fetch('/api/forms/publish', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer dev-admin-token' }, body: JSON.stringify(body) })
-    const j = await res.json(); alert(JSON.stringify(j))
+    const j = await res.json()
+    if (j.isDuplicate) {
+      alert(`A form with the same configuration already exists!\n\nForm ID: ${j.formId}\nVersion: ${j.version}\n\nURLs:\nEN: ${j.urls.en}\nAR: ${j.urls.ar}`)
+    } else {
+      alert(`Form published successfully!\n\nForm ID: ${j.formId}\nVersion: ${j.version}\n\nURLs:\nEN: ${j.urls.en}\nAR: ${j.urls.ar}`)
+    }
   }
 
   const preview = async () => {
@@ -82,34 +88,59 @@ export const FormBuilder: React.FC = () => {
 
       <div>
         <h3 className="font-semibold mb-2">Attributes (order matters)</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Available</div>
-            <ul className="border rounded divide-y dark:border-slate-600">
-              {attrs.filter(a=>!selected.includes(a.key)).map(a=> (
-                <li key={a.key} className="p-2 flex items-center justify-between dark:hover:bg-slate-800">
-                  <span>{a.key}</span>
-                  <button className="text-sm underline dark:text-blue-400" onClick={()=>setSelected(prev=>[...prev, a.key])}>Add</button>
-                </li>
-              ))}
-            </ul>
+        <div className="mb-3">
+          <input
+            type="text"
+            placeholder="Search attributes..."
+            value={attrSearch}
+            onChange={(e) => setAttrSearch(e.target.value)}
+            className="border rounded p-2 w-full mb-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          />
+          <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto border rounded p-2 dark:border-slate-600">
+            {attrs
+              .filter(a => a.key.toLowerCase().includes(attrSearch.toLowerCase()))
+              .map(a => {
+                const isSelected = selected.includes(a.key)
+                return (
+                  <button
+                    key={a.key}
+                    type="button"
+                    onClick={() => {
+                      if (isSelected) {
+                        setSelected(prev => prev.filter(k => k !== a.key))
+                      } else {
+                        setSelected(prev => [...prev, a.key])
+                      }
+                    }}
+                    className={`px-3 py-1 rounded border transition-colors ${
+                      isSelected
+                        ? 'bg-blue-600 text-white border-blue-600 dark:bg-blue-700 dark:border-blue-700'
+                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    {a.key}
+                  </button>
+                )
+              })}
           </div>
+        </div>
+        {selected.length > 0 && (
           <div>
-            <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Selected</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Selected (in order)</div>
             <ul className="border rounded divide-y dark:border-slate-600">
               {selected.map(key => (
                 <li key={key} className="p-2 flex items-center justify-between dark:hover:bg-slate-800">
                   <span>{key}</span>
                   <div className="space-x-2">
-                    <button className="text-sm dark:text-slate-300" onClick={()=>move(key,-1)}>↑</button>
-                    <button className="text-sm dark:text-slate-300" onClick={()=>move(key,1)}>↓</button>
+                    <button className="text-sm dark:text-slate-300" onClick={()=>move(key,-1)} disabled={selected.indexOf(key) === 0}>↑</button>
+                    <button className="text-sm dark:text-slate-300" onClick={()=>move(key,1)} disabled={selected.indexOf(key) === selected.length - 1}>↓</button>
                     <button className="text-sm underline text-red-600 dark:text-red-400" onClick={()=>setSelected(prev=>prev.filter(k=>k!==key))}>Remove</button>
                   </div>
                 </li>
               ))}
             </ul>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="grid grid-cols-3 gap-4">
