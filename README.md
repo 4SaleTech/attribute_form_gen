@@ -46,10 +46,24 @@ This project includes Dockerfiles and deployment scripts for AWS ECR.
 
 **Quick Start:**
 ```bash
-export ECR_REGISTRY=123456789012.dkr.ecr.us-east-1.amazonaws.com
-export AWS_REGION=us-east-1
-./scripts/build-and-push-ecr.sh
+# Set AWS credentials
+export AWS_ACCESS_KEY_ID=your-access-key
+export AWS_SECRET_ACCESS_KEY=your-secret-key
+export AWS_DEFAULT_REGION=eu-west-1
+
+# Set ECR configuration
+export ECR_REGISTRY=640249400316.dkr.ecr.eu-west-1.amazonaws.com
+export REPO_PREFIX=sc_attribute_form_generator
+export TAG=V1
+
+# Build and push images (amd64 architecture)
+./scripts/build-and-push-production.sh
 ```
+
+**Images pushed to:**
+- `640249400316.dkr.ecr.eu-west-1.amazonaws.com/sc_attribute_form_generator:api-V1`
+- `640249400316.dkr.ecr.eu-west-1.amazonaws.com/sc_attribute_form_generator:admin-V1`
+- `640249400316.dkr.ecr.eu-west-1.amazonaws.com/sc_attribute_form_generator:form-V1`
 
 **Documentation:**
 - See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for detailed deployment instructions
