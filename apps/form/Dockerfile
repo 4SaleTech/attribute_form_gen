@@ -14,7 +14,7 @@ COPY tsconfig.base.json ./
 
 # Copy package files
 COPY packages/renderer/package.json ./packages/renderer/
-COPY apps/admin/package.json ./apps/admin/
+COPY apps/form/package.json ./apps/form/
 
 # Install dependencies (with cache mount)
 RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
@@ -22,21 +22,22 @@ RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
 
 # Copy source code
 COPY packages ./packages
-COPY apps/admin ./apps/admin
+COPY apps/form ./apps/form
 
-# Build the admin app
-WORKDIR /app/apps/admin
+# Build the form app
+WORKDIR /app/apps/form
 RUN pnpm build
 
 # Production stage
 FROM nginx:alpine
 
 # Copy built files
-COPY --from=builder /app/apps/admin/dist /usr/share/nginx/html
+COPY --from=builder /app/apps/form/dist /usr/share/nginx/html
 
 # Copy nginx config
-COPY apps/admin/nginx.conf /etc/nginx/conf.d/default.conf
+COPY apps/form/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
+

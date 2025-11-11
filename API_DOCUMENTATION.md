@@ -45,7 +45,6 @@ curl -X POST "http://localhost:8080/api/forms/create?api_key=YOUR_ADMIN_TOKEN" \
 **Request Body**:
 ```json
 {
-  "formId": "my-form-id",
   "title": {
     "en": "English Title",
     "ar": "العنوان العربي"
@@ -96,13 +95,15 @@ curl -X POST "http://localhost:8080/api/forms/create?api_key=YOUR_ADMIN_TOKEN" \
 **Response** (Success):
 ```json
 {
-  "formId": "my-form-id",
+  "formId": "550e8400-e29b-41d4-a716-446655440000",
   "version": 1,
   "urls": {
-    "en": "http://localhost:5174/my-form-id/1?lang=en",
-    "ar": "http://localhost:5174/my-form-id/1?lang=ar"
+    "en": "http://localhost:5174/550e8400-e29b-41d4-a716-446655440000/1?lang=en",
+    "ar": "http://localhost:5174/550e8400-e29b-41d4-a716-446655440000/1?lang=ar"
   }
 }
+
+**Note:** The `formId` in the response will be the auto-generated UUID (if not provided in request) or the one you provided.
 ```
 
 **Response** (Error):
@@ -117,7 +118,7 @@ curl -X POST "http://localhost:8080/api/forms/create?api_key=YOUR_ADMIN_TOKEN" \
 ```
 
 **Validation Rules**:
-- `formId`: Required string
+- `formId`: Optional string. If not provided, a UUID will be automatically generated. You can optionally provide your own unique identifier.
 - `title`: Required object with both `en` and `ar` keys
 - `attributes`: Required array of attribute keys (must exist in questions table)
 - `thankYou`: Optional object, but if provided, must have bilingual `title` and `message`
@@ -135,7 +136,6 @@ curl -X POST "http://localhost:8080/api/forms/create?api_key=YOUR_ADMIN_TOKEN" \
 **Request Body**: Same as Create Form, plus optional `onMissing` field:
 ```json
 {
-  "formId": "my-form-id",
   "title": {...},
   "attributes": [...],
   "thankYou": {...},
@@ -184,7 +184,6 @@ curl -X POST http://localhost:8080/api/forms/create \
   -H "X-API-Key: your-admin-token" \
   -H "Content-Type: application/json" \
   -d '{
-    "formId": "contact-form",
     "title": {
       "en": "Contact Us",
       "ar": "اتصل بنا"

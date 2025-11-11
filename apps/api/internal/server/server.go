@@ -72,6 +72,16 @@ func (s *Server) registerRoutes() {
 
     // health
     api.GET("/health", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"ok": true}) })
+    
+    // Public config endpoint (for frontend to get Next.js URL)
+    api.GET("/config", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{
+            "nextjsPost": gin.H{
+                "url":     s.cfg.NextJSPostURL,
+                "enabled": s.cfg.NextJSPostEnabled,
+            },
+        })
+    })
 
     // Admin routes (Bearer) - register FIRST to ensure webhooks routes match before public routes
     admin := api.Group("")

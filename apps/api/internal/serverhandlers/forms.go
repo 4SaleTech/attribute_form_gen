@@ -1,6 +1,7 @@
 package serverhandlers
 
 import (
+    "crypto/rand"
     "crypto/sha256"
     "database/sql"
     "encoding/hex"
@@ -18,7 +19,7 @@ import (
 )
 
 type generateReq struct {
-    FormID     string            `json:"formId"`
+    FormID     string            `json:"formId,omitempty"`
     Title      map[string]string `json:"title"`
     Attributes []string          `json:"attributes"`
     ThankYou   *types.ThankYou   `json:"thankYou"`
@@ -32,6 +33,10 @@ func GenerateFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Ha
         if err := c.BindJSON(&req); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
             return
+        }
+        // Auto-generate formId if not provided
+        if req.FormID == "" {
+            req.FormID = generateUUID()
         }
         fields, missing, err := fetchFieldsForAttributes(db, req.Attributes)
         if err != nil {
@@ -113,9 +118,18 @@ func fetchFieldsForAttributes(db *sql.DB, attrs []string) ([]types.Field, []stri
 
 func toArgs(s []string) []any { a := make([]any, len(s)); for i, v := range s { a[i] = v }; return a }
 
+// generateUUID generates a UUID v4
+func generateUUID() string {
+    b := make([]byte, 16)
+    _, _ = rand.Read(b)
+    b[6] = (b[6] & 0x0f) | 0x40 // Version 4
+    b[8] = (b[8] & 0x3f) | 0x80 // Variant 10
+    return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+}
+
 // Publish
 type publishReq struct {
-    FormID     string            `json:"formId"`
+    FormID     string            `json:"formId,omitempty"`
     Title      map[string]string `json:"title"`
     Attributes []string          `json:"attributes"`
     ThankYou   *types.ThankYou   `json:"thankYou"`
@@ -128,6 +142,10 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
         if err := c.BindJSON(&req); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
             return
+        }
+        // Auto-generate formId if not provided
+        if req.FormID == "" {
+            req.FormID = generateUUID()
         }
         // Fetch active fields
         fields, missing, err := fetchFieldsForAttributes(db, req.Attributes)
@@ -271,6 +289,7 @@ var allowedActions = map[string]bool{
     "native_bridge": true,
     "server_persist": true,
     "webhooks": true,
+    "nextjs_post": true,
     "redirect": true,
 }
 
@@ -294,6 +313,7 @@ func validateSubmitJSON(submit *types.SubmitPipeline) []string {
                 errs = append(errs, "/submit/actions/"+itoa(i)+"/url: invalid")
             }
         }
+        // nextjs_post doesn't need URL validation - it uses environment variable
     }
     if !hasEnabled { errs = append(errs, "/submit/actions: at least one enabled required") }
     // ordering must be subset and unique

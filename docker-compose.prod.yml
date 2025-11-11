@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  api:
+    image: ${ECR_REGISTRY:-localhost:5000}/form-repo-api:${TAG:-latest}
+    container_name: form-api
+    ports:
+      - "8080:8080"
+    environment:
+      # Server
+      - PORT=8080
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - FORM_BASE_URL=${FORM_BASE_URL:-}
+      
+      # Database
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      
+      # Cloudinary
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - CLOUDINARY_UPLOAD_FOLDER=${CLOUDINARY_UPLOAD_FOLDER:-forms/uploads}
+      - CLOUDINARY_UPLOAD_TTL_SECONDS=${CLOUDINARY_UPLOAD_TTL_SECONDS:-300}
+      
+      # Webhooks
+      - WEBHOOK_SIGNING_KEY=${WEBHOOK_SIGNING_KEY}
+      - WEBHOOK_TIMEOUT_MS=${WEBHOOK_TIMEOUT_MS:-8000}
+      - WEBHOOK_MAX_RETRIES=${WEBHOOK_MAX_RETRIES:-3}
+      - WEBHOOK_RETRY_BACKOFF_MS=${WEBHOOK_RETRY_BACKOFF_MS:-1500}
+      
+      # Next.js POST
+      - NEXTJS_POST_URL=${NEXTJS_POST_URL:-}
+      - NEXTJS_POST_ENABLED=${NEXTJS_POST_ENABLED:-false}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  admin:
+    image: ${ECR_REGISTRY:-localhost:5000}/form-repo-admin:${TAG:-latest}
+    container_name: form-admin
+    ports:
+      - "3000:80"
+    environment:
+      - API_URL=${API_URL:-http://api:8080}
+    restart: unless-stopped
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  form:
+    image: ${ECR_REGISTRY:-localhost:5000}/form-repo-form:${TAG:-latest}
+    container_name: form-renderer
+    ports:
+      - "3001:80"
+    environment:
+      - API_URL=${API_URL:-http://api:8080}
+    restart: unless-stopped
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+

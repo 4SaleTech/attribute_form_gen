@@ -61,7 +61,7 @@ Each day you use the app:
 ## Create and preview a form
 
 1. Open the Admin app at `http://localhost:5173`.
-2. Enter a Form ID (for example: `service-intake`).
+2. A Form ID is automatically generated for you (you can regenerate it using the 🔄 button if needed).
 3. Enter the form Title in English and Arabic (both are required on publish).
 4. Attributes (building blocks) are listed for you. The initial set includes:
    - Hero banner

@@ -33,6 +33,10 @@ type Config struct {
     WebhookTimeoutMs      int    `envconfig:"WEBHOOK_TIMEOUT_MS" default:"8000"`
     WebhookMaxRetries     int    `envconfig:"WEBHOOK_MAX_RETRIES" default:"3"`
     WebhookRetryBackoffMs int    `envconfig:"WEBHOOK_RETRY_BACKOFF_MS" default:"1500"`
+
+    // Next.js POST
+    NextJSPostURL      string `envconfig:"NEXTJS_POST_URL" default:""`
+    NextJSPostEnabled bool   `envconfig:"NEXTJS_POST_ENABLED" default:"false"`
 }
 
 func Load(cfg *Config) error {
