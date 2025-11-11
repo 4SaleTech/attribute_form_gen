@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: form-api-local
+    ports:
+      - "8080:8080"
+    environment:
+      # Server
+      - PORT=8080
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:5173,http://localhost:5174
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-dev-admin-token}
+      - FORM_BASE_URL=http://localhost:3001
+      
+      # Database (from staging .env)
+      - DB_HOST=${DB_HOST:-staging-jan-4-2023-cluster.cluster-cylpew54lkmg.eu-west-1.rds.amazonaws.com}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_NAME=${DB_NAME:-sc_dynamic_form_generator}
+      - DB_USER=${DB_USER:-sc_dynamic_form_generator_dbuser}
+      - DB_PASSWORD=$${DB_PASSWORD:-oin!zxc@12mk$$palksd}
+      
+      # Cloudinary
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME:-dsg6pa4hp}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY:-573184522222431}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET:-EoEztHoWoi3aksb8m4kT3uoxQ4Q}
+      - CLOUDINARY_UPLOAD_FOLDER=${CLOUDINARY_UPLOAD_FOLDER:-forms/uploads}
+      - CLOUDINARY_UPLOAD_TTL_SECONDS=${CLOUDINARY_UPLOAD_TTL_SECONDS:-300}
+      
+      # Webhooks
+      - WEBHOOK_SIGNING_KEY=${WEBHOOK_SIGNING_KEY:-dev-sign-key}
+      - WEBHOOK_TIMEOUT_MS=${WEBHOOK_TIMEOUT_MS:-8000}
+      - WEBHOOK_MAX_RETRIES=${WEBHOOK_MAX_RETRIES:-3}
+      - WEBHOOK_RETRY_BACKOFF_MS=${WEBHOOK_RETRY_BACKOFF_MS:-1500}
+      
+      # Next.js POST
+      - NEXTJS_POST_URL=${NEXTJS_POST_URL:-}
+      - NEXTJS_POST_ENABLED=${NEXTJS_POST_ENABLED:-false}
+    restart: unless-stopped
+    # Note: Distroless image doesn't have wget, so we use a simple TCP check
+    # For production, consider using a different base image or custom healthcheck
+
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    container_name: form-admin-local
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  form:
+    build:
+      context: .
+      dockerfile: apps/form/Dockerfile
+    container_name: form-renderer-local
+    ports:
+      - "3001:80"
+    restart: unless-stopped
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+

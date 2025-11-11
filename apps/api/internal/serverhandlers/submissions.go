@@ -43,7 +43,7 @@ func SubmitHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.HandlerF
 
         // Check idempotency based on form snapshot config
         var submitRaw, localesRaw []byte
-        row := db.QueryRow("SELECT submit_json, supported_locales_json, fields_json FROM forms WHERE form_id=? AND version=?", req.FormID, req.Version)
+        row := db.QueryRow("SELECT submit_json, supported_locales_json, fields_json FROM form_snapshots WHERE form_id=? AND version=?", req.FormID, req.Version)
         var fieldsRaw []byte
         if err := row.Scan(&submitRaw, &localesRaw, &fieldsRaw); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error":"unknown form/version"})
@@ -219,7 +219,7 @@ func transformAnswersToArray(answers map[string]any, fieldLabels map[string]stri
 func dispatchWebhooks(db *sql.DB, cfg *config.Config, log *zap.Logger, formId string, version int, submissionId uint64, body []byte) {
     // Fetch form fields to get labels
     var fieldsJSON []byte
-    err := db.QueryRow("SELECT fields_json FROM forms WHERE form_id=? AND version=?", formId, version).Scan(&fieldsJSON)
+    err := db.QueryRow("SELECT fields_json FROM form_snapshots WHERE form_id=? AND version=?", formId, version).Scan(&fieldsJSON)
     if err != nil {
         log.Error("failed to fetch form fields", zap.Error(err))
         return

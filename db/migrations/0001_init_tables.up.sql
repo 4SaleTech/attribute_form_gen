@@ -24,7 +24,28 @@ CREATE TABLE IF NOT EXISTS questions (
 );
 
 -- Forms (snapshots)
-CREATE TABLE IF NOT EXISTS forms (
+-- Check if forms table exists and has the expected structure (form_id column)
+-- If forms exists but doesn't have form_id, it's the old schema - create form_snapshots instead
+SET @forms_has_form_id = (
+  SELECT COUNT(*) 
+  FROM INFORMATION_SCHEMA.COLUMNS 
+  WHERE TABLE_SCHEMA = DATABASE() 
+    AND TABLE_NAME = 'forms' 
+    AND COLUMN_NAME = 'form_id'
+);
+
+SET @forms_table_exists = (
+  SELECT COUNT(*) 
+  FROM INFORMATION_SCHEMA.TABLES 
+  WHERE TABLE_SCHEMA = DATABASE() 
+    AND TABLE_NAME = 'forms'
+);
+
+-- If forms table doesn't exist, or exists with correct structure, create/use forms
+-- Otherwise, create form_snapshots to avoid conflict
+SET @table_name = IF(@forms_table_exists = 0 OR @forms_has_form_id > 0, 'forms', 'form_snapshots');
+
+SET @sql = CONCAT('CREATE TABLE IF NOT EXISTS ', @table_name, ' (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `form_id` VARCHAR(191) NOT NULL,
   `version` INT NOT NULL,
@@ -34,12 +55,16 @@ CREATE TABLE IF NOT EXISTS forms (
   `thank_you_json` JSON NOT NULL,
   `submit_json` JSON NOT NULL,
   `supported_locales_json` JSON NOT NULL,
-  `default_locale` VARCHAR(8) NOT NULL DEFAULT 'en',
-  `status` VARCHAR(32) NOT NULL DEFAULT 'active',
+  `default_locale` VARCHAR(8) NOT NULL DEFAULT ''en'',
+  `status` VARCHAR(32) NOT NULL DEFAULT ''active'',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `uk_form_version` (`form_id`,`version`)
-);
+)');
+
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 -- Webhooks for a form snapshot
 CREATE TABLE IF NOT EXISTS form_webhooks (

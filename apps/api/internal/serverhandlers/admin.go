@@ -223,7 +223,7 @@ func DeleteQuestionHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
 // Forms admin helpers
 func ListFormsAdminHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
     return func(c *gin.Context) {
-        rows, err := db.Query("SELECT form_id, version, title_json, created_at FROM forms ORDER BY form_id ASC, version DESC")
+        rows, err := db.Query("SELECT form_id, version, title_json, created_at FROM form_snapshots ORDER BY form_id ASC, version DESC")
         if err != nil {
             log.Error("failed to query forms", zap.Error(err))
             c.JSON(http.StatusInternalServerError, gin.H{"error":"db"})
@@ -261,7 +261,7 @@ func DeleteFormSnapshotHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
     return func(c *gin.Context) {
         formId := c.Param("formId")
         version := c.Param("version")
-        _, err := db.Exec("DELETE FROM forms WHERE form_id=? AND version=?", formId, version)
+        _, err := db.Exec("DELETE FROM form_snapshots WHERE form_id=? AND version=?", formId, version)
         if err != nil { c.JSON(http.StatusBadRequest, gin.H{"error":"delete"}); return }
         c.Status(http.StatusNoContent)
     }

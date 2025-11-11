@@ -266,7 +266,7 @@ func TestWebhookHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
 
 		// Fetch form fields to build mock submission
 		var fieldsRaw []byte
-		err = db.QueryRow("SELECT fields_json FROM forms WHERE form_id=? AND version=?", formId, version).Scan(&fieldsRaw)
+		err = db.QueryRow("SELECT fields_json FROM form_snapshots WHERE form_id=? AND version=?", formId, version).Scan(&fieldsRaw)
 		if err != nil {
 			log.Error("failed to query form", zap.Error(err))
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to query form"})

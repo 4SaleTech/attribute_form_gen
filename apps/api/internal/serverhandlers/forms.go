@@ -169,7 +169,7 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
         }
         // Next version
         var nextVersion int
-        row := db.QueryRow("SELECT COALESCE(MAX(version),0)+1 FROM forms WHERE form_id=?", req.FormID)
+        row := db.QueryRow("SELECT COALESCE(MAX(version),0)+1 FROM form_snapshots WHERE form_id=?", req.FormID)
         if err := row.Scan(&nextVersion); err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "db error"})
             return
@@ -188,7 +188,7 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
         // Check if a form with the same configuration already exists
         var existingFormID string
         var existingVersion int
-        row = db.QueryRow("SELECT form_id, version FROM forms WHERE config_hash = ? ORDER BY version DESC LIMIT 1", configHash)
+        row = db.QueryRow("SELECT form_id, version FROM form_snapshots WHERE config_hash = ? ORDER BY version DESC LIMIT 1", configHash)
         if err := row.Scan(&existingFormID, &existingVersion); err == nil {
             // Found existing form with same configuration
             baseURL := getBaseURL(c, cfg)
@@ -211,7 +211,7 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
         }
 
         // No duplicate found, create new form
-        _, err = db.Exec(`INSERT INTO forms(form_id,version,title_json,fields_json,attributes_json,thank_you_json,submit_json,config_hash,supported_locales_json,default_locale,status) VALUES(?,?,?,?,?,?,?,?,JSON_ARRAY('en','ar'),'en','active')`,
+        _, err = db.Exec(`INSERT INTO form_snapshots(form_id,version,title_json,fields_json,attributes_json,thank_you_json,submit_json,config_hash,supported_locales_json,default_locale,status) VALUES(?,?,?,?,?,?,?,?,JSON_ARRAY('en','ar'),'en','active')`,
             req.FormID, nextVersion, string(titleJSON), string(fieldsJSON), string(attrsJSON), string(thankJSON), string(submitJSON), configHash)
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "insert failed"})
@@ -412,7 +412,7 @@ func getBaseURL(c *gin.Context, cfg *config.Config) string {
 func GetFormLatestHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.HandlerFunc {
     return func(c *gin.Context) {
         formId := c.Param("formId")
-        row := db.QueryRow("SELECT version,title_json,fields_json,attributes_json,thank_you_json,submit_json,supported_locales_json,default_locale FROM forms WHERE form_id=? ORDER BY version DESC LIMIT 1", formId)
+        row := db.QueryRow("SELECT version,title_json,fields_json,attributes_json,thank_you_json,submit_json,supported_locales_json,default_locale FROM form_snapshots WHERE form_id=? ORDER BY version DESC LIMIT 1", formId)
         respondFormRow(c, formId, row)
     }
 }
@@ -421,7 +421,7 @@ func GetFormVersionHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.
     return func(c *gin.Context) {
         formId := c.Param("formId")
         ver := c.Param("version")
-        row := db.QueryRow("SELECT version,title_json,fields_json,attributes_json,thank_you_json,submit_json,supported_locales_json,default_locale FROM forms WHERE form_id=? AND version=?", formId, ver)
+        row := db.QueryRow("SELECT version,title_json,fields_json,attributes_json,thank_you_json,submit_json,supported_locales_json,default_locale FROM form_snapshots WHERE form_id=? AND version=?", formId, ver)
         respondFormRow(c, formId, row)
     }
 }
