@@ -248,15 +248,31 @@ export const FormBuilder: React.FC = () => {
                 'Redirect'
               }</label>
               {t==='redirect' && submit.actions.find((a:any)=>a.type==='redirect')?.enabled && (
-                <input 
-                  className="border p-1 w-full mt-1 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
-                  placeholder="https://... or /path" 
-                  value={submit.actions.find((a:any)=>a.type==='redirect')?.url||''} 
-                  onChange={e=>{
-                    const a = submit.actions.map((x:any)=> x.type==='redirect'? { ...x, url:e.target.value }: x)
-                    setSubmit((prev:any)=>({ ...prev, actions:a }))
-                  }} 
-                />
+                <div className="mt-1">
+                  <input 
+                    className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                    placeholder="https://example.com/booking?formSubmissionId={{.submissionId}}&name={{.name}}" 
+                    value={submit.actions.find((a:any)=>a.type==='redirect')?.url||''} 
+                    onChange={e=>{
+                      const a = submit.actions.map((x:any)=> x.type==='redirect'? { ...x, url:e.target.value }: x)
+                      setSubmit((prev:any)=>({ ...prev, actions:a }))
+                    }} 
+                  />
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <div className="mb-1">💡 Use templates: <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.submissionId}}'}</code>, <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.formId}}'}</code>, <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.fieldName}}'}</code></div>
+                    <details className="cursor-pointer">
+                      <summary className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100">Available variables</summary>
+                      <div className="mt-1 ml-2 space-y-0.5 text-xs">
+                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.formId}}'}</code> - Form ID</div>
+                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.version}}'}</code> - Form version</div>
+                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.submissionId}}'}</code> - Submission ID (requires "Save responses" enabled)</div>
+                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.fieldName}}'}</code> - Any form field (e.g., <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.name}}'}</code>, <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.email}}'}</code>)</div>
+                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.meta.locale}}'}</code> - Submission locale</div>
+                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.meta.sessionId}}'}</code> - Session ID</div>
+                      </div>
+                    </details>
+                  </div>
+                </div>
               )}
               {t==='nextjs_post' && (
                 <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">

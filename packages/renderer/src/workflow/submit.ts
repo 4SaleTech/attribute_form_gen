@@ -282,12 +282,194 @@ async function runWithTimeout<T>(p: Promise<T>, ms?: number): Promise<T> {
   });
 }
 
-function redirectAction(url?: string) {
-  return async () => {
-    if (!url) return true
-    try { window.location.href = url; } catch {}
-    return true
+// Template context type
+type TemplateContext = {
+  formId: string;
+  version: number;
+  submittedAt: number;
+  submissionId?: number;
+  answers: Record<string, any>;
+  meta: any;
+  [key: string]: any; // For individual answer fields
+};
+
+// Evaluate template string with context variables
+// Supports Go-style template syntax: {{.variableName}}
+function evaluateTemplate(template: string, context: TemplateContext): string {
+  // If no template placeholders, return as-is
+  if (!template.includes('{{')) {
+    return template;
   }
+
+  // Regex to match {{.variableName}} patterns (supports nested paths like {{.meta.locale}})
+  const templateRegex = /\{\{\.([\w.]+)\}\}/g;
+  
+  return template.replace(templateRegex, (match, varName) => {
+    // Get value from context (supports nested paths like meta.locale)
+    let value: any = context[varName];
+    
+    // Handle nested paths (e.g., meta.locale)
+    if (value === undefined && varName.includes('.')) {
+      const parts = varName.split('.');
+      value = context;
+      for (const part of parts) {
+        if (value && typeof value === 'object') {
+          value = value[part];
+        } else {
+          value = undefined;
+          break;
+        }
+      }
+    }
+    
+    // Convert value to string
+    let strValue = '';
+    if (value === null || value === undefined) {
+      strValue = '';
+    } else if (typeof value === 'string') {
+      strValue = value;
+    } else if (typeof value === 'number') {
+      strValue = String(value);
+    } else if (typeof value === 'boolean') {
+      strValue = value ? 'true' : 'false';
+    } else if (Array.isArray(value)) {
+      // For arrays, join with comma
+      strValue = value.map(v => String(v)).join(',');
+    } else if (typeof value === 'object') {
+      // For objects, try to extract meaningful value
+      // Phone: use e164
+      if (value.e164) {
+        strValue = value.e164;
+      }
+      // Select/Radio with "other": use "other" text
+      else if (value.value === 'other' && value.other) {
+        strValue = value.other;
+      }
+      // Select/Radio: use value
+      else if (value.value) {
+        strValue = String(value.value);
+      }
+      // Location: format coordinates
+      else if (typeof value.lat === 'number' && typeof value.lng === 'number') {
+        strValue = `${value.lat.toFixed(6)},${value.lng.toFixed(6)}`;
+      }
+      // File upload: use URL
+      else if (value.url) {
+        strValue = value.url;
+      }
+      // Default: JSON string
+      else {
+        strValue = JSON.stringify(value);
+      }
+    } else {
+      strValue = String(value);
+    }
+    
+    return strValue;
+  });
+}
+
+// URL encode template values in query parameters
+function encodeTemplateInURL(url: string, context: TemplateContext): string {
+  // Check if URL has template placeholders
+  if (!url.includes('{{')) {
+    return url;
+  }
+
+  try {
+    // Split URL into base and query string
+    const [base, queryString] = url.split('?');
+    
+    if (!queryString) {
+      // No query string, just evaluate template in path
+      return evaluateTemplate(base, context);
+    }
+    
+    // Evaluate template in base URL
+    const evaluatedBase = evaluateTemplate(base, context);
+    
+    // Parse query string and encode template values
+    const queryParams = queryString.split('&');
+    const encodedParams: string[] = [];
+    
+    for (const param of queryParams) {
+      const [key, value] = param.split('=');
+      if (value && value.includes('{{')) {
+        // Value has template - evaluate and encode
+        const evaluatedValue = evaluateTemplate(value, context);
+        encodedParams.push(`${key}=${encodeURIComponent(evaluatedValue)}`);
+      } else if (value) {
+        // Static value - encode as-is
+        encodedParams.push(`${key}=${encodeURIComponent(value)}`);
+      } else {
+        // No value, just key
+        encodedParams.push(key);
+      }
+    }
+    
+    return `${evaluatedBase}?${encodedParams.join('&')}`;
+  } catch (e) {
+    console.error('[Redirect Template] Error encoding URL:', e);
+    // Fallback: just evaluate template without special encoding
+    return evaluateTemplate(url, context);
+  }
+}
+
+function redirectAction(
+  urlTemplate?: string,
+  payload?: Payload,
+  submissionId?: number,
+  form?: FormConfig
+) {
+  return async () => {
+    if (!urlTemplate) return true;
+    
+    try {
+      let finalUrl = urlTemplate;
+      
+      // Check if URL contains template placeholders
+      if (urlTemplate.includes('{{') && payload) {
+        // Build context object
+        const context: TemplateContext = {
+          formId: payload.formId,
+          version: payload.version,
+          submittedAt: payload.submittedAt,
+          submissionId: submissionId,
+          answers: payload.answers,
+          meta: payload.meta || {},
+          // Add individual answer fields as top-level variables
+          ...payload.answers,
+        };
+        
+        // Evaluate template and encode URL
+        finalUrl = encodeTemplateInURL(urlTemplate, context);
+        
+        // Validate URL before redirecting
+        try {
+          new URL(finalUrl);
+        } catch (e) {
+          // If relative URL, try to validate by checking if it starts with / or http
+          if (!finalUrl.startsWith('/') && !finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+            console.error('[Redirect Template] Invalid URL after template evaluation:', finalUrl);
+            throw new Error('Invalid redirect URL');
+          }
+        }
+      }
+      
+      window.location.href = finalUrl;
+      return true;
+    } catch (e) {
+      console.error('[Redirect Template] Error:', e);
+      // If template evaluation fails, try to use original URL
+      try {
+        window.location.href = urlTemplate;
+        return true;
+      } catch (fallbackError) {
+        console.error('[Redirect Template] Fallback also failed:', fallbackError);
+        return true; // Don't throw - let other actions continue
+      }
+    }
+  };
 }
 
 export async function runSubmitPipeline(form: FormConfig, payload: Payload) {
@@ -315,7 +497,10 @@ export async function runSubmitPipeline(form: FormConfig, payload: Payload) {
     try {
       if (step === 'redirect') {
         const redirectCfg = submit.actions.find(a=>a.type==='redirect') as any
-        await runWithTimeout(redirectAction(redirectCfg?.url)(), submit.timeout_ms)
+        await runWithTimeout(
+          redirectAction(redirectCfg?.url, payload, submissionId, form)(),
+          submit.timeout_ms
+        )
       } else {
         await runWithTimeout(actionMap[step](payload), submit.timeout_ms)
       }

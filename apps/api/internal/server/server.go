@@ -113,7 +113,8 @@ func (s *Server) registerRoutes() {
     admin.POST("/questions", serverhandlers.UpsertQuestionHandler(s.db, s.log))
     admin.DELETE("/questions/:id", serverhandlers.DeleteQuestionHandler(s.db, s.log))
 
-    // Admin submissions
+    // Admin submissions - specific route first to avoid conflicts
+    admin.GET("/submissions/:id", serverhandlers.GetSubmissionHandler(s.db, s.log))
     admin.GET("/submissions", serverhandlers.ListSubmissionsHandler(s.db, s.log))
 
     // Public endpoints - register AFTER admin routes
