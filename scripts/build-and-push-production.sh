@@ -5,7 +5,7 @@ set -e
 AWS_REGION="eu-west-1"
 ECR_REGISTRY="640249400316.dkr.ecr.eu-west-1.amazonaws.com"
 REPO_BASE="sc_attribute_form_generator"
-VERSION="V1"
+VERSION="V2"
 
 # Colors for output
 RED='\033[0;31m'
