@@ -106,6 +106,13 @@ export const QuestionEditor: React.FC<Props> = ({ attributes, value, onClose, on
 
   const typeProps = () => {
     switch (q.type) {
+      case 'info':
+        return (
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Variant"><select className="border p-1" value={q.props?.variant||'hero'} onChange={e=>setProp('variant', e.target.value)}><option value="hero">hero</option><option value="info">info</option></select></Field>
+            <Field label="Description (EN/AR)"><TabsENAR value={q.props?.description||{en:'',ar:''}} onChange={v=>setProp('description', v)} /></Field>
+          </div>
+        )
       case 'text':
         return (
           <div className="grid grid-cols-2 gap-3">
@@ -240,7 +247,7 @@ export const QuestionEditor: React.FC<Props> = ({ attributes, value, onClose, on
           </Field>
           <Field label="Type">
             <select className="border p-1 w-full" value={q.type} onChange={e=>setQ(prev=>({ ...prev, type:e.target.value }))}>
-              {['text','textarea','number','email','phone','radio','select','multiselect','checkbox','switch','file_upload','date','time','location'].map(t=> <option key={t} value={t}>{t}</option>)}
+              {['info','text','textarea','number','email','phone','radio','select','multiselect','checkbox','switch','file_upload','date','time','location'].map(t=> <option key={t} value={t}>{t}</option>)}
             </select>
           </Field>
           <Field label="Name (submission key)"><input className="border p-1 w-full" value={q.name} onChange={e=>setQ(prev=>({ ...prev, name:e.target.value }))} /></Field>

@@ -472,9 +472,9 @@ function redirectAction(
   };
 }
 
-export async function runSubmitPipeline(form: FormConfig, payload: Payload) {
+export async function runSubmitPipeline(form: FormConfig, payload: Payload): Promise<{ submissionId?: number }> {
   const submit = form.submit;
-  if (!submit) return;
+  if (!submit) return {};
   
   let submissionId: number | undefined = undefined;
   
@@ -509,6 +509,8 @@ export async function runSubmitPipeline(form: FormConfig, payload: Payload) {
       if (submit.on_error === 'stop') throw e;
     }
   }
+  
+  return { submissionId };
 }
 
 

@@ -79,9 +79,13 @@ curl -X POST "http://localhost:8080/api/forms/create?api_key=YOUR_ADMIN_TOKEN" \
         "type": "redirect",
         "enabled": false,
         "url": ""
+      },
+      {
+        "type": "nextjs_post",
+        "enabled": false
       }
     ],
-    "ordering": ["native_bridge", "server_persist", "webhooks", "redirect"],
+    "ordering": ["native_bridge", "server_persist", "webhooks", "nextjs_post", "redirect"],
     "timeout_ms": 6000,
     "on_error": "continue",
     "idempotency": {
@@ -124,7 +128,7 @@ curl -X POST "http://localhost:8080/api/forms/create?api_key=YOUR_ADMIN_TOKEN" \
 - `thankYou`: Optional object, but if provided, must have bilingual `title` and `message`
 - `submit`: Optional object, but if provided:
   - Must have at least one enabled action
-  - `redirect` action requires valid URL if enabled
+  - `redirect` action requires valid URL if enabled (supports template placeholders like `{{.submissionId}}`, `{{.formId}}`, `{{.fieldName}}`)
   - Valid `on_error` values: `"continue"`, `"stop"`, `"show_error"`
 
 ### 2. Generate Form (Preview)
@@ -314,6 +318,236 @@ print(result)
 # }
 ```
 
+## Submissions API
+
+### 1. Submit Form
+
+**Endpoint**: `POST /api/submissions`
+
+**Description**: Submit a form response. This is the public endpoint used by the form renderer.
+
+**Authentication**: None required (public endpoint)
+
+**Request Body**:
+```json
+{
+  "formId": "my-form-id",
+  "version": 1,
+  "submittedAt": 1704067200000,
+  "answers": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": {
+      "e164": "+96550012345",
+      "country": "KW"
+    }
+  },
+  "meta": {
+    "locale": "en",
+    "device": "web",
+    "attributes": ["name", "email", "phone"],
+    "sessionId": "abc123"
+  }
+}
+```
+
+**Response** (Success):
+```json
+{
+  "ok": true,
+  "id": 42,
+  "submissionId": 42
+}
+```
+
+**Response** (Validation Error):
+```json
+{
+  "error": "validation failed",
+  "errors": [
+    {
+      "field": "email",
+      "code": "REQUIRED",
+      "message": {
+        "en": "Email is required",
+        "ar": "البريد الإلكتروني مطلوب"
+      }
+    }
+  ]
+}
+```
+
+**Response** (Idempotency Conflict):
+```json
+{
+  "error": "duplicate submission",
+  "id": 42
+}
+```
+
+**Notes**:
+- `submittedAt`: Optional timestamp in milliseconds (defaults to current time)
+- `answers`: Object with field names as keys and answer values
+- `meta.sessionId`: Used for idempotency if enabled in form config
+- See [SUBMISSION_ANSWER_FORMATS.md](./SUBMISSION_ANSWER_FORMATS.md) for answer value formats
+
+---
+
+### 2. List Submissions (Admin)
+
+**Endpoint**: `GET /api/submissions`
+
+**Description**: List form submissions with optional filtering.
+
+**Authentication**: Required (Bearer token)
+
+**Query Parameters**:
+- `formId` (optional): Filter by form ID
+- `version` (optional): Filter by form version (requires `formId`)
+- `limit` (optional): Maximum number of results (default: 100, max: 1000)
+- `offset` (optional): Number of results to skip (default: 0)
+
+**Example Requests**:
+```bash
+# List all submissions
+curl "http://localhost:8080/api/submissions" \
+  -H "Authorization: Bearer dev-admin-token"
+
+# List submissions for a specific form
+curl "http://localhost:8080/api/submissions?formId=my-form-id" \
+  -H "Authorization: Bearer dev-admin-token"
+
+# List submissions for a specific form version
+curl "http://localhost:8080/api/submissions?formId=my-form-id&version=1" \
+  -H "Authorization: Bearer dev-admin-token"
+
+# Paginated results
+curl "http://localhost:8080/api/submissions?limit=50&offset=0" \
+  -H "Authorization: Bearer dev-admin-token"
+```
+
+**Response**:
+```json
+[
+  {
+    "id": 1,
+    "formId": "my-form-id",
+    "version": 1,
+    "submittedAt": 1704067200000,
+    "locale": "en",
+    "device": "web",
+    "answers": {
+      "name": "John Doe",
+      "email": "john@example.com"
+    },
+    "attributes": {},
+    "idempotencyKey": "abc123",
+    "webhookStatus": "success",
+    "createdAt": "2025-11-13T10:00:00Z"
+  }
+]
+```
+
+---
+
+### 3. Get Submission by ID (Admin)
+
+**Endpoint**: `GET /api/submissions/:id`
+
+**Description**: Retrieve a single submission by its ID.
+
+**Authentication**: Required (Bearer token)
+
+**Query Parameters**:
+- `format` (optional): Response format - `"object"` (default) or `"array"`
+
+**Example Requests**:
+```bash
+# Get submission in object format (default)
+curl "http://localhost:8080/api/submissions/42" \
+  -H "Authorization: Bearer dev-admin-token"
+
+# Get submission in array format
+curl "http://localhost:8080/api/submissions/42?format=array" \
+  -H "Authorization: Bearer dev-admin-token"
+```
+
+**Response** (Object Format - default):
+```json
+{
+  "id": 42,
+  "formId": "my-form-id",
+  "version": 1,
+  "submittedAt": 1704067200000,
+  "locale": "en",
+  "device": "web",
+  "answers": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": {
+      "e164": "+96550012345",
+      "country": "KW"
+    }
+  },
+  "attributes": {},
+  "idempotencyKey": "abc123",
+  "webhookStatus": "success",
+  "createdAt": "2025-11-13T10:00:00Z"
+}
+```
+
+**Response** (Array Format - `?format=array`):
+```json
+{
+  "id": 42,
+  "formId": "my-form-id",
+  "version": 1,
+  "submittedAt": 1704067200000,
+  "locale": "en",
+  "device": "web",
+  "answers": [
+    {
+      "question": "Full Name",
+      "answer": "John Doe"
+    },
+    {
+      "question": "Email Address",
+      "answer": "john@example.com"
+    },
+    {
+      "question": "Phone Number",
+      "answer": "+96550012345"
+    }
+  ],
+  "attributes": {},
+  "idempotencyKey": "abc123",
+  "webhookStatus": "success",
+  "createdAt": "2025-11-13T10:00:00Z"
+}
+```
+
+**Error Responses**:
+- `400 Bad Request`: Invalid submission ID format
+  ```json
+  {"error": "invalid submission id"}
+  ```
+- `401 Unauthorized`: Missing or invalid authentication
+  ```json
+  {"error": "missing bearer"}
+  ```
+- `404 Not Found`: Submission not found
+  ```json
+  {"error": "submission not found"}
+  ```
+
+**Format Comparison**:
+- **Object Format** (`format=object` or default): Answers as object with field names as keys. Preserves data types (string, number, boolean, object, array).
+- **Array Format** (`format=array`): Answers as array of `{question, answer}` objects. All answers converted to strings. Question labels use form field labels.
+
+**See Also**: [SUBMISSION_ANSWER_FORMATS.md](./SUBMISSION_ANSWER_FORMATS.md) for detailed examples of all field types in both formats.
+
+---
+
 ## Notes
 
 - All endpoints require bilingual content (English and Arabic) for titles, labels, and messages
@@ -321,4 +555,5 @@ print(result)
 - Attributes must exist in the questions table before they can be used in forms
 - The API key endpoint (`/api/forms/create`) is more convenient for programmatic access
 - The Bearer token endpoint (`/api/forms/publish`) is available for admin UI compatibility
+- Redirect URLs support template placeholders: `{{.submissionId}}`, `{{.formId}}`, `{{.fieldName}}`, etc.
 

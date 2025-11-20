@@ -236,7 +236,7 @@ This will create a form with default submit actions (server_persist enabled) and
 
 1. **`server_persist`**: Saves form submissions to the database
 2. **`webhooks`**: Triggers configured webhooks
-3. **`redirect`**: Redirects user after submission (requires `url` if enabled)
+3. **`redirect`**: Redirects user after submission (requires `url` if enabled). Supports template placeholders like `{{.submissionId}}`, `{{.formId}}`, `{{.fieldName}}`
 4. **`native_bridge`**: Sends data to native mobile app bridge
 
 ### Action Ordering
@@ -353,6 +353,44 @@ curl -X POST http://localhost:8080/api/forms/publish \
   }'
 ```
 
+### 4a. Form with Redirect Template (Dynamic URL)
+
+```bash
+curl -X POST http://localhost:8080/api/forms/publish \
+  -H "Authorization: Bearer dev-admin-token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": {
+      "en": "Booking Form",
+      "ar": "نموذج الحجز"
+    },
+    "attributes": ["name", "email"],
+    "submit": {
+      "actions": [
+        {"type": "server_persist", "enabled": true},
+        {
+          "type": "redirect",
+          "enabled": true,
+          "url": "https://www.example.com/booking?formSubmissionId={{.submissionId}}&formId={{.formId}}&name={{.name}}&email={{.email}}"
+        }
+      ],
+      "ordering": ["server_persist", "redirect"]
+    }
+  }'
+```
+
+**Template Variables Available:**
+- `{{.formId}}` - Form ID
+- `{{.version}}` - Form version
+- `{{.submissionId}}` - Submission ID (requires `server_persist` to run first)
+- `{{.fieldName}}` - Any form field (e.g., `{{.name}}`, `{{.email}}`)
+- `{{.meta.locale}}` - Submission locale
+- `{{.meta.sessionId}}` - Session ID
+
+**Example Result URL:**
+- Template: `https://www.example.com/booking?formSubmissionId={{.submissionId}}&name={{.name}}`
+- Result: `https://www.example.com/booking?formSubmissionId=42&name=John%20Doe`
+
 ## Tips
 
 1. **Pretty Print Response**: Add `| jq` or `| python3 -m json.tool` to format the JSON response:
@@ -395,7 +433,7 @@ Before submitting, ensure:
 - ✅ All attributes in `attributes` array exist in the database
 - ✅ If `thankYou.show` is `true`, both `thankYou.title` and `thankYou.message` have `en` and `ar` keys
 - ✅ At least one submit action is enabled
-- ✅ If `redirect` action is enabled, `url` is provided and is a valid URL
+- ✅ If `redirect` action is enabled, `url` is provided and is a valid URL (supports template placeholders)
 - ✅ `on_error` is one of: `"continue"`, `"stop"`, or `"show_error"`
 
 ## Next Steps

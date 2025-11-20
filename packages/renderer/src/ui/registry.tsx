@@ -1,4 +1,10 @@
 import React from 'react';
+import {
+  trackFileUploadStarted,
+  trackFileUploadSuccess,
+  trackFileUploadError,
+  trackLocationCaptured,
+} from '../analytics/amplitude';
 
 // Brand Colors
 const COLORS = {
@@ -21,7 +27,9 @@ const FONT_FAMILY = 'Sakr, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto
 const baseInputStyle: React.CSSProperties = {
   width: '100%',
   padding: '0.875rem 1rem',
-  border: `1px solid ${COLORS.border}`,
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: COLORS.border,
   borderRadius: '16px',
   color: COLORS.heading,
   backgroundColor: COLORS.white,
@@ -209,7 +217,7 @@ const TimeInput: React.FC<any> = ({ name, label, props, locale, value, onChange,
   );
 };
 
-const Text: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+const Text: React.FC<any> = ({ name, label, props, locale, value, onChange, onFocus, onBlur, required, hasError }) => {
   const [focused, setFocused] = React.useState(false);
   const inputStyle: React.CSSProperties = {
     ...(hasError ? errorInputStyle : baseInputStyle),
@@ -231,15 +239,21 @@ const Text: React.FC<any> = ({ name, label, props, locale, value, onChange, requ
         value={value || ''}
         onChange={e => onChange(e.target.value)}
         maxLength={props?.max_length}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onFocus={() => {
+          setFocused(true);
+          onFocus?.();
+        }}
+        onBlur={() => {
+          setFocused(false);
+          onBlur?.(value);
+        }}
         style={inputStyle}
       />
     </div>
   );
 };
 
-const Textarea: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+const Textarea: React.FC<any> = ({ name, label, props, locale, value, onChange, onFocus, onBlur, required, hasError }) => {
   const [focused, setFocused] = React.useState(false);
   const inputStyle: React.CSSProperties = {
     ...(hasError ? errorInputStyle : baseInputStyle),
@@ -262,15 +276,21 @@ const Textarea: React.FC<any> = ({ name, label, props, locale, value, onChange, 
         value={value || ''}
         onChange={e => onChange(e.target.value)}
         rows={props?.rows || 4}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onFocus={() => {
+          setFocused(true);
+          onFocus?.();
+        }}
+        onBlur={() => {
+          setFocused(false);
+          onBlur?.(value);
+        }}
         style={inputStyle}
       />
     </div>
   );
 };
 
-const NumberInput: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+const NumberInput: React.FC<any> = ({ name, label, props, locale, value, onChange, onFocus, onBlur, required, hasError }) => {
   const [focused, setFocused] = React.useState(false);
   const isRTL = locale === 'ar';
   const inputStyle: React.CSSProperties = {
@@ -295,6 +315,14 @@ const NumberInput: React.FC<any> = ({ name, label, props, locale, value, onChang
           max={props?.max}
           value={value ?? ''}
           onChange={e => onChange(e.target.value === '' ? '' : Number(e.target.value))}
+          onFocus={() => {
+            setFocused(true);
+            onFocus?.();
+          }}
+          onBlur={() => {
+            setFocused(false);
+            onBlur?.(value);
+          }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           style={inputStyle}
@@ -309,7 +337,7 @@ const NumberInput: React.FC<any> = ({ name, label, props, locale, value, onChang
   );
 };
 
-const Email: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+const Email: React.FC<any> = ({ name, label, props, locale, value, onChange, onFocus, onBlur, required, hasError }) => {
   const [focused, setFocused] = React.useState(false);
   const inputStyle: React.CSSProperties = {
     ...(hasError ? errorInputStyle : baseInputStyle),
@@ -330,15 +358,21 @@ const Email: React.FC<any> = ({ name, label, props, locale, value, onChange, req
         placeholder={props?.placeholder?.[locale] || ''}
         value={value || ''}
         onChange={e => onChange(e.target.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onFocus={() => {
+          setFocused(true);
+          onFocus?.();
+        }}
+        onBlur={() => {
+          setFocused(false);
+          onBlur?.(value);
+        }}
         style={inputStyle}
       />
     </div>
   );
 };
 
-const Phone: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+const Phone: React.FC<any> = ({ name, label, props, locale, value, onChange, onFocus, onBlur, required, hasError }) => {
   const [focused, setFocused] = React.useState(false);
   const [countryCode, setCountryCode] = React.useState<string>(props?.default_country || 'KW');
   const [showCountryDropdown, setShowCountryDropdown] = React.useState(false);
@@ -390,7 +424,9 @@ const Phone: React.FC<any> = ({ name, label, props, locale, value, onChange, req
     flexDirection: isRTL ? 'row-reverse' : 'row', // Reverse for RTL so country selector appears on right
     direction: 'ltr', // Force LTR on container to override parent RTL direction
     alignItems: 'stretch',
-    border: `1px solid ${hasError ? COLORS.borderError : COLORS.border}`,
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: hasError ? COLORS.borderError : COLORS.border,
     borderRadius: '16px',
     backgroundColor: hasError ? COLORS.bgError : COLORS.white,
     transition: 'all 0.2s ease',
@@ -449,7 +485,7 @@ const Phone: React.FC<any> = ({ name, label, props, locale, value, onChange, req
       <div style={containerStyle}>
         {isRTL ? (
           <>
-            <div ref={dropdownRef} style={countrySelectorStyle} onClick={() => setShowCountryDropdown(!showCountryDropdown)} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}>
+            <div ref={dropdownRef} style={countrySelectorStyle} onClick={() => setShowCountryDropdown(!showCountryDropdown)}>
               <span style={{ fontSize: '14px', fontWeight: 500, color: COLORS.heading }}>
                 {selectedCountry.dialCode}
               </span>
@@ -483,14 +519,20 @@ const Phone: React.FC<any> = ({ name, label, props, locale, value, onChange, req
               placeholder={props?.placeholder?.[locale] || selectedCountry.example}
               value={displayValue}
               onChange={handlePhoneChange}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
+              onFocus={() => {
+                setFocused(true);
+                onFocus?.();
+              }}
+              onBlur={() => {
+                setFocused(false);
+                onBlur?.(value);
+              }}
               style={{ flex: 1, padding: '0.875rem 1rem', border: 'none', outline: 'none', color: COLORS.heading, backgroundColor: 'transparent', fontSize: '16px', fontFamily: FONT_FAMILY, textAlign: 'right', borderTopRightRadius: '16px', borderBottomRightRadius: '16px' }}
             />
           </>
         ) : (
           <>
-            <div ref={dropdownRef} style={countrySelectorStyle} onClick={() => setShowCountryDropdown(!showCountryDropdown)} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}>
+            <div ref={dropdownRef} style={countrySelectorStyle} onClick={() => setShowCountryDropdown(!showCountryDropdown)}>
               <span style={{ fontSize: '14px', fontWeight: 500, color: COLORS.heading }}>
                 {selectedCountry.dialCode}
               </span>
@@ -524,8 +566,14 @@ const Phone: React.FC<any> = ({ name, label, props, locale, value, onChange, req
               placeholder={props?.placeholder?.[locale] || selectedCountry.example}
               value={displayValue}
               onChange={handlePhoneChange}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
+              onFocus={() => {
+                setFocused(true);
+                onFocus?.();
+              }}
+              onBlur={() => {
+                setFocused(false);
+                onBlur?.(value);
+              }}
               style={{ flex: 1, padding: '0.875rem 1rem', border: 'none', outline: 'none', color: COLORS.heading, backgroundColor: 'transparent', fontSize: '16px', fontFamily: FONT_FAMILY, textAlign: 'left', borderTopLeftRadius: '16px', borderBottomLeftRadius: '16px' }}
             />
           </>
@@ -553,7 +601,7 @@ const Hero: React.FC<any> = ({ label, locale, props }) => (
   </div>
 );
 
-const Select: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+const Select: React.FC<any> = ({ name, label, props, locale, value, onChange, onFocus, onBlur, required, hasError }) => {
   const [focused, setFocused] = React.useState(false);
   const [showDropdown, setShowDropdown] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -666,9 +714,16 @@ const Select: React.FC<any> = ({ name, label, props, locale, value, onChange, re
       <div style={containerStyle} ref={dropdownRef}>
         <div
           style={inputStyle}
+          tabIndex={0}
           onClick={() => setShowDropdown(!showDropdown)}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onFocus={() => {
+            setFocused(true);
+            onFocus?.();
+          }}
+          onBlur={() => {
+            setFocused(false);
+            onBlur?.(value);
+          }}
         >
           {displayValue || (props?.placeholder?.[locale] || (locale === 'ar' ? 'اختر...' : 'Select...'))}
           <span style={{ position: 'absolute', ...(isRTL ? { left: '1rem' } : { right: '1rem' }), top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: COLORS.helper, pointerEvents: 'none' }}>
@@ -1112,7 +1167,7 @@ const Checkbox: React.FC<any> = ({ name, label, props, locale, value, onChange, 
   );
 };
 
-const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError }) => {
+const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError, form, sessionId, field }) => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string>('');
   const isRTL = locale === 'ar';
@@ -1125,6 +1180,7 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
 
     setLoading(true);
     setError('');
+    const captureStartTime = Date.now();
     
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -1138,6 +1194,20 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
         };
         onChange(location);
         setLoading(false);
+        
+        // Track location captured
+        if (form && field) {
+          const captureTime = Math.round((Date.now() - captureStartTime) / 1000);
+          trackLocationCaptured(
+            form,
+            field,
+            locale,
+            position.coords.accuracy,
+            captureTime,
+            props?.high_accuracy || false,
+            sessionId
+          );
+        }
       },
       (err) => {
         setLoading(false);
@@ -1467,7 +1537,7 @@ const Radio: React.FC<any> = ({ name, label, props, locale, value, onChange, req
   );
 };
 
-const FileUpload: React.FC<any> = ({ name, label, props, locale, onChange, required, hasError }) => {
+const FileUpload: React.FC<any> = ({ name, label, props, locale, onChange, required, hasError, form, sessionId, field }) => {
   const [files, setFiles] = React.useState<any[]>([])
   const maxFiles = props?.maxFiles || 1
   
@@ -1475,7 +1545,24 @@ const FileUpload: React.FC<any> = ({ name, label, props, locale, onChange, requi
     const fileList = Array.from(e.target.files || [])
     const newFiles: any[] = []
     
+    // Track file upload started
+    if (form && field && fileList.length > 0) {
+      fileList.forEach((file) => {
+        trackFileUploadStarted(
+          form,
+          field,
+          locale,
+          file.name,
+          file.size,
+          file.type,
+          fileList.length,
+          sessionId
+        );
+      });
+    }
+    
     for (const file of fileList.slice(0, maxFiles - files.length)) {
+      const uploadStartTime = Date.now();
       try {
         const signRes = await fetch('/api/uploads/sign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folder: 'forms/uploads', publicIdPrefix: 'form' }) })
         const sign = await signRes.json()
@@ -1489,8 +1576,39 @@ const FileUpload: React.FC<any> = ({ name, label, props, locale, onChange, requi
         const upl = await fetch(sign.uploadUrl, { method: 'POST', body: fd })
         const ur = await upl.json()
         newFiles.push({ id: ur.public_id, url: ur.secure_url, bytes: ur.bytes, resource_type: ur.resource_type, name: file.name })
+        
+        // Track file upload success
+        if (form && field) {
+          const uploadTime = Math.round((Date.now() - uploadStartTime) / 1000);
+          trackFileUploadSuccess(
+            form,
+            field,
+            locale,
+            file.name,
+            file.size,
+            file.type,
+            uploadTime,
+            sessionId
+          );
+        }
       } catch (err) {
         console.error('Upload error:', err)
+        
+        // Track file upload error
+        if (form && field) {
+          const errorMessage = err instanceof Error ? err.message : 'Upload failed';
+          trackFileUploadError(
+            form,
+            field,
+            locale,
+            file.name,
+            file.size,
+            file.type,
+            'network_error',
+            errorMessage,
+            sessionId
+          );
+        }
       }
     }
     

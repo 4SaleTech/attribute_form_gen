@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amplitude Event Test</title>
+</head>
+<body>
+    <h1>Amplitude Event Test</h1>
+    <p>This page will automatically test all Amplitude events.</p>
+    <div id="status">Loading form...</div>
+    <div id="results"></div>
+
+    <script type="module">
+        // Wait for the form to load, then trigger tests
+        async function runTests() {
+            const statusDiv = document.getElementById('status');
+            const resultsDiv = document.getElementById('results');
+            
+            statusDiv.textContent = 'Waiting for Amplitude to initialize...';
+            
+            // Wait a bit for the form to load
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            
+            // Check if test function is available
+            if (typeof window.testAmplitudeEvents === 'function') {
+                statusDiv.textContent = 'Running Amplitude event tests...';
+                resultsDiv.innerHTML = '<p>Check console for detailed logs...</p>';
+                
+                try {
+                    const results = await window.testAmplitudeEvents();
+                    statusDiv.textContent = '✅ Tests completed!';
+                    resultsDiv.innerHTML += `<p>✅ Successful: ${results.filter(r => r.status === 'success').length}/${results.length}</p>`;
+                    if (results.some(r => r.status === 'error')) {
+                        resultsDiv.innerHTML += `<p>❌ Errors: ${results.filter(r => r.status === 'error').length}</p>`;
+                    }
+                } catch (error) {
+                    statusDiv.textContent = '❌ Test failed';
+                    resultsDiv.innerHTML += `<p>Error: ${error.message}</p>`;
+                }
+            } else {
+                statusDiv.textContent = '❌ Test function not available';
+                resultsDiv.innerHTML = '<p>Make sure you navigate to the form page first, then come back here.</p>';
+            }
+        }
+        
+        // Redirect to form page first
+        const formUrl = window.location.origin + '/e98e937d-2985-4e88-96c1-5da831e813d4/1?lang=en&sessionId=test-session-123&user_token=2151987|tpqGogrub8WEJ7PVmx9aIx5OvYBrG9vQFB48pB71';
+        
+        // Check if we're coming from the form page
+        if (sessionStorage.getItem('formLoaded') === 'true') {
+            runTests();
+        } else {
+            // First, load the form page
+            sessionStorage.setItem('formLoaded', 'true');
+            window.location.href = formUrl;
+        }
+    </script>
+</body>
+</html>
+

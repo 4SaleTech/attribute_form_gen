@@ -1,6 +1,20 @@
 import React from 'react';
 import type { ComponentsRegistry, FormConfig, Field } from '../renderer/types';
 import { runSubmitPipeline } from '../workflow/submit';
+import {
+  initAmplitude,
+  setAmplitudeUserId,
+  trackFormViewed,
+  trackFormAbandoned,
+  trackSubmissionStarted,
+  trackSubmissionSuccess,
+  trackSubmissionError,
+  trackThankYouViewed,
+  trackFieldFocused,
+  trackFieldBlurred,
+  trackValidationError,
+} from '../analytics/amplitude';
+import { fetchUserData } from '../analytics/userApi';
 
 // Brand Colors
 const COLORS = {
@@ -250,46 +264,284 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
   const [submitted, setSubmitted] = React.useState(false)
   const [buttonHover, setButtonHover] = React.useState(false)
   const effectiveLocale = (locale as any) || (getLocaleFromURL(form.default_locale) as any)
-  const onChange = (name: string, value: any) => setAnswers((a) => ({ ...a, [name]: value }));
+  
+  // Analytics state
+  const [sessionId, setSessionId] = React.useState<string | undefined>(undefined);
+  const [userId, setUserId] = React.useState<string | number | undefined>(undefined);
+  const [formStartTime] = React.useState<number>(Date.now());
+  const [fieldFocusTimes, setFieldFocusTimes] = React.useState<Record<string, number>>({});
+  const [lastFieldInteracted, setLastFieldInteracted] = React.useState<{ name: string; type: string } | undefined>(undefined);
+  const [submissionId, setSubmissionId] = React.useState<number | undefined>(undefined);
+  const [validationAttempts, setValidationAttempts] = React.useState<Record<string, number>>({});
+
+  // Extract query parameters and initialize analytics
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    let extractedSessionId = urlParams.get('sessionId') || undefined;
+    const userToken = urlParams.get('user_token') || undefined;
+    const shouldTestAmplitude = urlParams.get('testAmplitude') === 'true';
+
+    // Generate a default session ID if none is provided
+    // Use timestamp in milliseconds for consistency with Amplitude's session ID format
+    if (!extractedSessionId) {
+      extractedSessionId = String(Date.now());
+    }
+
+    setSessionId(extractedSessionId);
+    
+    // Store sessionId, form config, and locale globally for testing/debugging
+    (window as any).__sessionId = extractedSessionId;
+    (window as any).__formConfig = form;
+    (window as any).__locale = effectiveLocale;
+    
+    // Auto-run Amplitude tests if ?testAmplitude=true is in URL
+    if (shouldTestAmplitude) {
+      // Wait for Amplitude to initialize, then run tests
+      setTimeout(async () => {
+        if (typeof (window as any).testAmplitudeEvents === 'function') {
+          try {
+            await (window as any).testAmplitudeEvents();
+          } catch (error) {
+            // Silent fail for auto-tests
+          }
+        } else {
+          setTimeout(async () => {
+            if (typeof (window as any).testAmplitudeEvents === 'function') {
+              await (window as any).testAmplitudeEvents();
+            }
+          }, 2000);
+        }
+      }, 3000);
+    }
+
+    // Initialize Amplitude with session ID and track form_viewed after initialization
+    // Wrap in additional try-catch to handle any synchronous errors
+    try {
+      initAmplitude(extractedSessionId)
+        .then(() => {
+          // Track form viewed after Amplitude is initialized
+          // Add a small delay to ensure Amplitude is fully ready
+          setTimeout(() => {
+            trackFormViewed(form, effectiveLocale, extractedSessionId);
+          }, 100);
+        })
+        .catch((error) => {
+          console.warn('[FormView] Amplitude initialization failed, continuing without analytics:', error);
+        });
+    } catch (error) {
+      // Catch any synchronous errors (shouldn't happen with async, but just in case)
+      console.warn('[FormView] Amplitude setup error, continuing without analytics:', error);
+    }
+
+    // Fetch user data if user_token exists - only to get user ID
+    if (userToken) {
+      fetchUserData(userToken)
+        .then((userData) => {
+          if (userData?.user_id) {
+            const userIdValue = userData.user_id;
+            setUserId(userIdValue);
+            setAmplitudeUserId(userIdValue);
+          }
+        })
+        .catch((error) => {
+          console.error('[FormView] Error fetching user data:', error);
+        });
+    }
+  }, []); // Run once on mount
+
+  // Track abandonment on page unload
+  React.useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (!submitted && !submitting) {
+        const timeOnForm = Math.round((Date.now() - formStartTime) / 1000);
+        trackFormAbandoned(
+          form,
+          effectiveLocale,
+          answers,
+          sessionId,
+          timeOnForm,
+          lastFieldInteracted?.name,
+          lastFieldInteracted?.type,
+          errors.length > 0,
+          errors.length
+        );
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden && !submitted && !submitting) {
+        const timeOnForm = Math.round((Date.now() - formStartTime) / 1000);
+        trackFormAbandoned(
+          form,
+          effectiveLocale,
+          answers,
+          sessionId,
+          timeOnForm,
+          lastFieldInteracted?.name,
+          lastFieldInteracted?.type,
+          errors.length > 0,
+          errors.length
+        );
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [submitted, submitting, answers, errors, lastFieldInteracted]);
+
+  const onChange = (name: string, value: any) => {
+    setAnswers((a) => {
+      const newAnswers = { ...a, [name]: value };
+      
+      // Don't track field changes - only track on focus
+      const field = form.fields.find((f) => f.name === name);
+      if (field) {
+        setLastFieldInteracted({ name: field.name, type: field.type });
+      }
+      
+      return newAnswers;
+    });
+  };
+
+  // Enhanced onChange with focus/blur tracking
+  const createFieldHandlers = (field: Field) => {
+    return {
+      onChange: (value: any) => onChange(field.name, value),
+      onFocus: () => {
+        const timeOnForm = Math.round((Date.now() - formStartTime) / 1000);
+        setFieldFocusTimes((prev) => ({ ...prev, [field.name]: Date.now() }));
+        // Get current value for this field
+        const currentValue = answers[field.name];
+        trackFieldFocused(form, field, effectiveLocale, sessionId, timeOnForm, currentValue);
+        setLastFieldInteracted({ name: field.name, type: field.type });
+      },
+      onBlur: (value: any) => {
+        const focusTime = fieldFocusTimes[field.name];
+        const timeInField = focusTime ? Math.round((Date.now() - focusTime) / 1000) : 0;
+        const fieldErrors = errors.filter((e) => e.field === field.name);
+        trackFieldBlurred(
+          form,
+          field,
+          effectiveLocale,
+          value,
+          sessionId,
+          timeInField,
+          fieldErrors.length > 0
+        );
+      },
+    };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const clientErrors = validateClient(form, answers, effectiveLocale)
-    setErrors(clientErrors)
-    if (clientErrors.length) return
-    setSubmitting(true)
+    const clientErrors = validateClient(form, answers, effectiveLocale);
+    
+    // Track validation errors
+    clientErrors.forEach((error) => {
+      const field = form.fields.find((f) => f.name === error.field);
+      if (field) {
+        const attemptNumber = (validationAttempts[error.field] || 0) + 1;
+        setValidationAttempts((prev) => ({ ...prev, [error.field]: attemptNumber }));
+        const timeOnForm = Math.round((Date.now() - formStartTime) / 1000);
+        trackValidationError(
+          form,
+          field,
+          effectiveLocale,
+          error.code,
+          error.message[effectiveLocale] || error.message.en || '',
+          sessionId,
+          attemptNumber,
+          timeOnForm
+        );
+      }
+    });
+    
+    setErrors(clientErrors);
+    if (clientErrors.length) return;
+    
+    // Track submission started
+    const submissionTime = Math.round((Date.now() - formStartTime) / 1000);
+    trackSubmissionStarted(form, effectiveLocale, answers, sessionId, submissionTime);
+    
+    setSubmitting(true);
     try {
-      await runSubmitPipeline(form, {
+      const result = await runSubmitPipeline(form, {
         formId: form.formId,
         version: form.version,
         submittedAt: Date.now(),
         answers,
-        meta: { locale: effectiveLocale, device: 'web', attributes: form.attributes, sessionId: (window as any).__sessionId || '' },
+        meta: { locale: effectiveLocale, device: 'web', attributes: form.attributes, sessionId: sessionId || '' },
       });
-      setSubmitted(true)
-      if (form.thankYou?.show) {
-        // Show thank you message
+      
+      // Extract submission ID from result if available
+      let extractedSubmissionId: number | undefined = undefined;
+      if (result && typeof result === 'object' && result.submissionId !== undefined) {
+        extractedSubmissionId = result.submissionId;
+        setSubmissionId(extractedSubmissionId);
+      }
+      
+      setSubmitted(true);
+      
+      // Track submission success (use 0 if no submissionId available)
+      trackSubmissionSuccess(
+        form,
+        effectiveLocale,
+        answers,
+        extractedSubmissionId || 0,
+        sessionId,
+        submissionTime,
+        ['server_persist'], // TODO: Track actual completed actions from pipeline
+        []
+      );
+      
+      if (form.thankYou?.show && extractedSubmissionId) {
+        // Track thank you viewed
+        trackThankYouViewed(form, extractedSubmissionId, effectiveLocale, sessionId, submissionTime);
       }
     } catch (err: any) {
-      console.error('Submit error:', err)
+      console.error('Submit error:', err);
+      
+      // Track submission error
+      const submissionTime = Math.round((Date.now() - formStartTime) / 1000);
+      const errorType = err.status === 400 ? 'validation_error' : err.status === 500 ? 'server_error' : 'network_error';
+      const errorMessage = err.message || (effectiveLocale === 'ar' ? 'حدث خطأ أثناء إرسال النموذج' : 'An error occurred while submitting the form');
+      
+      trackSubmissionError(
+        form,
+        effectiveLocale,
+        answers,
+        errorType,
+        errorMessage,
+        sessionId,
+        submissionTime,
+        1,
+        'server_persist'
+      );
+      
       // If server returned validation errors, display them
       if (err.errors && Array.isArray(err.errors)) {
         const serverErrors = err.errors.map((e: any) => ({
           field: e.field,
           code: e.code,
           message: e.message?.[effectiveLocale] || e.message || 'Validation error'
-        }))
-        setErrors([...errors, ...serverErrors])
+        }));
+        setErrors([...errors, ...serverErrors]);
       } else {
         // Show generic error message
-        alert(effectiveLocale === 'ar' ? 'حدث خطأ أثناء إرسال النموذج' : 'An error occurred while submitting the form')
+        alert(effectiveLocale === 'ar' ? 'حدث خطأ أثناء إرسال النموذج' : 'An error occurred while submitting the form');
       }
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
   }
 
   if (submitted && form.thankYou?.show) {
+    // Thank you tracking is already done in handleSubmit
     return (
       <div style={containerStyle}>
         <div style={{ maxWidth: '640px', margin: '0 auto', padding: '1.5rem', textAlign: 'center' }}>
@@ -297,7 +549,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
           <p style={{ fontSize: '15px', color: COLORS.helper, lineHeight: 1.6 }}>{form.thankYou.message?.[effectiveLocale]}</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -324,12 +576,34 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
             const shouldGroupDateTime = isDateField && nextField?.type === 'time'
             
             if (shouldGroupDateTime) {
-              const TimeComp = components[nextField.type]
+              const TimeComp = components[nextField.type];
+              const dateHandlers = createFieldHandlers(f);
+              const timeHandlers = createFieldHandlers(nextField);
+              const dateProps: any = {
+                ...f,
+                locale: effectiveLocale,
+                value: answers[f.name],
+                onChange: dateHandlers.onChange,
+                onFocus: dateHandlers.onFocus,
+                onBlur: () => dateHandlers.onBlur(answers[f.name]),
+                required: !!(f as any)?.props?.required,
+                hasError: fieldErrors.length > 0,
+              };
+              const timeProps: any = {
+                ...nextField,
+                locale: effectiveLocale,
+                value: answers[nextField.name],
+                onChange: timeHandlers.onChange,
+                onFocus: timeHandlers.onFocus,
+                onBlur: () => timeHandlers.onBlur(answers[nextField.name]),
+                required: !!(nextField as any)?.props?.required,
+                hasError: errors.filter(er => er.field === nextField.name).length > 0,
+              };
               return (
                 <div key={f.attribute_key} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    {Comp({ ...f, locale: effectiveLocale, value: answers[f.name], onChange: (v: any) => onChange(f.name, v), required: !!(f as any)?.props?.required, hasError: fieldErrors.length > 0 })}
-                    {TimeComp && TimeComp({ ...nextField, locale: effectiveLocale, value: answers[nextField.name], onChange: (v: any) => onChange(nextField.name, v), required: !!(nextField as any)?.props?.required, hasError: errors.filter(er => er.field === nextField.name).length > 0 })}
+                    {Comp(dateProps)}
+                    {TimeComp && TimeComp(timeProps)}
                   </div>
                   {fieldErrors.map(er => (
                     <div key={er.code} style={{ fontSize: '14px', color: COLORS.borderError, marginLeft: '0.25rem', marginTop: '0.25rem' }}>{er.message[effectiveLocale]}</div>
@@ -338,16 +612,33 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
                     <div key={er.code} style={{ fontSize: '14px', color: COLORS.borderError, marginLeft: '0.25rem', marginTop: '0.25rem' }}>{er.message[effectiveLocale]}</div>
                   ))}
                 </div>
-              )
+              );
             }
             
             if (isTimeField && prevField?.type === 'date') {
-              return null
+              return null;
             }
             
+            const handlers = createFieldHandlers(f);
+            // Pass form, sessionId, and field for analytics tracking (FileUpload, LocationPicker)
+            const componentProps: any = {
+              ...f,
+              locale: effectiveLocale,
+              value: answers[f.name],
+              onChange: handlers.onChange,
+              onFocus: handlers.onFocus,
+              onBlur: () => handlers.onBlur(answers[f.name]),
+              required: !!(f as any)?.props?.required,
+              hasError: fieldErrors.length > 0,
+            };
+            if (f.type === 'file_upload' || f.type === 'location') {
+              componentProps.form = form;
+              componentProps.sessionId = sessionId;
+              componentProps.field = f;
+            }
             return (
               <div key={f.attribute_key} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {Comp({ ...f, locale: effectiveLocale, value: answers[f.name], onChange: (v: any) => onChange(f.name, v), required: !!(f as any)?.props?.required, hasError: fieldErrors.length > 0 })}
+                {Comp(componentProps)}
                 {fieldErrors.map(er => (
                   <div key={er.code} style={{ fontSize: '14px', color: COLORS.borderError, marginLeft: '0.25rem', marginTop: '0.25rem' }}>{er.message[effectiveLocale]}</div>
                 ))}
@@ -355,6 +646,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
             );
           })}
         </div>
+
 
         {/* Submit Button */}
         <div 
