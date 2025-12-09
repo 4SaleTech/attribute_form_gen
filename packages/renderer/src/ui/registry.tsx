@@ -323,8 +323,6 @@ const NumberInput: React.FC<any> = ({ name, label, props, locale, value, onChang
             setFocused(false);
             onBlur?.(value);
           }}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
           style={inputStyle}
         />
         {props?.unit?.[locale] && (
@@ -1169,29 +1167,104 @@ const Checkbox: React.FC<any> = ({ name, label, props, locale, value, onChange, 
 
 const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onChange, required, hasError, form, sessionId, field }) => {
   const [loading, setLoading] = React.useState(false);
+  const [geocoding, setGeocoding] = React.useState(false);
   const [error, setError] = React.useState<string>('');
+  const [addressText, setAddressText] = React.useState<string>('');
+  const isUserTypingRef = React.useRef(false);
   const isRTL = locale === 'ar';
   
-  const getCurrentLocation = () => {
+  // Initialize address text from value (only when value changes externally)
+  React.useEffect(() => {
+    // Skip sync if user is actively typing
+    if (isUserTypingRef.current) {
+      return;
+    }
+    
+    if (value?.address) {
+      setAddressText(value.address);
+    } else if (value && !value.lat) {
+      // Manual entry without coordinates
+      setAddressText(value.address || '');
+    } else {
+      setAddressText('');
+    }
+  }, [value]);
+  
+  // Reverse geocoding function
+  const reverseGeocode = async (lat: number, lng: number): Promise<string | null> => {
+    try {
+      const lang = locale === 'ar' ? 'ar' : 'en,ar';
+      const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1&accept-language=${lang}`;
+      
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'FormGenerator/1.0'
+        }
+      });
+      
+      if (!response.ok) {
+        return null;
+      }
+      
+      const data = await response.json();
+      return data.display_name || null;
+    } catch (err) {
+      console.error('Reverse geocoding error:', err);
+      return null;
+    }
+  };
+  
+  const getCurrentLocation = async () => {
     if (!navigator.geolocation) {
       setError(locale === 'ar' ? 'الموقع الجغرافي غير مدعوم في هذا المتصفح' : 'Geolocation is not supported by your browser');
       return;
     }
 
     setLoading(true);
+    setGeocoding(false);
     setError('');
     const captureStartTime = Date.now();
     
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-        const location = {
+        
+        // Try reverse geocoding
+        setGeocoding(true);
+        const address = await reverseGeocode(lat, lng);
+        setGeocoding(false);
+        
+        const location: any = {
           lat: lat,
           lng: lng,
           accuracy: position.coords.accuracy,
           url: `https://www.google.com/maps?q=${lat},${lng}`,
+          detection_method: 'gps',
         };
+        
+        if (address) {
+          location.address = address;
+          // Try to get Arabic address if available
+          if (locale === 'ar') {
+            try {
+              const arUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1&accept-language=ar`;
+              const arResponse = await fetch(arUrl, {
+                headers: { 'User-Agent': 'FormGenerator/1.0' }
+              });
+              if (arResponse.ok) {
+                const arData = await arResponse.json();
+                if (arData.display_name) {
+                  location.address_ar = arData.display_name;
+                }
+              }
+            } catch (err) {
+              // Ignore Arabic address errors
+            }
+          }
+          setAddressText(address);
+        }
+        
         onChange(location);
         setLoading(false);
         
@@ -1211,6 +1284,7 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
       },
       (err) => {
         setLoading(false);
+        setGeocoding(false);
         let errorMsg = '';
         switch (err.code) {
           case err.PERMISSION_DENIED:
@@ -1234,6 +1308,42 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
       }
     );
   };
+  
+  const handleManualAddressChange = (text: string) => {
+    // Mark that user is typing to prevent useEffect from overwriting
+    isUserTypingRef.current = true;
+    
+    // Always update the input text immediately (preserve spaces while typing)
+    setAddressText(text);
+    
+    // Store the full text (including spaces) - trimming will happen on submit/validation if needed
+    if (text.trim()) {
+      // Manual entry - store full text to preserve spaces
+      const location: any = {
+        address: text, // Store full text, not trimmed
+        detection_method: 'manual',
+      };
+      
+      // If we have existing coordinates, preserve them but mark as edited
+      if (value?.lat && value?.lng) {
+        location.lat = value.lat;
+        location.lng = value.lng;
+        location.accuracy = value.accuracy;
+        location.url = value.url || `https://www.google.com/maps?q=${value.lat},${value.lng}`;
+        location.detection_method = 'gps_edited';
+      }
+      
+      onChange(location);
+    } else {
+      // Clear location if text is empty
+      onChange(null);
+    }
+    
+    // Reset typing flag after a short delay to allow useEffect to sync external changes
+    setTimeout(() => {
+      isUserTypingRef.current = false;
+    }, 300);
+  };
 
   const getMapsUrl = (lat: number, lng: number, label?: string): string => {
     // Detect if iOS (will prefer Apple Maps) or Android/Desktop (will prefer Google Maps)
@@ -1250,15 +1360,21 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
   };
 
   const containerStyle: React.CSSProperties = {
-    border: `1px solid ${hasError ? COLORS.borderError : COLORS.border}`,
+    border: 'none',
     borderRadius: '16px',
     padding: '1rem',
     backgroundColor: hasError ? COLORS.bgError : COLORS.white,
     transition: 'all 0.2s ease',
   };
 
+  const inputStyle: React.CSSProperties = {
+    ...baseInputStyle,
+    textAlign: isRTL ? 'right' : 'left',
+    marginBottom: '0.75rem',
+    ...(hasError ? errorInputStyle : {}),
+  };
+
   const buttonStyle: React.CSSProperties = {
-    width: '100%',
     padding: '0.875rem 1rem',
     backgroundColor: COLORS.primary,
     color: COLORS.white,
@@ -1266,11 +1382,11 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
     borderRadius: '12px',
     fontSize: '16px',
     fontWeight: 500,
-    cursor: loading ? 'not-allowed' : 'pointer',
-    opacity: loading ? 0.6 : 1,
+    cursor: (loading || geocoding) ? 'not-allowed' : 'pointer',
+    opacity: (loading || geocoding) ? 0.6 : 1,
     transition: 'all 0.2s ease',
     fontFamily: FONT_FAMILY,
-    marginBottom: value ? '1rem' : '0',
+    flexShrink: 0,
   };
 
   const linkStyle: React.CSSProperties = {
@@ -1287,6 +1403,8 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
     transition: 'all 0.2s ease',
   };
 
+  const hasCoordinates = value?.lat && value?.lng;
+
   return (
     <div>
       <label style={labelStyle}>
@@ -1295,74 +1413,64 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
       </label>
       {props?.help?.[locale] && <p style={helperStyle}>{props?.help?.[locale]}</p>}
       <div style={containerStyle}>
-        {!value ? (
-          <>
-            <button
-              type="button"
-              onClick={getCurrentLocation}
-              disabled={loading}
-              style={buttonStyle}
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+          <input
+            type="text"
+            placeholder={locale === 'ar' ? 'أدخل العنوان أو اضغط على الكشف' : 'Enter address or click Detect'}
+            value={addressText}
+            onChange={(e) => handleManualAddressChange(e.target.value)}
+            disabled={loading || geocoding}
+            style={inputStyle}
+          />
+          <button
+            type="button"
+            onClick={getCurrentLocation}
+            disabled={loading || geocoding}
+            style={buttonStyle}
+            onMouseEnter={(e) => {
+              if (!loading && !geocoding) e.currentTarget.style.backgroundColor = COLORS.primaryHover;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = COLORS.primary;
+            }}
+          >
+            {loading 
+              ? (locale === 'ar' ? 'جاري الحصول...' : 'Getting...')
+              : geocoding
+              ? (locale === 'ar' ? 'جاري الحصول على العنوان...' : 'Getting address...')
+              : (locale === 'ar' ? '📍 الكشف' : '📍 Detect')
+            }
+          </button>
+        </div>
+        
+        {error && (
+          <div style={{ fontSize: '14px', color: COLORS.borderError, marginTop: '0.5rem' }}>
+            {error}
+          </div>
+        )}
+        
+        {hasCoordinates && (
+          <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <a
+              href={getMapsUrl(value.lat, value.lng, addressText || label?.[locale])}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={linkStyle}
               onMouseEnter={(e) => {
-                if (!loading) e.currentTarget.style.backgroundColor = COLORS.primaryHover;
+                e.currentTarget.style.backgroundColor = COLORS.border;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = COLORS.primary;
+                e.currentTarget.style.backgroundColor = COLORS.bgHover;
               }}
             >
-              {loading 
-                ? (locale === 'ar' ? 'جاري الحصول على الموقع...' : 'Getting location...')
-                : (locale === 'ar' ? '📍 الحصول على موقعي' : '📍 Get My Location')
-              }
-            </button>
-            {error && (
-              <div style={{ fontSize: '14px', color: COLORS.borderError, marginTop: '0.5rem' }}>
-                {error}
-              </div>
-            )}
-          </>
-        ) : (
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <a
-                href={getMapsUrl(value.lat, value.lng, label?.[locale])}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={linkStyle}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = COLORS.border;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = COLORS.bgHover;
-                }}
-              >
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                {locale === 'ar' ? 'افتح في الخرائط' : 'Open in Maps'}
-              </a>
-              <button
-                type="button"
-                onClick={() => onChange(null)}
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontSize: '14px',
-                  color: COLORS.helper,
-                  backgroundColor: 'transparent',
-                  border: `1px solid ${COLORS.border}`,
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = COLORS.bgHover;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}
-              >
-                {locale === 'ar' ? 'تغيير' : 'Change'}
-              </button>
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              {locale === 'ar' ? 'افتح في الخرائط' : 'Open in Maps'}
+            </a>
+            <div style={{ fontSize: '14px', color: COLORS.helper }}>
+              {value.lat.toFixed(6)}, {value.lng.toFixed(6)}
             </div>
           </div>
         )}
