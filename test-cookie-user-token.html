@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Cookie-Based User Token</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .section { border: 2px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .info { background: #e7f3ff; padding: 15px; border-left: 4px solid #2196F3; margin: 15px 0; }
+        .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; margin: 15px 0; }
+        .error { background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 15px 0; }
+        .warning { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 15px 0; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; display: block; margin: 10px 0; word-break: break-all; }
+        button { padding: 10px 20px; margin: 10px 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        button.success-btn { background: #28a745; }
+        button.danger-btn { background: #dc3545; }
+        input { padding: 8px; margin: 5px; width: 300px; }
+        .log { background: #f8f9fa; padding: 15px; border-radius: 4px; max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .test-result.pass { background: #d4edda; border-left: 4px solid #28a745; }
+        .test-result.fail { background: #f8d7da; border-left: 4px solid #dc3545; }
+        .test-result.info { background: #e7f3ff; border-left: 4px solid #2196F3; }
+    </style>
+</head>
+<body>
+    <h1>🍪 Test Cookie-Based User Token Implementation</h1>
+    
+    <div class="info">
+        <strong>Purpose:</strong> Test that the form correctly reads the <code>_xyzW</code> cookie to identify users for Amplitude analytics.
+    </div>
+
+    <div class="section">
+        <h2>1. Cookie Management</h2>
+        <label>
+            User Token (for _xyzW cookie):
+            <input type="text" id="userToken" placeholder="e.g., 2151987|tpqGogrub8WEJ7PVmx9aIx5OvYBrG9vQFB48pB71" />
+        </label>
+        <br>
+        <button onclick="setCookie()" class="success-btn">Set Cookie (_xyzW)</button>
+        <button onclick="deleteCookie()" class="danger-btn">Delete Cookie</button>
+        <button onclick="checkCookie()">Check Cookie Status</button>
+        
+        <div id="cookieStatus" class="test-result info" style="display: none;">
+            <strong>Cookie Status:</strong>
+            <div id="cookieStatusContent"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>2. Form Configuration</h2>
+        <label>
+            Form ID:
+            <input type="text" id="formId" value="b97dd1d3-01d2-4c1f-81d8-64b4a20948d7" />
+        </label>
+        <br>
+        <label>
+            Form Version:
+            <input type="text" id="formVersion" value="1" />
+        </label>
+        <br>
+        <label>
+            API Base URL:
+            <input type="text" id="apiBase" value="http://localhost:8080" />
+        </label>
+        <br>
+        <label>
+            Form Renderer URL:
+            <input type="text" id="formUrl" value="http://localhost:5174" />
+        </label>
+        <br>
+        <button onclick="loadForm()">Load Form Configuration</button>
+        <button onclick="openFormWithCookie()">Open Form (with cookie)</button>
+        <button onclick="openFormWithURLToken()">Open Form (with URL token - fallback test)</button>
+    </div>
+
+    <div id="formConfig" class="section" style="display: none;">
+        <h2>Form Configuration</h2>
+        <div id="configDisplay"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. Test Results</h2>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="clearResults()">Clear Results</button>
+        <div id="testResults"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. Browser Console Logs</h2>
+        <div class="log" id="consoleLog"></div>
+    </div>
+
+    <div class="section">
+        <h2>5. Manual Testing Instructions</h2>
+        <div class="info">
+            <h3>Method 1: Using Browser DevTools</h3>
+            <ol>
+                <li>Open your form URL (e.g., <code>http://localhost:5174/{formId}/1?lang=en</code>)</li>
+                <li>Open Browser DevTools (F12)</li>
+                <li>Go to <strong>Application</strong> tab → <strong>Cookies</strong></li>
+                <li>Set cookie:
+                    <ul>
+                        <li>Name: <code>_xyzW</code></li>
+                        <li>Value: Your user token (e.g., <code>2151987|tpqGogrub8WEJ7PVmx9aIx5OvYBrG9vQFB48pB71</code>)</li>
+                        <li>Domain: <code>localhost</code> (or your domain)</li>
+                        <li>Path: <code>/</code></li>
+                    </ul>
+                </li>
+                <li>Refresh the page</li>
+                <li>Open <strong>Console</strong> tab and check for:
+                    <ul>
+                        <li>User API calls</li>
+                        <li>Amplitude user ID being set</li>
+                    </ul>
+                </li>
+                <li>Check <strong>Network</strong> tab → Filter by <code>amplitude</code> → Verify user_id in events</li>
+            </ol>
+
+            <h3>Method 2: Using Browser Console</h3>
+            <ol>
+                <li>Open your form URL</li>
+                <li>Open Browser Console (F12)</li>
+                <li>Run this command to set the cookie:
+                    <code>document.cookie = "_xyzW=YOUR_TOKEN_HERE; path=/; domain=localhost";</code>
+                </li>
+                <li>Refresh the page</li>
+                <li>Check console logs for user identification</li>
+            </ol>
+
+            <h3>Method 3: Verify Cookie Reading</h3>
+            <ol>
+                <li>Open Browser Console</li>
+                <li>Run: <code>document.cookie</code> - should show <code>_xyzW=...</code></li>
+                <li>Check if form is reading it by looking at Network requests to user API</li>
+            </ol>
+
+            <h3>Method 4: Test Fallback to URL</h3>
+            <ol>
+                <li>Delete the cookie</li>
+                <li>Access form with URL parameter: <code>?user_token=YOUR_TOKEN</code></li>
+                <li>Verify it still works (backward compatibility)</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const log = (message, type = 'info') => {
+            const logDiv = document.getElementById('consoleLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#2196F3';
+            logDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(`[${timestamp}]`, message);
+        };
+
+        const addTestResult = (testName, passed, details = '') => {
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            resultDiv.innerHTML = `
+                <strong>${passed ? '✅ PASS' : '❌ FAIL'}:</strong> ${testName}
+                ${details ? `<div style="margin-top: 5px; font-size: 0.9em;">${details}</div>` : ''}
+            `;
+            resultsDiv.appendChild(resultDiv);
+            log(`${testName}: ${passed ? 'PASS' : 'FAIL'} ${details}`, passed ? 'success' : 'error');
+        };
+
+        function setCookie() {
+            const token = document.getElementById('userToken').value.trim();
+            if (!token) {
+                alert('Please enter a user token');
+                return;
+            }
+            
+            // Set cookie for current domain
+            const domain = window.location.hostname === 'localhost' ? 'localhost' : window.location.hostname;
+            document.cookie = `_xyzW=${token}; path=/; domain=${domain}`;
+            log(`Cookie _xyzW set with value: ${token.substring(0, 20)}...`, 'success');
+            checkCookie();
+        }
+
+        function deleteCookie() {
+            const domain = window.location.hostname === 'localhost' ? 'localhost' : window.location.hostname;
+            document.cookie = `_xyzW=; path=/; domain=${domain}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+            log('Cookie _xyzW deleted', 'success');
+            checkCookie();
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) {
+                return parts.pop().split(';').shift();
+            }
+            return null;
+        }
+
+        function checkCookie() {
+            const cookieValue = getCookie('_xyzW');
+            const statusDiv = document.getElementById('cookieStatus');
+            const contentDiv = document.getElementById('cookieStatusContent');
+            
+            statusDiv.style.display = 'block';
+            if (cookieValue) {
+                contentDiv.innerHTML = `
+                    <div style="color: #28a745;"><strong>✅ Cookie exists</strong></div>
+                    <div>Value: <code>${cookieValue.substring(0, 30)}${cookieValue.length > 30 ? '...' : ''}</code></div>
+                    <div>Full cookie string: <code>${document.cookie}</code></div>
+                `;
+                log(`Cookie _xyzW found: ${cookieValue.substring(0, 30)}...`, 'success');
+            } else {
+                contentDiv.innerHTML = `
+                    <div style="color: #dc3545;"><strong>❌ Cookie not found</strong></div>
+                    <div>Full cookie string: <code>${document.cookie || '(no cookies)'}</code></div>
+                `;
+                log('Cookie _xyzW not found', 'error');
+            }
+        }
+
+        async function loadForm() {
+            const formId = document.getElementById('formId').value.trim();
+            const version = document.getElementById('formVersion').value.trim();
+            const apiBase = document.getElementById('apiBase').value.trim();
+            
+            if (!formId || !version) {
+                alert('Please enter Form ID and Version');
+                return;
+            }
+
+            try {
+                log(`Loading form: ${formId}/${version}...`);
+                const response = await fetch(`${apiBase}/api/forms/${encodeURIComponent(formId)}/${version}?lang=en`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+
+                const form = await response.json();
+                document.getElementById('formConfig').style.display = 'block';
+                document.getElementById('configDisplay').innerHTML = `
+                    <pre>${JSON.stringify(form, null, 2)}</pre>
+                `;
+                log('Form loaded successfully', 'success');
+            } catch (error) {
+                log(`Error loading form: ${error.message}`, 'error');
+                alert(`Failed to load form: ${error.message}`);
+            }
+        }
+
+        function openFormWithCookie() {
+            const formId = document.getElementById('formId').value.trim();
+            const version = document.getElementById('formVersion').value.trim();
+            const formUrl = document.getElementById('formUrl').value.trim();
+            
+            if (!formId || !version) {
+                alert('Please enter Form ID and Version');
+                return;
+            }
+
+            const cookieValue = getCookie('_xyzW');
+            if (!cookieValue) {
+                alert('Please set the _xyzW cookie first using the "Set Cookie" button');
+                return;
+            }
+
+            const url = `${formUrl}/${formId}/${version}?lang=en&sessionId=test-session-${Date.now()}`;
+            log(`Opening form with cookie: ${url}`, 'info');
+            window.open(url, '_blank');
+        }
+
+        function openFormWithURLToken() {
+            const formId = document.getElementById('formId').value.trim();
+            const version = document.getElementById('formVersion').value.trim();
+            const formUrl = document.getElementById('formUrl').value.trim();
+            const token = document.getElementById('userToken').value.trim();
+            
+            if (!formId || !version) {
+                alert('Please enter Form ID and Version');
+                return;
+            }
+
+            if (!token) {
+                alert('Please enter a user token to test URL fallback');
+                return;
+            }
+
+            // Delete cookie first to test URL fallback
+            deleteCookie();
+            
+            const url = `${formUrl}/${formId}/${version}?lang=en&sessionId=test-session-${Date.now()}&user_token=${encodeURIComponent(token)}`;
+            log(`Opening form with URL token (fallback test): ${url}`, 'info');
+            window.open(url, '_blank');
+        }
+
+        async function runAllTests() {
+            document.getElementById('testResults').innerHTML = '';
+            log('Running all tests...', 'info');
+
+            // Test 1: Check if cookie reading function exists
+            addTestResult(
+                'Cookie reading function exists',
+                typeof getCookie === 'function',
+                'The getCookie function should be available'
+            );
+
+            // Test 2: Test cookie setting
+            const testToken = 'test-token-12345';
+            document.cookie = `_xyzW=${testToken}; path=/`;
+            const readValue = getCookie('_xyzW');
+            addTestResult(
+                'Cookie can be set and read',
+                readValue === testToken,
+                `Expected: ${testToken}, Got: ${readValue}`
+            );
+
+            // Test 3: Test cookie deletion
+            deleteCookie();
+            const afterDelete = getCookie('_xyzW');
+            addTestResult(
+                'Cookie can be deleted',
+                afterDelete === null,
+                `Expected: null, Got: ${afterDelete}`
+            );
+
+            // Test 4: Test cookie priority over URL
+            const priorityToken = 'cookie-token-priority';
+            document.cookie = `_xyzW=${priorityToken}; path=/`;
+            const urlParams = new URLSearchParams('user_token=url-token');
+            const cookieToken = getCookie('_xyzW');
+            const urlToken = urlParams.get('user_token');
+            const finalToken = cookieToken || urlToken;
+            addTestResult(
+                'Cookie takes priority over URL parameter',
+                finalToken === priorityToken,
+                `Cookie: ${cookieToken}, URL: ${urlToken}, Final: ${finalToken}`
+            );
+
+            log('All tests completed', 'success');
+        }
+
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+            document.getElementById('consoleLog').innerHTML = '';
+            log('Results cleared', 'info');
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            log('Test page loaded', 'success');
+            checkCookie();
+        });
+    </script>
+</body>
+</html>
+
+
+

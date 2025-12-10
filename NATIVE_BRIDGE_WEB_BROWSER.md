@@ -252,3 +252,5 @@ Even though the native bridge does nothing in a browser, all other submit action
 **The native bridge is designed to be invisible in web browsers while providing full functionality in native apps.**
 
 
+
+

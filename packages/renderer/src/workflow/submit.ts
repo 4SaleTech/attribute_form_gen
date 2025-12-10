@@ -377,37 +377,73 @@ function encodeTemplateInURL(url: string, context: TemplateContext): string {
   }
 
   try {
-    // Split URL into base and query string
-    const [base, queryString] = url.split('?');
-    
-    if (!queryString) {
-      // No query string, just evaluate template in path
-      return evaluateTemplate(base, context);
+    // Try to parse as absolute URL first
+    let isAbsolute = false;
+    let urlObj: URL | null = null;
+    try {
+      urlObj = new URL(url);
+      isAbsolute = true;
+    } catch {
+      // Not an absolute URL, will handle as relative
+      isAbsolute = false;
     }
-    
-    // Evaluate template in base URL
-    const evaluatedBase = evaluateTemplate(base, context);
-    
-    // Parse query string and encode template values
-    const queryParams = queryString.split('&');
-    const encodedParams: string[] = [];
-    
-    for (const param of queryParams) {
-      const [key, value] = param.split('=');
-      if (value && value.includes('{{')) {
-        // Value has template - evaluate and encode
-        const evaluatedValue = evaluateTemplate(value, context);
-        encodedParams.push(`${key}=${encodeURIComponent(evaluatedValue)}`);
-      } else if (value) {
-        // Static value - encode as-is
-        encodedParams.push(`${key}=${encodeURIComponent(value)}`);
-      } else {
-        // No value, just key
-        encodedParams.push(key);
+
+    if (isAbsolute && urlObj) {
+      // Handle absolute URLs using URL object to preserve existing query params
+      const evaluatedPathname = evaluateTemplate(urlObj.pathname, context);
+      const evaluatedSearch = urlObj.search; // Keep original search string
+      
+      // Parse existing query parameters
+      const existingParams = new URLSearchParams(evaluatedSearch);
+      
+      // Evaluate templates in query parameter values
+      const newParams = new URLSearchParams();
+      existingParams.forEach((value, key) => {
+        // Evaluate template in the value
+        const evaluatedValue = value.includes('{{') 
+          ? evaluateTemplate(value, context) 
+          : value;
+        newParams.append(key, evaluatedValue);
+      });
+      
+      // Build the final URL
+      const resultUrl = new URL(evaluatedPathname, urlObj.origin);
+      newParams.forEach((value, key) => {
+        resultUrl.searchParams.append(key, value);
+      });
+      
+      return resultUrl.toString();
+    } else {
+      // Handle relative URLs (starting with /) or other formats
+      // Split URL into base and query string
+      const [base, queryString] = url.split('?');
+      
+      if (!queryString) {
+        // No query string, just evaluate template in path
+        return evaluateTemplate(base, context);
       }
+      
+      // Evaluate template in base URL
+      const evaluatedBase = evaluateTemplate(base, context);
+      
+      // Parse query string - URLSearchParams handles encoding automatically
+      const queryParams = new URLSearchParams(queryString);
+      const newParams = new URLSearchParams();
+      
+      // Process all existing query parameters
+      queryParams.forEach((value, key) => {
+        // Evaluate template in the value if it contains placeholders
+        const evaluatedValue = value.includes('{{') 
+          ? evaluateTemplate(value, context) 
+          : value;
+        // URLSearchParams will handle proper encoding automatically
+        newParams.append(key, evaluatedValue);
+      });
+      
+      // Build query string - URLSearchParams.toString() properly formats it
+      const queryStr = newParams.toString();
+      return queryStr ? `${evaluatedBase}?${queryStr}` : evaluatedBase;
     }
-    
-    return `${evaluatedBase}?${encodedParams.join('&')}`;
   } catch (e) {
     console.error('[Redirect Template] Error encoding URL:', e);
     // Fallback: just evaluate template without special encoding
@@ -435,6 +471,7 @@ function redirectAction(
           version: payload.version,
           submittedAt: payload.submittedAt,
           submissionId: submissionId,
+          formSubmissionId: submissionId, // Alias for formSubmissionId template variable
           answers: payload.answers,
           meta: payload.meta || {},
           // Add individual answer fields as top-level variables
@@ -443,6 +480,11 @@ function redirectAction(
         
         // Evaluate template and encode URL
         finalUrl = encodeTemplateInURL(urlTemplate, context);
+        
+        // Debug logging to help diagnose issues
+        console.log('[Redirect] Template URL:', urlTemplate);
+        console.log('[Redirect] Evaluated URL:', finalUrl);
+        console.log('[Redirect] URL search params:', finalUrl.includes('?') ? new URLSearchParams(finalUrl.split('?')[1]).toString() : 'none');
         
         // Validate URL before redirecting
         try {

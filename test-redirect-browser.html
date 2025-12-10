@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Browser Redirect Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .test-section { margin: 30px 0; padding: 20px; border: 2px solid #ddd; border-radius: 8px; }
+        .pass { background-color: #d4edda; border-color: #28a745; }
+        .fail { background-color: #f8d7da; border-color: #dc3545; }
+        code { background: #f4f4f4; padding: 4px 8px; border-radius: 4px; font-size: 14px; }
+        .url-box { background: #fff; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; word-break: break-all; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .info { background: #e7f3ff; padding: 15px; border-left: 4px solid #2196F3; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Browser Redirect URL Test</h1>
+    <p>This test simulates the actual browser redirect to catch any encoding issues.</p>
+    
+    <div class="info">
+        <strong>Note:</strong> This test will NOT actually redirect. It shows what URL would be used for redirect.
+        Check the browser console for detailed logs.
+    </div>
+
+    <div id="test-results"></div>
+
+    <script type="module">
+        // Import the actual function from the built code
+        // Since we can't import directly, we'll copy the exact implementation
+        
+        function evaluateTemplate(template, context) {
+            if (!template.includes('{{')) {
+                return template;
+            }
+            const templateRegex = /\{\{\.([\w.]+)\}\}/g;
+            return template.replace(templateRegex, (match, varName) => {
+                let value = context[varName];
+                if (value === undefined && varName.includes('.')) {
+                    const parts = varName.split('.');
+                    value = context;
+                    for (const part of parts) {
+                        if (value && typeof value === 'object') {
+                            value = value[part];
+                        } else {
+                            value = undefined;
+                            break;
+                        }
+                    }
+                }
+                let strValue = '';
+                if (value === null || value === undefined) {
+                    strValue = '';
+                } else if (typeof value === 'string') {
+                    strValue = value;
+                } else if (typeof value === 'number') {
+                    strValue = String(value);
+                } else if (typeof value === 'boolean') {
+                    strValue = value ? 'true' : 'false';
+                } else if (Array.isArray(value)) {
+                    strValue = value.map(v => String(v)).join(',');
+                } else if (typeof value === 'object') {
+                    if (value.e164) {
+                        strValue = value.e164;
+                    } else if (value.value === 'other' && value.other) {
+                        strValue = value.other;
+                    } else if (value.value) {
+                        strValue = String(value.value);
+                    } else if (typeof value.lat === 'number' && typeof value.lng === 'number') {
+                        strValue = `${value.lat.toFixed(6)},${value.lng.toFixed(6)}`;
+                    } else if (value.url) {
+                        strValue = value.url;
+                    } else {
+                        strValue = JSON.stringify(value);
+                    }
+                } else {
+                    strValue = String(value);
+                }
+                return strValue;
+            });
+        }
+
+        function encodeTemplateInURL(url, context) {
+            console.log('[encodeTemplateInURL] Input:', url);
+            
+            if (!url.includes('{{')) {
+                return url;
+            }
+
+            try {
+                let isAbsolute = false;
+                let urlObj = null;
+                try {
+                    urlObj = new URL(url);
+                    isAbsolute = true;
+                    console.log('[encodeTemplateInURL] Parsed as absolute URL');
+                } catch {
+                    isAbsolute = false;
+                    console.log('[encodeTemplateInURL] Treating as relative URL');
+                }
+
+                if (isAbsolute && urlObj) {
+                    const evaluatedPathname = evaluateTemplate(urlObj.pathname, context);
+                    const evaluatedSearch = urlObj.search;
+                    
+                    console.log('[encodeTemplateInURL] Pathname:', evaluatedPathname);
+                    console.log('[encodeTemplateInURL] Search:', evaluatedSearch);
+                    
+                    const existingParams = new URLSearchParams(evaluatedSearch);
+                    console.log('[encodeTemplateInURL] Parsed params:', Object.fromEntries(existingParams));
+                    
+                    const newParams = new URLSearchParams();
+                    existingParams.forEach((value, key) => {
+                        const evaluatedValue = value.includes('{{') 
+                            ? evaluateTemplate(value, context) 
+                            : value;
+                        console.log(`[encodeTemplateInURL] ${key}: "${value}" -> "${evaluatedValue}"`);
+                        newParams.append(key, evaluatedValue);
+                    });
+                    
+                    const resultUrl = new URL(evaluatedPathname, urlObj.origin);
+                    newParams.forEach((value, key) => {
+                        resultUrl.searchParams.append(key, value);
+                    });
+                    
+                    const result = resultUrl.toString();
+                    console.log('[encodeTemplateInURL] Final URL:', result);
+                    console.log('[encodeTemplateInURL] Final params:', Object.fromEntries(resultUrl.searchParams));
+                    return result;
+                } else {
+                    const [base, queryString] = url.split('?');
+                    
+                    if (!queryString) {
+                        return evaluateTemplate(base, context);
+                    }
+                    
+                    const evaluatedBase = evaluateTemplate(base, context);
+                    const queryParams = new URLSearchParams(queryString);
+                    const newParams = new URLSearchParams();
+                    
+                    queryParams.forEach((value, key) => {
+                        const evaluatedValue = value.includes('{{') 
+                            ? evaluateTemplate(value, context) 
+                            : value;
+                        newParams.append(key, evaluatedValue);
+                    });
+                    
+                    const queryStr = newParams.toString();
+                    return queryStr ? `${evaluatedBase}?${queryStr}` : evaluatedBase;
+                }
+            } catch (e) {
+                console.error('[encodeTemplateInURL] Error:', e);
+                return evaluateTemplate(url, context);
+            }
+        }
+
+        // Simulate redirectAction
+        function simulateRedirect(urlTemplate, context) {
+            console.log('\n=== SIMULATING REDIRECT ===');
+            console.log('Template:', urlTemplate);
+            console.log('Context:', context);
+            
+            let finalUrl = urlTemplate;
+            
+            if (urlTemplate.includes('{{') && context) {
+                finalUrl = encodeTemplateInURL(urlTemplate, context);
+                
+                // Validate URL
+                try {
+                    new URL(finalUrl);
+                    console.log('✅ URL validation passed');
+                } catch (e) {
+                    if (!finalUrl.startsWith('/') && !finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+                        console.error('❌ URL validation failed:', e);
+                        throw new Error('Invalid redirect URL');
+                    }
+                }
+            }
+            
+            console.log('Final URL that would be used:', finalUrl);
+            return finalUrl;
+        }
+
+        // Test cases
+        const context = {
+            formSubmissionId: 29,
+            submissionId: 29,
+            formId: 'test-form'
+        };
+
+        const testCases = [
+            {
+                name: 'Team Reported Issue',
+                input: 'http://localhost:3000/ar/listing/booking?categoryId=1100&formSubmissionId={{.formSubmissionId}}',
+                expected: 'http://localhost:3000/ar/listing/booking?categoryId=1100&formSubmissionId=29',
+                description: 'The exact URL format reported by the team'
+            }
+        ];
+
+        const results = [];
+        testCases.forEach(test => {
+            console.log(`\n\n=== TEST: ${test.name} ===`);
+            const actual = simulateRedirect(test.input, context);
+            const passed = actual === test.expected;
+            
+            // Parse and check parameters
+            let parsedParams = {};
+            try {
+                const url = new URL(actual);
+                parsedParams = Object.fromEntries(url.searchParams);
+            } catch (e) {
+                if (actual.includes('?')) {
+                    const [, query] = actual.split('?');
+                    if (query) {
+                        parsedParams = Object.fromEntries(new URLSearchParams(query));
+                    }
+                }
+            }
+            
+            // Check for encoding issues
+            const hasEncodingIssue = actual.includes('%3F') || actual.includes('%3D');
+            const encodingIssue = hasEncodingIssue ? 
+                `Found encoded characters: ${actual.match(/%3[FD]/g)?.join(', ')}` : null;
+            
+            results.push({
+                ...test,
+                actual,
+                passed,
+                parsedParams,
+                encodingIssue
+            });
+        });
+
+        // Display results
+        const resultsDiv = document.getElementById('test-results');
+        resultsDiv.innerHTML = results.map((r, i) => {
+            const statusClass = r.passed ? 'pass' : 'fail';
+            const statusIcon = r.passed ? '✅' : '❌';
+            
+            return `
+                <div class="test-section ${statusClass}">
+                    <h2>${statusIcon} ${r.name}</h2>
+                    <p><strong>Description:</strong> ${r.description}</p>
+                    
+                    <div class="url-box">
+                        <strong>Input Template:</strong><br>
+                        <code>${r.input}</code>
+                    </div>
+                    
+                    <div class="url-box">
+                        <strong>Expected Result:</strong><br>
+                        <code>${r.expected}</code>
+                    </div>
+                    
+                    <div class="url-box">
+                        <strong>Actual Result:</strong><br>
+                        <code>${r.actual}</code>
+                    </div>
+                    
+                    ${!r.passed ? `
+                        <div style="background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 15px 0;">
+                            <strong>⚠️ Mismatch Detected!</strong><br>
+                            The actual URL does not match the expected URL.
+                        </div>
+                    ` : ''}
+                    
+                    ${r.encodingIssue ? `
+                        <div style="background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 15px 0;">
+                            <strong>🚨 Encoding Issue Found!</strong><br>
+                            ${r.encodingIssue}<br>
+                            <small>%3F = ? (should be &)<br>%3D = = (should be =)</small>
+                        </div>
+                    ` : ''}
+                    
+                    <div style="margin-top: 15px;">
+                        <strong>Parsed Query Parameters:</strong>
+                        <pre style="background: #f4f4f4; padding: 10px; border-radius: 4px;">${JSON.stringify(r.parsedParams, null, 2)}</pre>
+                    </div>
+                    
+                    <button onclick="testRedirect('${r.actual}')">Test Redirect (will show in console)</button>
+                </div>
+            `;
+        }).join('');
+
+        // Summary
+        const allPassed = results.every(r => r.passed && !r.encodingIssue);
+        const summary = document.createElement('div');
+        summary.className = `test-section ${allPassed ? 'pass' : 'fail'}`;
+        summary.innerHTML = `
+            <h2>${allPassed ? '✅ All Tests Passed!' : '❌ Issues Found'}</h2>
+            <p><strong>Tests Passed:</strong> ${results.filter(r => r.passed).length} / ${results.length}</p>
+            <p><strong>Encoding Issues:</strong> ${results.filter(r => r.encodingIssue).length}</p>
+        `;
+        resultsDiv.appendChild(summary);
+
+        // Global function to test redirect
+        window.testRedirect = function(url) {
+            console.log('\n=== TESTING ACTUAL REDIRECT ===');
+            console.log('URL:', url);
+            console.log('This would normally do: window.location.href = url');
+            console.log('For safety, we\'re just logging it.');
+            
+            // Parse URL to show what browser would see
+            try {
+                const urlObj = new URL(url);
+                console.log('Parsed URL:');
+                console.log('  Protocol:', urlObj.protocol);
+                console.log('  Host:', urlObj.host);
+                console.log('  Pathname:', urlObj.pathname);
+                console.log('  Search:', urlObj.search);
+                console.log('  SearchParams:', Object.fromEntries(urlObj.searchParams));
+            } catch (e) {
+                console.log('Could not parse as absolute URL:', e.message);
+            }
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+

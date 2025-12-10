@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Redirect Query Parameters</title>
+    <script type="module">
+        // Simulate the template evaluation function
+        function evaluateTemplate(template, context) {
+            if (!template.includes('{{')) {
+                return template;
+            }
+            const templateRegex = /\{\{\.([\w.]+)\}\}/g;
+            return template.replace(templateRegex, (match, varName) => {
+                let value = context[varName];
+                if (value === undefined && varName.includes('.')) {
+                    const parts = varName.split('.');
+                    value = context;
+                    for (const part of parts) {
+                        if (value && typeof value === 'object') {
+                            value = value[part];
+                        } else {
+                            value = undefined;
+                            break;
+                        }
+                    }
+                }
+                let strValue = '';
+                if (value === null || value === undefined) {
+                    strValue = '';
+                } else if (typeof value === 'string') {
+                    strValue = value;
+                } else if (typeof value === 'number') {
+                    strValue = String(value);
+                } else if (typeof value === 'boolean') {
+                    strValue = value ? 'true' : 'false';
+                } else if (Array.isArray(value)) {
+                    strValue = value.map(v => String(v)).join(',');
+                } else if (typeof value === 'object') {
+                    if (value.e164) {
+                        strValue = value.e164;
+                    } else if (value.value === 'other' && value.other) {
+                        strValue = value.other;
+                    } else if (value.value) {
+                        strValue = String(value.value);
+                    } else if (typeof value.lat === 'number' && typeof value.lng === 'number') {
+                        strValue = `${value.lat.toFixed(6)},${value.lng.toFixed(6)}`;
+                    } else if (value.url) {
+                        strValue = value.url;
+                    } else {
+                        strValue = JSON.stringify(value);
+                    }
+                } else {
+                    strValue = String(value);
+                }
+                return strValue;
+            });
+        }
+
+        function encodeTemplateInURL(url, context) {
+            if (!url.includes('{{')) {
+                return url;
+            }
+
+            try {
+                // Try to parse as absolute URL first
+                let isAbsolute = false;
+                let urlObj = null;
+                try {
+                    urlObj = new URL(url);
+                    isAbsolute = true;
+                } catch {
+                    // Not an absolute URL, will handle as relative
+                    isAbsolute = false;
+                }
+
+                if (isAbsolute && urlObj) {
+                    // Handle absolute URLs using URL object to preserve existing query params
+                    const evaluatedPathname = evaluateTemplate(urlObj.pathname, context);
+                    const evaluatedSearch = urlObj.search; // Keep original search string
+                    
+                    // Parse existing query parameters
+                    const existingParams = new URLSearchParams(evaluatedSearch);
+                    
+                    // Evaluate templates in query parameter values
+                    const newParams = new URLSearchParams();
+                    existingParams.forEach((value, key) => {
+                        // Evaluate template in the value
+                        const evaluatedValue = value.includes('{{') 
+                            ? evaluateTemplate(value, context) 
+                            : value;
+                        newParams.append(key, evaluatedValue);
+                    });
+                    
+                    // Build the final URL
+                    const resultUrl = new URL(evaluatedPathname, urlObj.origin);
+                    newParams.forEach((value, key) => {
+                        resultUrl.searchParams.append(key, value);
+                    });
+                    
+                    return resultUrl.toString();
+                } else {
+                    // Handle relative URLs (starting with /) or other formats
+                    // Split URL into base and query string
+                    const [base, queryString] = url.split('?');
+                    
+                    if (!queryString) {
+                        // No query string, just evaluate template in path
+                        return evaluateTemplate(base, context);
+                    }
+                    
+                    // Evaluate template in base URL
+                    const evaluatedBase = evaluateTemplate(base, context);
+                    
+                    // Parse query string - URLSearchParams handles encoding automatically
+                    const queryParams = new URLSearchParams(queryString);
+                    const newParams = new URLSearchParams();
+                    
+                    // Process all existing query parameters
+                    queryParams.forEach((value, key) => {
+                        // Evaluate template in the value if it contains placeholders
+                        const evaluatedValue = value.includes('{{') 
+                            ? evaluateTemplate(value, context) 
+                            : value;
+                        // URLSearchParams will handle proper encoding automatically
+                        newParams.append(key, evaluatedValue);
+                    });
+                    
+                    // Build query string - URLSearchParams.toString() properly formats it
+                    const queryStr = newParams.toString();
+                    return queryStr ? `${evaluatedBase}?${queryStr}` : evaluatedBase;
+                }
+            } catch (e) {
+                console.error('Error encoding URL:', e);
+                // Fallback: just evaluate template without special encoding
+                return evaluateTemplate(url, context);
+            }
+        }
+
+        // Test cases
+        const testContext = {
+            formId: 'test-form',
+            submissionId: 29,
+            formSubmissionId: 29
+        };
+
+        const tests = [
+            {
+                name: 'Relative URL with existing query param',
+                input: 'http://localhost:3000/ar/listing/booking?categoryId=1100&formSubmissionId={{.formSubmissionId}}',
+                expected: 'http://localhost:3000/ar/listing/booking?categoryId=1100&formSubmissionId=29'
+            },
+            {
+                name: 'Absolute URL with existing query param',
+                input: 'http://localhost:3000/ar/listing/booking?categoryId=1100&formSubmissionId={{.formSubmissionId}}',
+                expected: 'http://localhost:3000/ar/listing/booking?categoryId=1100&formSubmissionId=29'
+            },
+            {
+                name: 'Multiple existing params',
+                input: 'http://localhost:3000/page?a=1&b=2&formId={{.formId}}',
+                expected: 'http://localhost:3000/page?a=1&b=2&formId=test-form'
+            },
+            {
+                name: 'Only template params',
+                input: 'http://localhost:3000/page?formId={{.formId}}&submissionId={{.submissionId}}',
+                expected: 'http://localhost:3000/page?formId=test-form&submissionId=29'
+            },
+            {
+                name: 'Relative path',
+                input: '/ar/listing/booking?categoryId=1100&formSubmissionId={{.formSubmissionId}}',
+                expected: '/ar/listing/booking?categoryId=1100&formSubmissionId=29'
+            }
+        ];
+
+        let results = [];
+        tests.forEach(test => {
+            const result = encodeTemplateInURL(test.input, testContext);
+            const passed = result === test.expected;
+            results.push({
+                name: test.name,
+                input: test.input,
+                expected: test.expected,
+                actual: result,
+                passed: passed
+            });
+        });
+
+        // Display results
+        console.table(results);
+        
+        const allPassed = results.every(r => r.passed);
+        const resultHtml = results.map(r => `
+            <div style="margin: 20px; padding: 15px; border: 2px solid ${r.passed ? 'green' : 'red'}; border-radius: 5px;">
+                <h3 style="margin-top: 0; color: ${r.passed ? 'green' : 'red'}">
+                    ${r.passed ? '✅ PASS' : '❌ FAIL'}: ${r.name}
+                </h3>
+                <p><strong>Input:</strong> <code>${r.input}</code></p>
+                <p><strong>Expected:</strong> <code>${r.expected}</code></p>
+                <p><strong>Actual:</strong> <code>${r.actual}</code></p>
+            </div>
+        `).join('');
+
+        document.body.innerHTML = `
+            <h1>Redirect Query Parameters Test</h1>
+            <div style="padding: 20px; background: ${allPassed ? '#d4edda' : '#f8d7da'}; border-radius: 5px; margin-bottom: 20px;">
+                <h2 style="margin-top: 0; color: ${allPassed ? 'green' : 'red'}">
+                    ${allPassed ? '✅ All Tests Passed!' : '❌ Some Tests Failed'}
+                </h2>
+            </div>
+            ${resultHtml}
+        `;
+    </script>
+</head>
+<body>
+    <p>Loading tests...</p>
+</body>
+</html>
+
+
+
+
+

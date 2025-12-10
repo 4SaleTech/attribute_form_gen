@@ -79,9 +79,24 @@ func SubmitHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.HandlerF
         locale, _ := req.Meta["locale"].(string)
         device, _ := req.Meta["device"].(string)
 
+        // Extract instance_id and user_id from meta
+        var instanceID string
+        if req.Meta != nil {
+            if v, ok := req.Meta["instance_id"].(string); ok {
+                instanceID = v
+            }
+        }
+        var userID *uint64
+        if req.Meta != nil {
+            if v, ok := req.Meta["user_id"].(float64); ok {
+                uid := uint64(v)
+                userID = &uid
+            }
+        }
+
         // Attempt insert
-        res, err := db.Exec(`INSERT INTO submissions(form_id,version,submitted_at,locale,device,answers_json,attributes_json,idempotency_key,webhook_status) VALUES(?,?,?,?,?,?,?,?, 'pending')`,
-            req.FormID, req.Version, req.SubmittedAt, locale, device, string(answersJSON), string(attrsJSON), nullIfEmpty(idemKey))
+        res, err := db.Exec(`INSERT INTO submissions(form_id,version,submitted_at,locale,device,answers_json,attributes_json,idempotency_key,instance_id,user_id,webhook_status) VALUES(?,?,?,?,?,?,?,?,?,?, 'pending')`,
+            req.FormID, req.Version, req.SubmittedAt, locale, device, string(answersJSON), string(attrsJSON), nullIfEmpty(idemKey), nullIfEmpty(instanceID), userID)
         if err != nil {
             // Unique constraint hit -> fetch existing
             row := db.QueryRow("SELECT id, webhook_status FROM submissions WHERE form_id=? AND version=? AND idempotency_key=?", req.FormID, req.Version, idemKey)

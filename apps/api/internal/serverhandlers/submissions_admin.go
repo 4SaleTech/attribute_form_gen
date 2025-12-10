@@ -200,14 +200,20 @@ func GetSubmissionHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
 					log.Warn("failed to unmarshal fields_json", zap.Error(err))
 					s.Answers = answersMap
 				} else {
-					// Build field labels map
+					// Build field labels map and field attributes map
 					fieldLabels := make(map[string]string)
+					fieldAttributes := make(map[string]string)
+					fieldTypes := make(map[string]string)
 					locale := s.Locale
 					if locale == "" {
 						locale = "en"
 					}
 					for _, field := range fields {
 						name, _ := field["name"].(string)
+						attributeKey, _ := field["attribute_key"].(string)
+						fieldType, _ := field["type"].(string)
+						
+						// Build labels map
 						if labelMap, ok := field["label"].(map[string]interface{}); ok {
 							if label, ok := labelMap[locale].(string); ok && label != "" {
 								fieldLabels[name] = label
@@ -219,10 +225,20 @@ func GetSubmissionHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
 						} else {
 							fieldLabels[name] = name // fallback to field name
 						}
+						
+						// Store attribute key
+						if attributeKey != "" {
+							fieldAttributes[name] = attributeKey
+						}
+						
+						// Store field type
+						if fieldType != "" {
+							fieldTypes[name] = fieldType
+						}
 					}
 
 					// Transform answers to array format
-					answersArray := transformAnswersToArrayAdmin(answersMap, fieldLabels, locale)
+					answersArray := transformAnswersToArrayAdmin(answersMap, fieldLabels, fieldAttributes, fieldTypes, locale)
 					s.Answers = answersArray
 				}
 			}
@@ -234,9 +250,9 @@ func GetSubmissionHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
 	}
 }
 
-// transformAnswersToArrayAdmin transforms answers map to array format with question labels
-func transformAnswersToArrayAdmin(answers map[string]interface{}, fieldLabels map[string]string, locale string) []map[string]string {
-	result := []map[string]string{}
+// transformAnswersToArrayAdmin transforms answers map to array format with question labels, attributes, and maps URLs
+func transformAnswersToArrayAdmin(answers map[string]interface{}, fieldLabels map[string]string, fieldAttributes map[string]string, fieldTypes map[string]string, locale string) []map[string]interface{} {
+	result := []map[string]interface{}{}
 
 	for fieldName, value := range answers {
 		// Get label (question text user sees)
@@ -245,70 +261,123 @@ func transformAnswersToArrayAdmin(answers map[string]interface{}, fieldLabels ma
 			questionLabel = fieldName // fallback to field name
 		}
 
-		// Format answer based on type
-		answerStr := formatAnswerForArray(value, locale)
+		// Get attribute key
+		attributeKey := fieldAttributes[fieldName]
+		
+		// Get field type
+		fieldType := fieldTypes[fieldName]
 
-		result = append(result, map[string]string{
+		// Format answer based on type
+		answerStr, mapsUrl := formatAnswerForArray(value, fieldType, locale)
+
+		// Build result object
+		answerObj := map[string]interface{}{
 			"question": questionLabel,
 			"answer":   answerStr,
-		})
+		}
+		
+		// Add attribute if available
+		if attributeKey != "" {
+			answerObj["attribute"] = attributeKey
+		}
+		
+		// Add mapsUrl for location fields only
+		if fieldType == "location" {
+			if mapsUrl != "" {
+				answerObj["mapsUrl"] = mapsUrl
+			} else {
+				answerObj["mapsUrl"] = nil
+			}
+		}
+
+		result = append(result, answerObj)
 	}
 
 	return result
 }
 
 // formatAnswerForArray formats an answer value to a string representation for array format
-func formatAnswerForArray(value interface{}, locale string) string {
+// Returns: (formattedAnswer, mapsUrl)
+func formatAnswerForArray(value interface{}, fieldType string, locale string) (string, string) {
 	if value == nil {
-		return ""
+		return "", ""
 	}
 
 	switch v := value.(type) {
 	case string:
-		return v
+		return v, ""
 	case float64:
 		// Check if it's a whole number
 		if v == float64(int64(v)) {
-			return strconv.FormatInt(int64(v), 10)
+			return strconv.FormatInt(int64(v), 10), ""
 		}
-		return strconv.FormatFloat(v, 'f', -1, 64)
+		return strconv.FormatFloat(v, 'f', -1, 64), ""
 	case bool:
 		if v {
 			if locale == "ar" {
-				return "نعم"
+				return "نعم", ""
 			}
-			return "Yes"
+			return "Yes", ""
 		}
 		if locale == "ar" {
-			return "لا"
+			return "لا", ""
 		}
-		return "No"
+		return "No", ""
 	case map[string]interface{}:
+		// Location: format with address and coordinates, extract maps URL
+		if fieldType == "location" {
+			lat, hasLat := v["lat"].(float64)
+			lng, hasLng := v["lng"].(float64)
+			address, hasAddress := v["address"].(string)
+			
+			// Extract maps URL
+			mapsUrl := ""
+			if url, ok := v["url"].(string); ok && url != "" {
+				mapsUrl = url
+			} else if hasLat && hasLng {
+				// Construct maps URL if not present
+				mapsUrl = fmt.Sprintf("https://www.google.com/maps?q=%.6f,%.6f", lat, lng)
+			}
+			
+			// Format answer string
+			if hasLat && hasLng {
+				coordsStr := fmt.Sprintf("%.6f, %.6f", lat, lng)
+				if hasAddress && address != "" {
+					// Has address: "Address (lat, lng)"
+					return fmt.Sprintf("%s (%s)", address, coordsStr), mapsUrl
+				} else {
+					// No address: just coordinates
+					return coordsStr, mapsUrl
+				}
+			} else if hasAddress && address != "" {
+				// Manual entry: just address, no maps URL
+				return address, ""
+			} else {
+				// Fallback: empty or invalid
+				return "", ""
+			}
+		}
+		
 		// Phone number: extract e164
 		if e164, ok := v["e164"].(string); ok {
-			return e164
+			return e164, ""
 		}
 		// Select/Radio with "other": use the "other" text
 		if val, ok := v["value"].(string); ok {
 			if val == "other" {
 				if other, ok := v["other"].(string); ok && other != "" {
-					return other
+					return other, ""
 				}
 			}
-			return val
-		}
-		// Location: format coordinates
-		if lat, ok := v["lat"].(float64); ok {
-			lng, _ := v["lng"].(float64)
-			return fmt.Sprintf("%.6f, %.6f", lat, lng)
+			return val, ""
 		}
 		// File upload: return URL
 		if url, ok := v["url"].(string); ok {
-			return url
+			return url, ""
 		}
 		// Default: JSON string
 		b, _ := json.Marshal(v)
-		return string(b)
+		return string(b), ""
 	case []interface{}:
 		// Multiselect or file array: format as comma-separated
 		values := []string{}
@@ -341,9 +410,9 @@ func formatAnswerForArray(value interface{}, locale string) string {
 				values = append(values, fmt.Sprintf("%v", item))
 			}
 		}
-		return strings.Join(values, ", ")
+		return strings.Join(values, ", "), ""
 	default:
-		return fmt.Sprintf("%v", v)
+		return fmt.Sprintf("%v", v), ""
 	}
 }
 

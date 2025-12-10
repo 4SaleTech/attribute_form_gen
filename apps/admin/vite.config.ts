@@ -42,6 +42,7 @@ const fixAmplitudePlugin = () => {
 };
 
 export default defineConfig({
+  base: '/admin/',
   plugins: [react(), fixAmplitudePlugin()],
   server: {
     port: 5173,

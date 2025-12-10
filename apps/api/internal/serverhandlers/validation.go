@@ -146,12 +146,32 @@ func validateSubmission(fields []types.Field, answers any) []FieldError {
         case "location":
             if !has { break }
             m, ok := val.(map[string]any); if !ok { errs = append(errs, fe(f.Name, "INVALID", "Invalid location", "موقع غير صالح", nil)); break }
-            lat, latOk := toFloat(m["lat"]); lng, lngOk := toFloat(m["lng"])
-            if !latOk || !lngOk {
-                errs = append(errs, fe(f.Name, "INVALID", "Invalid coordinates", "إحداثيات غير صالحة", nil))
-            } else {
+            
+            // Check detection method
+            detectionMethod, _ := m["detection_method"].(string)
+            hasAddress := false
+            if addr, ok := m["address"].(string); ok && addr != "" {
+                hasAddress = true
+            }
+            
+            lat, latOk := toFloat(m["lat"])
+            lng, lngOk := toFloat(m["lng"])
+            
+            // Manual entry: only need address
+            if detectionMethod == "manual" {
+                if !hasAddress {
+                    errs = append(errs, fe(f.Name, "INVALID", "Address is required", "العنوان مطلوب", nil))
+                }
+                break
+            }
+            
+            // GPS entry: need coordinates, address is optional
+            if latOk && lngOk {
                 if lat < -90 || lat > 90 { errs = append(errs, fe(f.Name, "INVALID", "Invalid latitude", "خط عرض غير صالح", nil)) }
                 if lng < -180 || lng > 180 { errs = append(errs, fe(f.Name, "INVALID", "Invalid longitude", "خط طول غير صالح", nil)) }
+            } else if !hasAddress {
+                // No coordinates and no address - invalid
+                errs = append(errs, fe(f.Name, "INVALID", "Location is required", "الموقع مطلوب", nil))
             }
         }
     }

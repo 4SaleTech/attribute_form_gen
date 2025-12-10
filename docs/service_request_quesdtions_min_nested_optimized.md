@@ -1,0 +1,2786 @@
+# Minimal questions with structured options where possible
+
+## AC Services
+- **AC Maintenance**
+  - AC unit type *(attribute_key: ac_unit_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "AC unit type", ar: "نوع وحدة التكييف"}
+    - options: [{value: "Split", label: {en: "Split", ar: "سبليت"}}, {value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Ducted", label: {en: "Ducted", ar: "قناة"}}, {value: "Central/Package", label: {en: "Central/Package", ar: "مركزي/حزمة"}}]
+  - Number of units *(attribute_key: number_of_units, type: number, required: true)*
+    - label: {en: "Number of units", ar: "عدد الوحدات"}
+  - Issue *(attribute_key: ac_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "No cooling", label: {en: "No cooling", ar: "لا يوجد تبريد"}}, {value: "Water leak", label: {en: "Water leak", ar: "تسرب ماء"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "No power", label: {en: "No power", ar: "لا يوجد طاقة"}}, {value: "Regular maintenance", label: {en: "Regular maintenance", ar: "صيانة دورية"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Air Duct Redistribution**
+  - AC unit type *(attribute_key: ac_unit_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "AC unit type", ar: "نوع وحدة التكييف"}
+    - options: [{value: "Split", label: {en: "Split", ar: "سبليت"}}, {value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Ducted", label: {en: "Ducted", ar: "قناة"}}, {value: "Central/Package", label: {en: "Central/Package", ar: "مركزي/حزمة"}}]
+  - Number of units *(attribute_key: number_of_units, type: number, required: true)*
+    - label: {en: "Number of units", ar: "عدد الوحدات"}
+  - Rooms/areas affected *(attribute_key: rooms_areas_affected, type: number, required: true)*
+    - label: {en: "How many rooms/areas are affected?", ar: "كم عدد الغرف/المناطق المتأثرة؟"}
+  - Goal of redistribution *(attribute_key: redistribution_goal, type: multiselect, required: true)*
+    - allow_other: true
+    - label: {en: "What do you want to achieve?", ar: "ما الذي تريد تحقيقه؟"}
+    - options: [{value: "Improve cooling in some rooms", label: {en: "Improve cooling in some rooms", ar: "تحسين التبريد في بعض الغرف"}}, {value: "Reduce noise/drafts", label: {en: "Reduce noise/drafts", ar: "تقليل الضوضاء/تيارات الهواء"}}, {value: "Add new vents", label: {en: "Add new vents", ar: "إضافة فتحات جديدة"}}, {value: "Move existing vents", label: {en: "Move existing vents", ar: "نقل فتحات موجودة"}}, {value: "Close/remove vents", label: {en: "Close/remove vents", ar: "إغلاق/إزالة فتحات"}}, {value: "Layout change for renovation", label: {en: "Layout change for renovation", ar: "تغيير التوزيع بسبب تجديد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Central AC Extension**
+  - AC unit type *(attribute_key: ac_unit_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "AC unit type", ar: "نوع وحدة التكييف"}
+    - options: [{value: "Split", label: {en: "Split", ar: "سبليت"}}, {value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Ducted", label: {en: "Ducted", ar: "قناة"}}, {value: "Central/Package", label: {en: "Central/Package", ar: "مركزي/حزمة"}}]
+  - Number of units *(attribute_key: number_of_units, type: number, required: true)*
+    - label: {en: "Number of units", ar: "عدد الوحدات"}
+  - Issue *(attribute_key: ac_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "No cooling", label: {en: "No cooling", ar: "لا يوجد تبريد"}}, {value: "Water leak", label: {en: "Water leak", ar: "تسرب ماء"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "No power", label: {en: "No power", ar: "لا يوجد طاقة"}}, {value: "Regular maintenance", label: {en: "Regular maintenance", ar: "صيانة دورية"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Compressor Repair**
+  - AC unit type *(attribute_key: ac_unit_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "AC unit type", ar: "نوع وحدة التكييف"}
+    - options: [{value: "Split", label: {en: "Split", ar: "سبليت"}}, {value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Ducted", label: {en: "Ducted", ar: "قناة"}}, {value: "Central/Package", label: {en: "Central/Package", ar: "مركزي/حزمة"}}]
+  - Number of units *(attribute_key: number_of_units, type: number, required: true)*
+    - label: {en: "Number of units", ar: "عدد الوحدات"}
+  - Issue *(attribute_key: ac_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "No cooling", label: {en: "No cooling", ar: "لا يوجد تبريد"}}, {value: "Water leak", label: {en: "Water leak", ar: "تسرب ماء"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "No power", label: {en: "No power", ar: "لا يوجد طاقة"}}, {value: "Regular maintenance", label: {en: "Regular maintenance", ar: "صيانة دورية"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Compressor Replacement**
+  - AC unit type *(attribute_key: ac_unit_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "AC unit type", ar: "نوع وحدة التكييف"}
+    - options: [{value: "Split", label: {en: "Split", ar: "سبليت"}}, {value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Ducted", label: {en: "Ducted", ar: "قناة"}}, {value: "Central/Package", label: {en: "Central/Package", ar: "مركزي/حزمة"}}]
+  - Number of units *(attribute_key: number_of_units, type: number, required: true)*
+    - label: {en: "Number of units", ar: "عدد الوحدات"}
+  - Issue *(attribute_key: ac_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "No cooling", label: {en: "No cooling", ar: "لا يوجد تبريد"}}, {value: "Water leak", label: {en: "Water leak", ar: "تسرب ماء"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "No power", label: {en: "No power", ar: "لا يوجد طاقة"}}, {value: "Regular maintenance", label: {en: "Regular maintenance", ar: "صيانة دورية"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Duct Cleaning**
+  - AC unit type *(attribute_key: ac_unit_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "AC unit type", ar: "نوع وحدة التكييف"}
+    - options: [{value: "Split", label: {en: "Split", ar: "سبليت"}}, {value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Ducted", label: {en: "Ducted", ar: "قناة"}}, {value: "Central/Package", label: {en: "Central/Package", ar: "مركزي/حزمة"}}]
+  - Number of units *(attribute_key: number_of_units, type: number, required: true)*
+    - label: {en: "Number of units", ar: "عدد الوحدات"}
+  - Issue *(attribute_key: ac_duct_issue, type: multiselect, required: true)*
+    - label: {en: "Issues noticed", ar: "المشاكل الملاحظة"}
+    - options: [{value: "Dust/debris", label: {en: "Dust/debris", ar: "غبار/أوساخ"}}, {value: "Bad odor", label: {en: "Bad odor", ar: "رائحة كريهة"}}, {value: "Mold/moisture", label: {en: "Mold/moisture", ar: "عفن/رطوبة"}}, {value: "Allergy concerns", label: {en: "Allergy concerns", ar: "مخاوف من الحساسية"}}, {value: "Low airflow", label: {en: "Low airflow", ar: "ضعف تدفق الهواء"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Gas Filling**
+  - AC unit type *(attribute_key: ac_unit_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "AC unit type", ar: "نوع وحدة التكييف"}
+    - options: [{value: "Split", label: {en: "Split", ar: "سبليت"}}, {value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Ducted", label: {en: "Ducted", ar: "قناة"}}, {value: "Central/Package", label: {en: "Central/Package", ar: "مركزي/حزمة"}}]
+  - Number of units *(attribute_key: number_of_units, type: number, required: true)*
+    - label: {en: "Number of units", ar: "عدد الوحدات"}
+  - Issue *(attribute_key: ac_gas_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Not cooling / weak cooling", label: {en: "Not cooling / weak cooling", ar: "لا يبرد / تبريد ضعيف"}}, {value: "Ice on pipes/indoor unit", label: {en: "Ice on pipes/indoor unit", ar: "ثلج على المواسير/الوحدة الداخلية"}}, {value: "Gas refill after repair", label: {en: "Gas refill after repair", ar: "تعبئة غاز بعد إصلاح"}}, {value: "Suspected leak", label: {en: "Suspected leak", ar: "تسرب محتمل"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Unit Installation**
+  - AC unit type *(attribute_key: ac_unit_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "AC unit type", ar: "نوع وحدة التكييف"}
+    - options: [{value: "Split", label: {en: "Split", ar: "سبليت"}}, {value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Ducted", label: {en: "Ducted", ar: "قناة"}}, {value: "Central/Package", label: {en: "Central/Package", ar: "مركزي/حزمة"}}]
+  - Number of units *(attribute_key: number_of_units, type: number, required: true)*
+    - label: {en: "Number of units", ar: "عدد الوحدات"}
+  - Issue *(attribute_key: ac_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "No cooling", label: {en: "No cooling", ar: "لا يوجد تبريد"}}, {value: "Water leak", label: {en: "Water leak", ar: "تسرب ماء"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "No power", label: {en: "No power", ar: "لا يوجد طاقة"}}, {value: "Regular maintenance", label: {en: "Regular maintenance", ar: "صيانة دورية"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Aluminum
+- **Aluminum**
+  - Job type *(attribute_key: aluminum_job_type, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "New installation", label: {en: "New installation", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Item *(attribute_key: aluminum_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Item", ar: "العنصر"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Shutter", label: {en: "Shutter", ar: "شتر"}}, {value: "Kitchen cabinet", label: {en: "Kitchen cabinet", ar: "خزانة مطبخ"}}, {value: "Chimney", label: {en: "Chimney", ar: "مدخنة"}}]
+  - Quantity (number of pieces) *(attribute_key: quantity_number_of_pieces, type: number, required: true)*
+    - label: {en: "Quantity (number of pieces)", ar: "الكمية (عدد القطع)"}
+  - Approx. dimensions per piece (W×H cm) *(attribute_key: approx_dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Approx. dimensions per piece (W×H cm)", ar: "الأبعاد التقريبية لكل قطعة (ع×ط سم)"}
+  - Access constraints *(attribute_key: aluminum_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "High floor", label: {en: "High floor", ar: "طابق عالي"}}, {value: "No elevator", label: {en: "No elevator", ar: "لا يوجد مصعد"}}, {value: "Scaffold needed", label: {en: "Scaffold needed", ar: "يحتاج سقالة"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Chimneys**
+  - Job type *(attribute_key: aluminum_job_type, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "New installation", label: {en: "New installation", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Item *(attribute_key: aluminum_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Item", ar: "العنصر"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Shutter", label: {en: "Shutter", ar: "شتر"}}, {value: "Kitchen cabinet", label: {en: "Kitchen cabinet", ar: "خزانة مطبخ"}}, {value: "Chimney", label: {en: "Chimney", ar: "مدخنة"}}]
+  - Quantity (number of pieces) *(attribute_key: quantity_number_of_pieces, type: number, required: true)*
+    - label: {en: "Quantity (number of pieces)", ar: "الكمية (عدد القطع)"}
+  - Approx. dimensions per piece (W×H cm) *(attribute_key: approx_dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Approx. dimensions per piece (W×H cm)", ar: "الأبعاد التقريبية لكل قطعة (ع×ط سم)"}
+  - Access constraints *(attribute_key: aluminum_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "High floor", label: {en: "High floor", ar: "طابق عالي"}}, {value: "No elevator", label: {en: "No elevator", ar: "لا يوجد مصعد"}}, {value: "Scaffold needed", label: {en: "Scaffold needed", ar: "يحتاج سقالة"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Kitchens**
+  - Job type *(attribute_key: aluminum_job_type, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "New installation", label: {en: "New installation", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Item *(attribute_key: aluminum_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Item", ar: "العنصر"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Shutter", label: {en: "Shutter", ar: "شتر"}}, {value: "Kitchen cabinet", label: {en: "Kitchen cabinet", ar: "خزانة مطبخ"}}, {value: "Chimney", label: {en: "Chimney", ar: "مدخنة"}}]
+  - Quantity (number of pieces) *(attribute_key: quantity_number_of_pieces, type: number, required: true)*
+    - label: {en: "Quantity (number of pieces)", ar: "الكمية (عدد القطع)"}
+  - Approx. dimensions per piece (W×H cm) *(attribute_key: approx_dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Approx. dimensions per piece (W×H cm)", ar: "الأبعاد التقريبية لكل قطعة (ع×ط سم)"}
+  - Access constraints *(attribute_key: access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "High floor", label: {en: "High floor", ar: "طابق عالي"}}, {value: "No elevator", label: {en: "No elevator", ar: "لا يوجد مصعد"}}, {value: "Scaffold needed", label: {en: "Scaffold needed", ar: "يحتاج سقالة"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Shutters**
+  - Job type *(attribute_key: aluminum_job_type, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "New installation", label: {en: "New installation", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Item *(attribute_key: aluminum_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Item", ar: "العنصر"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Shutter", label: {en: "Shutter", ar: "شتر"}}, {value: "Kitchen cabinet", label: {en: "Kitchen cabinet", ar: "خزانة مطبخ"}}, {value: "Chimney", label: {en: "Chimney", ar: "مدخنة"}}]
+  - Quantity (number of pieces) *(attribute_key: quantity_number_of_pieces, type: number, required: true)*
+    - label: {en: "Quantity (number of pieces)", ar: "الكمية (عدد القطع)"}
+  - Approx. dimensions per piece (W×H cm) *(attribute_key: approx_dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Approx. dimensions per piece (W×H cm)", ar: "الأبعاد التقريبية لكل قطعة (ع×ط سم)"}
+  - Access constraints *(attribute_key: access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "High floor", label: {en: "High floor", ar: "طابق عالي"}}, {value: "No elevator", label: {en: "No elevator", ar: "لا يوجد مصعد"}}, {value: "Scaffold needed", label: {en: "Scaffold needed", ar: "يحتاج سقالة"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Windows**
+  - Job type *(attribute_key: aluminum_job_type, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "New installation", label: {en: "New installation", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Item *(attribute_key: aluminum_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Item", ar: "العنصر"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Shutter", label: {en: "Shutter", ar: "شتر"}}, {value: "Kitchen cabinet", label: {en: "Kitchen cabinet", ar: "خزانة مطبخ"}}, {value: "Chimney", label: {en: "Chimney", ar: "مدخنة"}}]
+  - Quantity (number of pieces) *(attribute_key: quantity_number_of_pieces, type: number, required: true)*
+    - label: {en: "Quantity (number of pieces)", ar: "الكمية (عدد القطع)"}
+  - Approx. dimensions per piece (W×H cm) *(attribute_key: approx_dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Approx. dimensions per piece (W×H cm)", ar: "الأبعاد التقريبية لكل قطعة (ع×ط سم)"}
+  - Access constraints *(attribute_key: access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "High floor", label: {en: "High floor", ar: "طابق عالي"}}, {value: "No elevator", label: {en: "No elevator", ar: "لا يوجد مصعد"}}, {value: "Scaffold needed", label: {en: "Scaffold needed", ar: "يحتاج سقالة"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Bugs Exterminator
+- **Insect Control**
+  - Location type *(attribute_key: location_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Location type", ar: "نوع الموقع"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "Villa", label: {en: "Villa", ar: "فيلا"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Shop", label: {en: "Shop", ar: "محل"}}, {value: "Warehouse", label: {en: "Warehouse", ar: "مستودع"}}]
+  - Type of pest *(attribute_key: type_of_pest, type: multiselect, required: true)*
+    - label: {en: "Type of pest", ar: "نوع الآفة"}
+    - options: [{value: "Cockroaches", label: {en: "Cockroaches", ar: "صراصير"}}, {value: "Ants", label: {en: "Ants", ar: "نمل"}}, {value: "Bed bugs", label: {en: "Bed bugs", ar: "بق الفراش"}}, {value: "Termites", label: {en: "Termites", ar: "نمل أبيض"}}, {value: "Flies/Mosquitos", label: {en: "Flies/Mosquitos", ar: "ذباب/بعوض"}}, {value: "Rodents", label: {en: "Rodents", ar: "قوارض"}}, {value: "Other/Not sure", label: {en: "Other/Not sure", ar: "أخرى/غير متأكد"}}]
+  - Severity *(attribute_key: severity, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "How severe is the problem?", ar: "ما مدى حدة المشكلة؟"}
+    - options: [{value: "Low", label: {en: "Low", ar: "منخفض"}}, {value: "Medium", label: {en: "Medium", ar: "متوسط"}}, {value: "High", label: {en: "High", ar: "عالي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Reptile Control**
+  - Location type *(attribute_key: location_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Location type", ar: "نوع الموقع"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "Villa", label: {en: "Villa", ar: "فيلا"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Shop", label: {en: "Shop", ar: "محل"}}, {value: "Warehouse", label: {en: "Warehouse", ar: "مستودع"}}]
+  - Type of pest *(attribute_key: type_of_pest, type: multiselect, required: true)*
+    - label: {en: "Type of pest", ar: "نوع الآفة"}
+    - options: [{value: "Cockroaches", label: {en: "Cockroaches", ar: "صراصير"}}, {value: "Ants", label: {en: "Ants", ar: "نمل"}}, {value: "Bed bugs", label: {en: "Bed bugs", ar: "بق الفراش"}}, {value: "Termites", label: {en: "Termites", ar: "نمل أبيض"}}, {value: "Flies/Mosquitos", label: {en: "Flies/Mosquitos", ar: "ذباب/بعوض"}}, {value: "Rodents", label: {en: "Rodents", ar: "قوارض"}}, {value: "Other/Not sure", label: {en: "Other/Not sure", ar: "أخرى/غير متأكد"}}]
+  - Severity *(attribute_key: severity, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "How severe is the problem?", ar: "ما مدى حدة المشكلة؟"}
+    - options: [{value: "Low", label: {en: "Low", ar: "منخفض"}}, {value: "Medium", label: {en: "Medium", ar: "متوسط"}}, {value: "High", label: {en: "High", ar: "عالي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Rodent Control**
+  - Location type *(attribute_key: location_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Location type", ar: "نوع الموقع"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "Villa", label: {en: "Villa", ar: "فيلا"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Shop", label: {en: "Shop", ar: "محل"}}, {value: "Warehouse", label: {en: "Warehouse", ar: "مستودع"}}]
+  - Type of pest *(attribute_key: type_of_pest, type: multiselect, required: true)*
+    - label: {en: "Type of pest", ar: "نوع الآفة"}
+    - options: [{value: "Cockroaches", label: {en: "Cockroaches", ar: "صراصير"}}, {value: "Ants", label: {en: "Ants", ar: "نمل"}}, {value: "Bed bugs", label: {en: "Bed bugs", ar: "بق الفراش"}}, {value: "Termites", label: {en: "Termites", ar: "نمل أبيض"}}, {value: "Flies/Mosquitos", label: {en: "Flies/Mosquitos", ar: "ذباب/بعوض"}}, {value: "Rodents", label: {en: "Rodents", ar: "قوارض"}}, {value: "Other/Not sure", label: {en: "Other/Not sure", ar: "أخرى/غير متأكد"}}]
+  - Severity *(attribute_key: severity, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "How severe is the problem?", ar: "ما مدى حدة المشكلة؟"}
+    - options: [{value: "Low", label: {en: "Low", ar: "منخفض"}}, {value: "Medium", label: {en: "Medium", ar: "متوسط"}}, {value: "High", label: {en: "High", ar: "عالي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Builders
+- **Additions**
+  - Job type *(attribute_key: builders_job_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "Renovation", label: {en: "Renovation", ar: "تجديد"}}, {value: "Extension", label: {en: "Extension", ar: "توسعة"}}, {value: "New build", label: {en: "New build", ar: "بناء جديد"}}, {value: "Demolition", label: {en: "Demolition", ar: "هدم"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}]
+  - Area (m²) / size *(attribute_key: area_m²_size, type: number, required: true)*
+    - label: {en: "Area (m²) / size (e.g. 3 BR apartment, 250m²)", ar: "المساحة (م²) / الحجم (مثال: شقة ٣ غرف، ٢٥٠م²)"}
+  - Who supplies materials? *(attribute_key: builders_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "Client", label: {en: "Client", ar: "العميل"}}, {value: "Provider", label: {en: "Provider", ar: "المزود"}}, {value: "Mixed", label: {en: "Mixed", ar: "مختلط"}}]
+  - Target timeline *(attribute_key: target_timeline, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Target timeline", ar: "الجدول الزمني المستهدف"}
+    - options: [{value: "ASAP", label: {en: "ASAP", ar: "في أقرب وقت"}}, {value: "<1 month", label: {en: "<1 month", ar: "أقل من شهر"}}, {value: "1–3 months", label: {en: "1–3 months", ar: "1-3 أشهر"}}, {value: "3+ months", label: {en: "3+ months", ar: "أكثر من 3 أشهر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Construction**
+  - Job type *(attribute_key: builders_job_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "Renovation", label: {en: "Renovation", ar: "تجديد"}}, {value: "Extension", label: {en: "Extension", ar: "توسعة"}}, {value: "New build", label: {en: "New build", ar: "بناء جديد"}}, {value: "Demolition", label: {en: "Demolition", ar: "هدم"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}]
+  - Area (m²) / size *(attribute_key: area_m²_size, type: number, required: true)*
+    - label: {en: "Area (m²) / size (e.g. 3 BR apartment, 250m²)", ar: "المساحة (م²) / الحجم (مثال: شقة ٣ غرف، ٢٥٠م²)"}
+  - Who supplies materials? *(attribute_key: builders_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "Client", label: {en: "Client", ar: "العميل"}}, {value: "Provider", label: {en: "Provider", ar: "المزود"}}, {value: "Mixed", label: {en: "Mixed", ar: "مختلط"}}]
+  - Target timeline *(attribute_key: target_timeline, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Target timeline", ar: "الجدول الزمني المستهدف"}
+    - options: [{value: "ASAP", label: {en: "ASAP", ar: "في أقرب وقت"}}, {value: "<1 month", label: {en: "<1 month", ar: "أقل من شهر"}}, {value: "1–3 months", label: {en: "1–3 months", ar: "1-3 أشهر"}}, {value: "3+ months", label: {en: "3+ months", ar: "أكثر من 3 أشهر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Demolition**
+  - Job type *(attribute_key: builders_job_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "Renovation", label: {en: "Renovation", ar: "تجديد"}}, {value: "Extension", label: {en: "Extension", ar: "توسعة"}}, {value: "New build", label: {en: "New build", ar: "بناء جديد"}}, {value: "Demolition", label: {en: "Demolition", ar: "هدم"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}]
+  - Area (m²) / size *(attribute_key: area_m²_size, type: number, required: true)*
+    - label: {en: "Area (m²) / size (e.g. 3 BR apartment, 250m²)", ar: "المساحة (م²) / الحجم (مثال: شقة ٣ غرف، ٢٥٠م²)"}
+  - Who supplies materials? *(attribute_key: builders_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "Client", label: {en: "Client", ar: "العميل"}}, {value: "Provider", label: {en: "Provider", ar: "المزود"}}, {value: "Mixed", label: {en: "Mixed", ar: "مختلط"}}]
+  - Target timeline *(attribute_key: target_timeline, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Target timeline", ar: "الجدول الزمني المستهدف"}
+    - options: [{value: "ASAP", label: {en: "ASAP", ar: "في أقرب وقت"}}, {value: "<1 month", label: {en: "<1 month", ar: "أقل من شهر"}}, {value: "1–3 months", label: {en: "1–3 months", ar: "1-3 أشهر"}}, {value: "3+ months", label: {en: "3+ months", ar: "أكثر من 3 أشهر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Expansions**
+  - Job type *(attribute_key: builders_job_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "Renovation", label: {en: "Renovation", ar: "تجديد"}}, {value: "Extension", label: {en: "Extension", ar: "توسعة"}}, {value: "New build", label: {en: "New build", ar: "بناء جديد"}}, {value: "Demolition", label: {en: "Demolition", ar: "هدم"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}]
+  - Area (m²) / size *(attribute_key: area_m²_size, type: number, required: true)*
+    - label: {en: "Area (m²) / size (e.g. 3 BR apartment, 250m²)", ar: "المساحة (م²) / الحجم (مثال: شقة ٣ غرف، ٢٥٠م²)"}
+  - Who supplies materials? *(attribute_key: builders_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "Client", label: {en: "Client", ar: "العميل"}}, {value: "Provider", label: {en: "Provider", ar: "المزود"}}, {value: "Mixed", label: {en: "Mixed", ar: "مختلط"}}]
+  - Target timeline *(attribute_key: target_timeline, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Target timeline", ar: "الجدول الزمني المستهدف"}
+    - options: [{value: "ASAP", label: {en: "ASAP", ar: "في أقرب وقت"}}, {value: "<1 month", label: {en: "<1 month", ar: "أقل من شهر"}}, {value: "1–3 months", label: {en: "1–3 months", ar: "1-3 أشهر"}}, {value: "3+ months", label: {en: "3+ months", ar: "أكثر من 3 أشهر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Renovations**
+  - Job type *(attribute_key: builders_job_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "Renovation", label: {en: "Renovation", ar: "تجديد"}}, {value: "Extension", label: {en: "Extension", ar: "توسعة"}}, {value: "New build", label: {en: "New build", ar: "بناء جديد"}}, {value: "Demolition", label: {en: "Demolition", ar: "هدم"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}]
+  - Area (m²) / size *(attribute_key: area_m²_size, type: number, required: true)*
+    - label: {en: "Area (m²) / size (e.g. 3 BR apartment, 250m²)", ar: "المساحة (م²) / الحجم (مثال: شقة ٣ غرف، ٢٥٠م²)"}
+  - Who supplies materials? *(attribute_key: builders_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "Client", label: {en: "Client", ar: "العميل"}}, {value: "Provider", label: {en: "Provider", ar: "المزود"}}, {value: "Mixed", label: {en: "Mixed", ar: "مختلط"}}]
+  - Target timeline *(attribute_key: target_timeline, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Target timeline", ar: "الجدول الزمني المستهدف"}
+    - options: [{value: "ASAP", label: {en: "ASAP", ar: "في أقرب وقت"}}, {value: "<1 month", label: {en: "<1 month", ar: "أقل من شهر"}}, {value: "1–3 months", label: {en: "1–3 months", ar: "1-3 أشهر"}}, {value: "3+ months", label: {en: "3+ months", ar: "أكثر من 3 أشهر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Sigma**
+  - Job type *(attribute_key: builders_job_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "Renovation", label: {en: "Renovation", ar: "تجديد"}}, {value: "Extension", label: {en: "Extension", ar: "توسعة"}}, {value: "New build", label: {en: "New build", ar: "بناء جديد"}}, {value: "Demolition", label: {en: "Demolition", ar: "هدم"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}]
+  - Area (m²) / size *(attribute_key: area_m²_size, type: number, required: true)*
+    - label: {en: "Area (m²) / size (e.g. 3 BR apartment, 250m²)", ar: "المساحة (م²) / الحجم (مثال: شقة ٣ غرف، ٢٥٠م²)"}
+  - Who supplies materials? *(attribute_key: builders_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "Client", label: {en: "Client", ar: "العميل"}}, {value: "Provider", label: {en: "Provider", ar: "المزود"}}, {value: "Mixed", label: {en: "Mixed", ar: "مختلط"}}]
+  - Target timeline *(attribute_key: target_timeline, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Target timeline", ar: "الجدول الزمني المستهدف"}
+    - options: [{value: "ASAP", label: {en: "ASAP", ar: "في أقرب وقت"}}, {value: "<1 month", label: {en: "<1 month", ar: "أقل من شهر"}}, {value: "1–3 months", label: {en: "1–3 months", ar: "1-3 أشهر"}}, {value: "3+ months", label: {en: "3+ months", ar: "أكثر من 3 أشهر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Surveyor**
+  - Job type *(attribute_key: builders_job_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Job type", ar: "نوع العمل"}
+    - options: [{value: "Renovation", label: {en: "Renovation", ar: "تجديد"}}, {value: "Extension", label: {en: "Extension", ar: "توسعة"}}, {value: "New build", label: {en: "New build", ar: "بناء جديد"}}, {value: "Demolition", label: {en: "Demolition", ar: "هدم"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}]
+  - Area (m²) / size *(attribute_key: area_m²_size, type: number, required: true)*
+    - label: {en: "Area (m²) / size (e.g. 3 BR apartment, 250m²)", ar: "المساحة (م²) / الحجم (مثال: شقة ٣ غرف، ٢٥٠م²)"}
+  - Who supplies materials? *(attribute_key: builders_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "Client", label: {en: "Client", ar: "العميل"}}, {value: "Provider", label: {en: "Provider", ar: "المزود"}}, {value: "Mixed", label: {en: "Mixed", ar: "مختلط"}}]
+  - Target timeline *(attribute_key: target_timeline, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Target timeline", ar: "الجدول الزمني المستهدف"}
+    - options: [{value: "ASAP", label: {en: "ASAP", ar: "في أقرب وقت"}}, {value: "<1 month", label: {en: "<1 month", ar: "أقل من شهر"}}, {value: "1–3 months", label: {en: "1–3 months", ar: "1-3 أشهر"}}, {value: "3+ months", label: {en: "3+ months", ar: "أكثر من 3 أشهر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Building Materials
+- **Bricks**
+  - Material type *(attribute_key: material_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material type", ar: "نوع المادة"}
+    - options: [{value: "Netting", label: {en: "Netting", ar: "شبكة"}}, {value: "Ironwork", label: {en: "Ironwork", ar: "حدادة"}}, {value: "Gypsum", label: {en: "Gypsum", ar: "جبس"}}, {value: "Sand", label: {en: "Sand", ar: "رمل"}}, {value: "Insulation materials", label: {en: "Insulation materials", ar: "مواد عزل"}}, {value: "Bricks", label: {en: "Bricks", ar: "طوب"}}, {value: "Construction tools", label: {en: "Construction tools", ar: "أدوات بناء"}}, {value: "Cement", label: {en: "Cement", ar: "أسمنت"}}, {value: "Crushed stone", label: {en: "Crushed stone", ar: "حصى"}}]
+  - Quantity/specs *(attribute_key: quantityspecs, type: text, required: true)*
+    - label: {en: "Quantity/specs", ar: "الكمية/المواصفات"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Cement**
+  - Material type *(attribute_key: material_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material type", ar: "نوع المادة"}
+    - options: [{value: "Netting", label: {en: "Netting", ar: "شبكة"}}, {value: "Ironwork", label: {en: "Ironwork", ar: "حدادة"}}, {value: "Gypsum", label: {en: "Gypsum", ar: "جبس"}}, {value: "Sand", label: {en: "Sand", ar: "رمل"}}, {value: "Insulation materials", label: {en: "Insulation materials", ar: "مواد عزل"}}, {value: "Bricks", label: {en: "Bricks", ar: "طوب"}}, {value: "Construction tools", label: {en: "Construction tools", ar: "أدوات بناء"}}, {value: "Cement", label: {en: "Cement", ar: "أسمنت"}}, {value: "Crushed stone", label: {en: "Crushed stone", ar: "حصى"}}]
+  - Quantity/specs *(attribute_key: quantityspecs, type: text, required: true)*
+    - label: {en: "Quantity/specs", ar: "الكمية/المواصفات"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Construction Tools**
+  - Material type *(attribute_key: material_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material type", ar: "نوع المادة"}
+    - options: [{value: "Netting", label: {en: "Netting", ar: "شبكة"}}, {value: "Ironwork", label: {en: "Ironwork", ar: "حدادة"}}, {value: "Gypsum", label: {en: "Gypsum", ar: "جبس"}}, {value: "Sand", label: {en: "Sand", ar: "رمل"}}, {value: "Insulation materials", label: {en: "Insulation materials", ar: "مواد عزل"}}, {value: "Bricks", label: {en: "Bricks", ar: "طوب"}}, {value: "Construction tools", label: {en: "Construction tools", ar: "أدوات بناء"}}, {value: "Cement", label: {en: "Cement", ar: "أسمنت"}}, {value: "Crushed stone", label: {en: "Crushed stone", ar: "حصى"}}]
+  - Quantity/specs *(attribute_key: quantityspecs, type: text, required: true)*
+    - label: {en: "Quantity/specs", ar: "الكمية/المواصفات"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Crushed Stone**
+  - Material type *(attribute_key: material_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material type", ar: "نوع المادة"}
+    - options: [{value: "Netting", label: {en: "Netting", ar: "شبكة"}}, {value: "Ironwork", label: {en: "Ironwork", ar: "حدادة"}}, {value: "Gypsum", label: {en: "Gypsum", ar: "جبس"}}, {value: "Sand", label: {en: "Sand", ar: "رمل"}}, {value: "Insulation materials", label: {en: "Insulation materials", ar: "مواد عزل"}}, {value: "Bricks", label: {en: "Bricks", ar: "طوب"}}, {value: "Construction tools", label: {en: "Construction tools", ar: "أدوات بناء"}}, {value: "Cement", label: {en: "Cement", ar: "أسمنت"}}, {value: "Crushed stone", label: {en: "Crushed stone", ar: "حصى"}}]
+  - Quantity/specs *(attribute_key: quantityspecs, type: text, required: true)*
+    - label: {en: "Quantity/specs", ar: "الكمية/المواصفات"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Gypsum**
+  - Material type *(attribute_key: material_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material type", ar: "نوع المادة"}
+    - options: [{value: "Netting", label: {en: "Netting", ar: "شبكة"}}, {value: "Ironwork", label: {en: "Ironwork", ar: "حدادة"}}, {value: "Gypsum", label: {en: "Gypsum", ar: "جبس"}}, {value: "Sand", label: {en: "Sand", ar: "رمل"}}, {value: "Insulation materials", label: {en: "Insulation materials", ar: "مواد عزل"}}, {value: "Bricks", label: {en: "Bricks", ar: "طوب"}}, {value: "Construction tools", label: {en: "Construction tools", ar: "أدوات بناء"}}, {value: "Cement", label: {en: "Cement", ar: "أسمنت"}}, {value: "Crushed stone", label: {en: "Crushed stone", ar: "حصى"}}]
+  - Quantity/specs *(attribute_key: quantityspecs, type: text, required: true)*
+    - label: {en: "Quantity/specs", ar: "الكمية/المواصفات"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Insulation Materials**
+  - Material type *(attribute_key: material_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material type", ar: "نوع المادة"}
+    - options: [{value: "Netting", label: {en: "Netting", ar: "شبكة"}}, {value: "Ironwork", label: {en: "Ironwork", ar: "حدادة"}}, {value: "Gypsum", label: {en: "Gypsum", ar: "جبس"}}, {value: "Sand", label: {en: "Sand", ar: "رمل"}}, {value: "Insulation materials", label: {en: "Insulation materials", ar: "مواد عزل"}}, {value: "Bricks", label: {en: "Bricks", ar: "طوب"}}, {value: "Construction tools", label: {en: "Construction tools", ar: "أدوات بناء"}}, {value: "Cement", label: {en: "Cement", ar: "أسمنت"}}, {value: "Crushed stone", label: {en: "Crushed stone", ar: "حصى"}}]
+  - Quantity/specs *(attribute_key: quantityspecs, type: text, required: true)*
+    - label: {en: "Quantity/specs", ar: "الكمية/المواصفات"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Ironwork**
+  - Material type *(attribute_key: material_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material type", ar: "نوع المادة"}
+    - options: [{value: "Netting", label: {en: "Netting", ar: "شبكة"}}, {value: "Ironwork", label: {en: "Ironwork", ar: "حدادة"}}, {value: "Gypsum", label: {en: "Gypsum", ar: "جبس"}}, {value: "Sand", label: {en: "Sand", ar: "رمل"}}, {value: "Insulation materials", label: {en: "Insulation materials", ar: "مواد عزل"}}, {value: "Bricks", label: {en: "Bricks", ar: "طوب"}}, {value: "Construction tools", label: {en: "Construction tools", ar: "أدوات بناء"}}, {value: "Cement", label: {en: "Cement", ar: "أسمنت"}}, {value: "Crushed stone", label: {en: "Crushed stone", ar: "حصى"}}]
+  - Quantity/specs *(attribute_key: quantityspecs, type: text, required: true)*
+    - label: {en: "Quantity/specs", ar: "الكمية/المواصفات"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Netting**
+  - Material type *(attribute_key: material_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material type", ar: "نوع المادة"}
+    - options: [{value: "Netting", label: {en: "Netting", ar: "شبكة"}}, {value: "Ironwork", label: {en: "Ironwork", ar: "حدادة"}}, {value: "Gypsum", label: {en: "Gypsum", ar: "جبس"}}, {value: "Sand", label: {en: "Sand", ar: "رمل"}}, {value: "Insulation materials", label: {en: "Insulation materials", ar: "مواد عزل"}}, {value: "Bricks", label: {en: "Bricks", ar: "طوب"}}, {value: "Construction tools", label: {en: "Construction tools", ar: "أدوات بناء"}}, {value: "Cement", label: {en: "Cement", ar: "أسمنت"}}, {value: "Crushed stone", label: {en: "Crushed stone", ar: "حصى"}}]
+  - Quantity/specs *(attribute_key: quantityspecs, type: text, required: true)*
+    - label: {en: "Quantity/specs", ar: "الكمية/المواصفات"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Sand**
+  - Material type *(attribute_key: material_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material type", ar: "نوع المادة"}
+    - options: [{value: "Netting", label: {en: "Netting", ar: "شبكة"}}, {value: "Ironwork", label: {en: "Ironwork", ar: "حدادة"}}, {value: "Gypsum", label: {en: "Gypsum", ar: "جبس"}}, {value: "Sand", label: {en: "Sand", ar: "رمل"}}, {value: "Insulation materials", label: {en: "Insulation materials", ar: "مواد عزل"}}, {value: "Bricks", label: {en: "Bricks", ar: "طوب"}}, {value: "Construction tools", label: {en: "Construction tools", ar: "أدوات بناء"}}, {value: "Cement", label: {en: "Cement", ar: "أسمنت"}}, {value: "Crushed stone", label: {en: "Crushed stone", ar: "حصى"}}]
+  - Quantity/specs *(attribute_key: quantityspecs, type: text, required: true)*
+    - label: {en: "Quantity/specs", ar: "الكمية/المواصفات"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Carpenter
+- **Corporate Furniture Assembly**
+  - Work type *(attribute_key: carpenter_work_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Work type", ar: "نوع العمل"}
+    - options: [{value: "Doors", label: {en: "Doors", ar: "أبواب"}}, {value: "Cabinets/Kitchen", label: {en: "Cabinets/Kitchen", ar: "خزائن/مطبخ"}}, {value: "Shelves", label: {en: "Shelves", ar: "رفوف"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Material preference *(attribute_key: material_preference, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material preference", ar: "تفضيل المادة"}
+    - options: [{value: "MDF", label: {en: "MDF", ar: "MDF"}}, {value: "Plywood", label: {en: "Plywood", ar: "خشب رقائقي"}}, {value: "Solid wood", label: {en: "Solid wood", ar: "خشب صلب"}}, {value: "HDF", label: {en: "HDF", ar: "HDF"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Finish *(attribute_key: wood_finish, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finish", ar: "الإنهاء"}
+    - options: [{value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Varnish", label: {en: "Varnish", ar: "ورنيش"}}, {value: "Laminate", label: {en: "Laminate", ar: "صفيح"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Main dimensions (cm) *(attribute_key: main_dimensions_cm, type: text, required: true)*
+    - label: {en: "Main dimensions (cm)", ar: "الأبعاد الرئيسية (سم)"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Disassembly and Assembly**
+  - Work type *(attribute_key: carpenter_work_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Work type", ar: "نوع العمل"}
+    - options: [{value: "Doors", label: {en: "Doors", ar: "أبواب"}}, {value: "Cabinets/Kitchen", label: {en: "Cabinets/Kitchen", ar: "خزائن/مطبخ"}}, {value: "Shelves", label: {en: "Shelves", ar: "رفوف"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Material preference *(attribute_key: material_preference, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material preference", ar: "تفضيل المادة"}
+    - options: [{value: "MDF", label: {en: "MDF", ar: "MDF"}}, {value: "Plywood", label: {en: "Plywood", ar: "خشب رقائقي"}}, {value: "Solid wood", label: {en: "Solid wood", ar: "خشب صلب"}}, {value: "HDF", label: {en: "HDF", ar: "HDF"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Finish *(attribute_key: wood_finish, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finish", ar: "الإنهاء"}
+    - options: [{value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Varnish", label: {en: "Varnish", ar: "ورنيش"}}, {value: "Laminate", label: {en: "Laminate", ar: "صفيح"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Main dimensions (cm) *(attribute_key: main_dimensions_cm, type: text, required: true)*
+    - label: {en: "Main dimensions (cm)", ar: "الأبعاد الرئيسية (سم)"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Repair**
+  - Work type *(attribute_key: carpenter_work_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Work type", ar: "نوع العمل"}
+    - options: [{value: "Doors", label: {en: "Doors", ar: "أبواب"}}, {value: "Cabinets/Kitchen", label: {en: "Cabinets/Kitchen", ar: "خزائن/مطبخ"}}, {value: "Shelves", label: {en: "Shelves", ar: "رفوف"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Material preference *(attribute_key: material_preference, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material preference", ar: "تفضيل المادة"}
+    - options: [{value: "MDF", label: {en: "MDF", ar: "MDF"}}, {value: "Plywood", label: {en: "Plywood", ar: "خشب رقائقي"}}, {value: "Solid wood", label: {en: "Solid wood", ar: "خشب صلب"}}, {value: "HDF", label: {en: "HDF", ar: "HDF"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Finish *(attribute_key: wood_finish, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finish", ar: "الإنهاء"}
+    - options: [{value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Varnish", label: {en: "Varnish", ar: "ورنيش"}}, {value: "Laminate", label: {en: "Laminate", ar: "صفيح"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Main dimensions (cm) *(attribute_key: main_dimensions_cm, type: text, required: true)*
+    - label: {en: "Main dimensions (cm)", ar: "الأبعاد الرئيسية (سم)"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Shelves Installation**
+  - Work type *(attribute_key: carpenter_work_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Work type", ar: "نوع العمل"}
+    - options: [{value: "Doors", label: {en: "Doors", ar: "أبواب"}}, {value: "Cabinets/Kitchen", label: {en: "Cabinets/Kitchen", ar: "خزائن/مطبخ"}}, {value: "Shelves", label: {en: "Shelves", ar: "رفوف"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Material preference *(attribute_key: material_preference, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material preference", ar: "تفضيل المادة"}
+    - options: [{value: "MDF", label: {en: "MDF", ar: "MDF"}}, {value: "Plywood", label: {en: "Plywood", ar: "خشب رقائقي"}}, {value: "Solid wood", label: {en: "Solid wood", ar: "خشب صلب"}}, {value: "HDF", label: {en: "HDF", ar: "HDF"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Finish *(attribute_key: wood_finish, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finish", ar: "الإنهاء"}
+    - options: [{value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Varnish", label: {en: "Varnish", ar: "ورنيش"}}, {value: "Laminate", label: {en: "Laminate", ar: "صفيح"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Main dimensions (cm) *(attribute_key: main_dimensions_cm, type: text, required: true)*
+    - label: {en: "Main dimensions (cm)", ar: "الأبعاد الرئيسية (سم)"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Tailoring**
+  - Work type *(attribute_key: carpenter_work_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Work type", ar: "نوع العمل"}
+    - options: [{value: "Doors", label: {en: "Doors", ar: "أبواب"}}, {value: "Cabinets/Kitchen", label: {en: "Cabinets/Kitchen", ar: "خزائن/مطبخ"}}, {value: "Shelves", label: {en: "Shelves", ar: "رفوف"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Material preference *(attribute_key: material_preference, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material preference", ar: "تفضيل المادة"}
+    - options: [{value: "MDF", label: {en: "MDF", ar: "MDF"}}, {value: "Plywood", label: {en: "Plywood", ar: "خشب رقائقي"}}, {value: "Solid wood", label: {en: "Solid wood", ar: "خشب صلب"}}, {value: "HDF", label: {en: "HDF", ar: "HDF"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Finish *(attribute_key: wood_finish, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finish", ar: "الإنهاء"}
+    - options: [{value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Varnish", label: {en: "Varnish", ar: "ورنيش"}}, {value: "Laminate", label: {en: "Laminate", ar: "صفيح"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Main dimensions (cm) *(attribute_key: main_dimensions_cm, type: text, required: true)*
+    - label: {en: "Main dimensions (cm)", ar: "الأبعاد الرئيسية (سم)"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Ceramic
+- **Breaking and Installation**
+  - Service *(attribute_key: ceramic_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Tile installation", label: {en: "Tile installation", ar: "تركيب بلاط"}}, {value: "Marble work", label: {en: "Marble work", ar: "أعمال رخام"}}, {value: "Stairs tiling", label: {en: "Stairs tiling", ar: "تركيب بلاط الدرج"}}, {value: "Breaking & re-installation", label: {en: "Breaking & re-installation", ar: "كسر وإعادة تركيب"}}]
+  - Area (m²) *(attribute_key: area_m², type: number, required: true)*
+    - label: {en: "Area (m²)", ar: "المساحة (م²)"}
+  - Who supplies tiles/materials? *(attribute_key: who_supplies_tilesmaterials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies tiles/materials?", ar: "من يوفر البلاط/المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Tile size *(attribute_key: tile_size, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tile size", ar: "حجم البلاط"}
+  - Remove old flooring? *(attribute_key: remove_old_flooring, type: switch, required: true)*
+    - label: {en: "Remove old flooring?", ar: "إزالة الأرضية القديمة؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Ceramic**
+  - Service *(attribute_key: ceramic_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Tile installation", label: {en: "Tile installation", ar: "تركيب بلاط"}}, {value: "Marble work", label: {en: "Marble work", ar: "أعمال رخام"}}, {value: "Stairs tiling", label: {en: "Stairs tiling", ar: "تركيب بلاط الدرج"}}, {value: "Breaking & re-installation", label: {en: "Breaking & re-installation", ar: "كسر وإعادة تركيب"}}]
+  - Area (m²) *(attribute_key: area_m², type: number, required: true)*
+    - label: {en: "Area (m²)", ar: "المساحة (م²)"}
+  - Who supplies tiles/materials? *(attribute_key: who_supplies_tilesmaterials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies tiles/materials?", ar: "من يوفر البلاط/المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Tile size *(attribute_key: tile_size, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tile size", ar: "حجم البلاط"}
+  - Remove old flooring? *(attribute_key: remove_old_flooring, type: switch, required: true)*
+    - label: {en: "Remove old flooring?", ar: "إزالة الأرضية القديمة؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Marble**
+  - Service *(attribute_key: ceramic_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Tile installation", label: {en: "Tile installation", ar: "تركيب بلاط"}}, {value: "Marble work", label: {en: "Marble work", ar: "أعمال رخام"}}, {value: "Stairs tiling", label: {en: "Stairs tiling", ar: "تركيب بلاط الدرج"}}, {value: "Breaking & re-installation", label: {en: "Breaking & re-installation", ar: "كسر وإعادة تركيب"}}]
+  - Area (m²) *(attribute_key: area_m², type: number, required: true)*
+    - label: {en: "Area (m²)", ar: "المساحة (م²)"}
+  - Who supplies tiles/materials? *(attribute_key: who_supplies_tilesmaterials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies tiles/materials?", ar: "من يوفر البلاط/المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Tile size *(attribute_key: tile_size, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tile size", ar: "حجم البلاط"}
+  - Remove old flooring? *(attribute_key: remove_old_flooring, type: switch, required: true)*
+    - label: {en: "Remove old flooring?", ar: "إزالة الأرضية القديمة؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Stairs**
+  - Service *(attribute_key: ceramic_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Tile installation", label: {en: "Tile installation", ar: "تركيب بلاط"}}, {value: "Marble work", label: {en: "Marble work", ar: "أعمال رخام"}}, {value: "Stairs tiling", label: {en: "Stairs tiling", ar: "تركيب بلاط الدرج"}}, {value: "Breaking & re-installation", label: {en: "Breaking & re-installation", ar: "كسر وإعادة تركيب"}}]
+  - Area (m²) *(attribute_key: area_m², type: number, required: true)*
+    - label: {en: "Area (m²)", ar: "المساحة (م²)"}
+  - Who supplies tiles/materials? *(attribute_key: who_supplies_tilesmaterials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies tiles/materials?", ar: "من يوفر البلاط/المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Tile size *(attribute_key: tile_size, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tile size", ar: "حجم البلاط"}
+  - Remove old flooring? *(attribute_key: remove_old_flooring, type: switch, required: true)*
+    - label: {en: "Remove old flooring?", ar: "إزالة الأرضية القديمة؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Tiles**
+  - Service *(attribute_key: ceramic_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Tile installation", label: {en: "Tile installation", ar: "تركيب بلاط"}}, {value: "Marble work", label: {en: "Marble work", ar: "أعمال رخام"}}, {value: "Stairs tiling", label: {en: "Stairs tiling", ar: "تركيب بلاط الدرج"}}, {value: "Breaking & re-installation", label: {en: "Breaking & re-installation", ar: "كسر وإعادة تركيب"}}]
+  - Area (m²) *(attribute_key: area_m², type: number, required: true)*
+    - label: {en: "Area (m²)", ar: "المساحة (م²)"}
+  - Who supplies tiles/materials? *(attribute_key: who_supplies_tilesmaterials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies tiles/materials?", ar: "من يوفر البلاط/المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Tile size *(attribute_key: tile_size, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tile size", ar: "حجم البلاط"}
+  - Remove old flooring? *(attribute_key: remove_old_flooring, type: switch, required: true)*
+    - label: {en: "Remove old flooring?", ar: "إزالة الأرضية القديمة؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Cleaning Services
+- **Apartment Cleaning**
+  - Space type *(attribute_key: space_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Space type", ar: "نوع المساحة"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "House", label: {en: "House", ar: "منزل"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Building/Common areas", label: {en: "Building/Common areas", ar: "مبنى/مناطق مشتركة"}}, {value: "Hotel room/suite", label: {en: "Hotel room/suite", ar: "غرفة فندق/جناح"}}]
+  - Size (bedrooms/bathrooms or m²) *(attribute_key: size_bedroomsbathrooms_or_m², type: text, required: true)*
+    - label: {en: "Size (bedrooms/bathrooms or m²)", ar: "الحجم (غرف/حمامات أو م²)"}
+  - Service level *(attribute_key: service_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service level", ar: "مستوى الخدمة"}
+    - options: [{value: "Standard clean", label: {en: "Standard clean", ar: "تنظيف عادي"}}, {value: "Deep clean", label: {en: "Deep clean", ar: "تنظيف عميق"}}, {value: "Move-in/out", label: {en: "Move-in/out", ar: "انتقال/خروج"}}]
+  - Frequency *(attribute_key: cleaning_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}]
+  - Provider brings supplies? *(attribute_key: provider_brings_supplies, type: switch, required: true)*
+    - label: {en: "Provider brings supplies?", ar: "هل يجلب المزود المستلزمات؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Building Cleaning**
+  - Space type *(attribute_key: space_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Space type", ar: "نوع المساحة"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "House", label: {en: "House", ar: "منزل"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Building/Common areas", label: {en: "Building/Common areas", ar: "مبنى/مناطق مشتركة"}}, {value: "Hotel room/suite", label: {en: "Hotel room/suite", ar: "غرفة فندق/جناح"}}]
+  - Size (bedrooms/bathrooms or m²) *(attribute_key: size_bedroomsbathrooms_or_m², type: text, required: true)*
+    - label: {en: "Size (bedrooms/bathrooms or m²)", ar: "الحجم (غرف/حمامات أو م²)"}
+  - Service level *(attribute_key: service_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service level", ar: "مستوى الخدمة"}
+    - options: [{value: "Standard clean", label: {en: "Standard clean", ar: "تنظيف عادي"}}, {value: "Deep clean", label: {en: "Deep clean", ar: "تنظيف عميق"}}, {value: "Move-in/out", label: {en: "Move-in/out", ar: "انتقال/خروج"}}]
+  - Frequency *(attribute_key: cleaning_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}]
+  - Provider brings supplies? *(attribute_key: provider_brings_supplies, type: switch, required: true)*
+    - label: {en: "Provider brings supplies?", ar: "هل يجلب المزود المستلزمات؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Carpet and Rug Washing**
+  - Space type *(attribute_key: space_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Space type", ar: "نوع المساحة"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "House", label: {en: "House", ar: "منزل"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Building/Common areas", label: {en: "Building/Common areas", ar: "مبنى/مناطق مشتركة"}}, {value: "Hotel room/suite", label: {en: "Hotel room/suite", ar: "غرفة فندق/جناح"}}]
+  - Size (bedrooms/bathrooms or m²) *(attribute_key: size_bedroomsbathrooms_or_m², type: text, required: true)*
+    - label: {en: "Size (bedrooms/bathrooms or m²)", ar: "الحجم (غرف/حمامات أو م²)"}
+  - Service level *(attribute_key: service_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service level", ar: "مستوى الخدمة"}
+    - options: [{value: "Standard clean", label: {en: "Standard clean", ar: "تنظيف عادي"}}, {value: "Deep clean", label: {en: "Deep clean", ar: "تنظيف عميق"}}, {value: "Move-in/out", label: {en: "Move-in/out", ar: "انتقال/خروج"}}]
+  - Frequency *(attribute_key: cleaning_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}]
+  - Provider brings supplies? *(attribute_key: provider_brings_supplies, type: switch, required: true)*
+    - label: {en: "Provider brings supplies?", ar: "هل يجلب المزود المستلزمات؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Facade Cleaning**
+  - Space type *(attribute_key: space_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Space type", ar: "نوع المساحة"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "House", label: {en: "House", ar: "منزل"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Building/Common areas", label: {en: "Building/Common areas", ar: "مبنى/مناطق مشتركة"}}, {value: "Hotel room/suite", label: {en: "Hotel room/suite", ar: "غرفة فندق/جناح"}}]
+  - Size (bedrooms/bathrooms or m²) *(attribute_key: size_bedroomsbathrooms_or_m², type: text, required: true)*
+    - label: {en: "Size (bedrooms/bathrooms or m²)", ar: "الحجم (غرف/حمامات أو م²)"}
+  - Service level *(attribute_key: service_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service level", ar: "مستوى الخدمة"}
+    - options: [{value: "Standard clean", label: {en: "Standard clean", ar: "تنظيف عادي"}}, {value: "Deep clean", label: {en: "Deep clean", ar: "تنظيف عميق"}}, {value: "Move-in/out", label: {en: "Move-in/out", ar: "انتقال/خروج"}}]
+  - Frequency *(attribute_key: cleaning_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}]
+  - Provider brings supplies? *(attribute_key: provider_brings_supplies, type: switch, required: true)*
+    - label: {en: "Provider brings supplies?", ar: "هل يجلب المزود المستلزمات؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Hotel Cleaning**
+  - Space type *(attribute_key: space_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Space type", ar: "نوع المساحة"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "House", label: {en: "House", ar: "منزل"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Building/Common areas", label: {en: "Building/Common areas", ar: "مبنى/مناطق مشتركة"}}, {value: "Hotel room/suite", label: {en: "Hotel room/suite", ar: "غرفة فندق/جناح"}}]
+  - Size (bedrooms/bathrooms or m²) *(attribute_key: size_bedroomsbathrooms_or_m², type: text, required: true)*
+    - label: {en: "Size (bedrooms/bathrooms or m²)", ar: "الحجم (غرف/حمامات أو م²)"}
+  - Service level *(attribute_key: service_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service level", ar: "مستوى الخدمة"}
+    - options: [{value: "Standard clean", label: {en: "Standard clean", ar: "تنظيف عادي"}}, {value: "Deep clean", label: {en: "Deep clean", ar: "تنظيف عميق"}}, {value: "Move-in/out", label: {en: "Move-in/out", ar: "انتقال/خروج"}}]
+  - Frequency *(attribute_key: cleaning_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}]
+  - Provider brings supplies? *(attribute_key: provider_brings_supplies, type: switch, required: true)*
+    - label: {en: "Provider brings supplies?", ar: "هل يجلب المزود المستلزمات؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **House Cleaning**
+  - Space type *(attribute_key: space_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Space type", ar: "نوع المساحة"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "House", label: {en: "House", ar: "منزل"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Building/Common areas", label: {en: "Building/Common areas", ar: "مبنى/مناطق مشتركة"}}, {value: "Hotel room/suite", label: {en: "Hotel room/suite", ar: "غرفة فندق/جناح"}}]
+  - Size (bedrooms/bathrooms or m²) *(attribute_key: size_bedroomsbathrooms_or_m², type: text, required: true)*
+    - label: {en: "Size (bedrooms/bathrooms or m²)", ar: "الحجم (غرف/حمامات أو م²)"}
+  - Service level *(attribute_key: service_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service level", ar: "مستوى الخدمة"}
+    - options: [{value: "Standard clean", label: {en: "Standard clean", ar: "تنظيف عادي"}}, {value: "Deep clean", label: {en: "Deep clean", ar: "تنظيف عميق"}}, {value: "Move-in/out", label: {en: "Move-in/out", ar: "انتقال/خروج"}}]
+  - Frequency *(attribute_key: cleaning_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}]
+  - Provider brings supplies? *(attribute_key: provider_brings_supplies, type: switch, required: true)*
+    - label: {en: "Provider brings supplies?", ar: "هل يجلب المزود المستلزمات؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Marble Polishing**
+  - Space type *(attribute_key: space_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Space type", ar: "نوع المساحة"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "House", label: {en: "House", ar: "منزل"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Building/Common areas", label: {en: "Building/Common areas", ar: "مبنى/مناطق مشتركة"}}, {value: "Hotel room/suite", label: {en: "Hotel room/suite", ar: "غرفة فندق/جناح"}}]
+  - Size (bedrooms/bathrooms or m²) *(attribute_key: size_bedroomsbathrooms_or_m², type: text, required: true)*
+    - label: {en: "Size (bedrooms/bathrooms or m²)", ar: "الحجم (غرف/حمامات أو م²)"}
+  - Service level *(attribute_key: service_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service level", ar: "مستوى الخدمة"}
+    - options: [{value: "Standard clean", label: {en: "Standard clean", ar: "تنظيف عادي"}}, {value: "Deep clean", label: {en: "Deep clean", ar: "تنظيف عميق"}}, {value: "Move-in/out", label: {en: "Move-in/out", ar: "انتقال/خروج"}}]
+  - Frequency *(attribute_key: cleaning_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}]
+  - Provider brings supplies? *(attribute_key: provider_brings_supplies, type: switch, required: true)*
+    - label: {en: "Provider brings supplies?", ar: "هل يجلب المزود المستلزمات؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Tile Polishing**
+  - Space type *(attribute_key: space_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Space type", ar: "نوع المساحة"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "House", label: {en: "House", ar: "منزل"}}, {value: "Office", label: {en: "Office", ar: "مكتب"}}, {value: "Building/Common areas", label: {en: "Building/Common areas", ar: "مبنى/مناطق مشتركة"}}, {value: "Hotel room/suite", label: {en: "Hotel room/suite", ar: "غرفة فندق/جناح"}}]
+  - Size (bedrooms/bathrooms or m²) *(attribute_key: size_bedroomsbathrooms_or_m², type: text, required: true)*
+    - label: {en: "Size (bedrooms/bathrooms or m²)", ar: "الحجم (غرف/حمامات أو م²)"}
+  - Service level *(attribute_key: service_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service level", ar: "مستوى الخدمة"}
+    - options: [{value: "Standard clean", label: {en: "Standard clean", ar: "تنظيف عادي"}}, {value: "Deep clean", label: {en: "Deep clean", ar: "تنظيف عميق"}}, {value: "Move-in/out", label: {en: "Move-in/out", ar: "انتقال/خروج"}}]
+  - Frequency *(attribute_key: cleaning_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}]
+  - Provider brings supplies? *(attribute_key: provider_brings_supplies, type: switch, required: true)*
+    - label: {en: "Provider brings supplies?", ar: "هل يجلب المزود المستلزمات؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Decoration
+- **Decor**
+  - Work type *(attribute_key: decoration_work_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Work type", ar: "نوع العمل"}
+    - options: [{value: "Gypsum board", label: {en: "Gypsum board", ar: "لوح جبس"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Decor", label: {en: "Decor", ar: "ديكور"}}, {value: "Acoustic partition", label: {en: "Acoustic partition", ar: "حاجز صوتي"}}]
+  - Area or dimensions (m² or L×H) *(attribute_key: area_or_dimensions_m²_or_lh, type: text, required: true)*
+    - label: {en: "Area or dimensions (m² or L×H)", ar: "المساحة أو الأبعاد (م² أو ط×ع)"}
+  - Finishing level *(attribute_key: finishing_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finishing level", ar: "مستوى التشطيب"}
+    - options: [{value: "Ready to paint", label: {en: "Ready to paint", ar: "جاهز للطلاء"}}, {value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Wallpaper", label: {en: "Wallpaper", ar: "ورق جدران"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Gypsum Board**
+  - Work type *(attribute_key: decoration_work_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Work type", ar: "نوع العمل"}
+    - options: [{value: "Gypsum board", label: {en: "Gypsum board", ar: "لوح جبس"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Decor", label: {en: "Decor", ar: "ديكور"}}, {value: "Acoustic partition", label: {en: "Acoustic partition", ar: "حاجز صوتي"}}]
+  - Area or dimensions (m² or L×H) *(attribute_key: area_or_dimensions_m²_or_lh, type: text, required: true)*
+    - label: {en: "Area or dimensions (m² or L×H)", ar: "المساحة أو الأبعاد (م² أو ط×ع)"}
+  - Finishing level *(attribute_key: finishing_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finishing level", ar: "مستوى التشطيب"}
+    - options: [{value: "Ready to paint", label: {en: "Ready to paint", ar: "جاهز للطلاء"}}, {value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Wallpaper", label: {en: "Wallpaper", ar: "ورق جدران"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Partition**
+  - Work type *(attribute_key: decoration_work_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Work type", ar: "نوع العمل"}
+    - options: [{value: "Gypsum board", label: {en: "Gypsum board", ar: "لوح جبس"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Decor", label: {en: "Decor", ar: "ديكور"}}, {value: "Acoustic partition", label: {en: "Acoustic partition", ar: "حاجز صوتي"}}]
+  - Area or dimensions (m² or L×H) *(attribute_key: area_or_dimensions_m²_or_lh, type: text, required: true)*
+    - label: {en: "Area or dimensions (m² or L×H)", ar: "المساحة أو الأبعاد (م² أو ط×ع)"}
+  - Finishing level *(attribute_key: finishing_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finishing level", ar: "مستوى التشطيب"}
+    - options: [{value: "Ready to paint", label: {en: "Ready to paint", ar: "جاهز للطلاء"}}, {value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Wallpaper", label: {en: "Wallpaper", ar: "ورق جدران"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Partitions**
+  - Work type *(attribute_key: decoration_work_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Work type", ar: "نوع العمل"}
+    - options: [{value: "Gypsum board", label: {en: "Gypsum board", ar: "لوح جبس"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Decor", label: {en: "Decor", ar: "ديكور"}}, {value: "Acoustic partition", label: {en: "Acoustic partition", ar: "حاجز صوتي"}}]
+  - Area or dimensions (m² or L×H) *(attribute_key: area_or_dimensions_m²_or_lh, type: text, required: true)*
+    - label: {en: "Area or dimensions (m² or L×H)", ar: "المساحة أو الأبعاد (م² أو ط×ع)"}
+  - Finishing level *(attribute_key: finishing_level, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finishing level", ar: "مستوى التشطيب"}
+    - options: [{value: "Ready to paint", label: {en: "Ready to paint", ar: "جاهز للطلاء"}}, {value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Wallpaper", label: {en: "Wallpaper", ar: "ورق جدران"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Doors
+- **Aluminum Doors**
+  - Door type *(attribute_key: door_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Door type", ar: "نوع الباب"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "Wooden", label: {en: "Wooden", ar: "خشبي"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}]
+  - Quantity *(attribute_key: quantity, type: number, required: true)*
+    - label: {en: "Quantity", ar: "الكمية"}
+  - Installation or repair? *(attribute_key: installation_or_repair, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Installation or repair?", ar: "تركيب أم إصلاح؟"}
+    - options: [{value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Include lock/handle? *(attribute_key: include_lockhandle, type: switch, required: true)*
+    - label: {en: "Include lock/handle?", ar: "يشمل القفل/المقبض؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Apartment Doors**
+  - Door type *(attribute_key: door_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Door type", ar: "نوع الباب"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "Wooden", label: {en: "Wooden", ar: "خشبي"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}]
+  - Quantity *(attribute_key: quantity, type: number, required: true)*
+    - label: {en: "Quantity", ar: "الكمية"}
+  - Installation or repair? *(attribute_key: installation_or_repair, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Installation or repair?", ar: "تركيب أم إصلاح؟"}
+    - options: [{value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Include lock/handle? *(attribute_key: include_lockhandle, type: switch, required: true)*
+    - label: {en: "Include lock/handle?", ar: "يشمل القفل/المقبض؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Wooden Doors**
+  - Door type *(attribute_key: door_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Door type", ar: "نوع الباب"}
+    - options: [{value: "Apartment", label: {en: "Apartment", ar: "شقة"}}, {value: "Wooden", label: {en: "Wooden", ar: "خشبي"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}]
+  - Quantity *(attribute_key: quantity, type: number, required: true)*
+    - label: {en: "Quantity", ar: "الكمية"}
+  - Installation or repair? *(attribute_key: installation_or_repair, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Installation or repair?", ar: "تركيب أم إصلاح؟"}
+    - options: [{value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Include lock/handle? *(attribute_key: include_lockhandle, type: switch, required: true)*
+    - label: {en: "Include lock/handle?", ar: "يشمل القفل/المقبض؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Duct Cleaning
+- **Bad Odor Detection**
+  - Systems to clean *(attribute_key: systems_to_clean, type: multiselect, required: true)*
+    - label: {en: "Systems to clean", ar: "الأنظمة المراد تنظيفها"}
+    - options: [{value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Kitchen hood", label: {en: "Kitchen hood", ar: "شفاط مطبخ"}}, {value: "Bathroom extractors", label: {en: "Bathroom extractors", ar: "شفاطات الحمام"}}]
+  - How many units / vents? *(attribute_key: how_many_units_vents, type: number, required: true)*
+    - label: {en: "How many units / vents?", ar: "كم عدد الوحدات/الفتحات؟"}
+  - Issues noticed *(attribute_key: issues_noticed, type: multiselect, required: true)*
+    - label: {en: "Issues noticed", ar: "المشاكل الملاحظة"}
+    - options: [{value: "Dust", label: {en: "Dust", ar: "غبار"}}, {value: "Odor", label: {en: "Odor", ar: "رائحة"}}, {value: "Mold", label: {en: "Mold", ar: "عفن"}}, {value: "Allergy concern", label: {en: "Allergy concern", ar: "قلق من الحساسية"}}]
+  - When last cleaned? *(attribute_key: when_last_cleaned, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "When last cleaned?", ar: "متى تم التنظيف آخر مرة؟"}
+    - options: [{value: "< 6 months", label: {en: "< 6 months", ar: "أقل من 6 أشهر"}}, {value: "6–12 months", label: {en: "6–12 months", ar: "6-12 شهر"}}, {value: "> 12 months", label: {en: "> 12 months", ar: "أكثر من 12 شهر"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Drainage Clearing**
+  - Systems to clean *(attribute_key: systems_to_clean, type: multiselect, required: true)*
+    - label: {en: "Systems to clean", ar: "الأنظمة المراد تنظيفها"}
+    - options: [{value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Kitchen hood", label: {en: "Kitchen hood", ar: "شفاط مطبخ"}}, {value: "Bathroom extractors", label: {en: "Bathroom extractors", ar: "شفاطات الحمام"}}]
+  - How many units / vents? *(attribute_key: how_many_units_vents, type: number, required: true)*
+    - label: {en: "How many units / vents?", ar: "كم عدد الوحدات/الفتحات؟"}
+  - Issues noticed *(attribute_key: issues_noticed, type: multiselect, required: true)*
+    - label: {en: "Issues noticed", ar: "المشاكل الملاحظة"}
+    - options: [{value: "Dust", label: {en: "Dust", ar: "غبار"}}, {value: "Odor", label: {en: "Odor", ar: "رائحة"}}, {value: "Mold", label: {en: "Mold", ar: "عفن"}}, {value: "Allergy concern", label: {en: "Allergy concern", ar: "قلق من الحساسية"}}]
+  - When last cleaned? *(attribute_key: when_last_cleaned, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "When last cleaned?", ar: "متى تم التنظيف آخر مرة؟"}
+    - options: [{value: "< 6 months", label: {en: "< 6 months", ar: "أقل من 6 أشهر"}}, {value: "6–12 months", label: {en: "6–12 months", ar: "6-12 شهر"}}, {value: "> 12 months", label: {en: "> 12 months", ar: "أكثر من 12 شهر"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Leak Detection**
+  - Systems to clean *(attribute_key: systems_to_clean, type: multiselect, required: true)*
+    - label: {en: "Systems to clean", ar: "الأنظمة المراد تنظيفها"}
+    - options: [{value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Kitchen hood", label: {en: "Kitchen hood", ar: "شفاط مطبخ"}}, {value: "Bathroom extractors", label: {en: "Bathroom extractors", ar: "شفاطات الحمام"}}]
+  - How many units / vents? *(attribute_key: how_many_units_vents, type: number, required: true)*
+    - label: {en: "How many units / vents?", ar: "كم عدد الوحدات/الفتحات؟"}
+  - Issues noticed *(attribute_key: issues_noticed, type: multiselect, required: true)*
+    - label: {en: "Issues noticed", ar: "المشاكل الملاحظة"}
+    - options: [{value: "Dust", label: {en: "Dust", ar: "غبار"}}, {value: "Odor", label: {en: "Odor", ar: "رائحة"}}, {value: "Mold", label: {en: "Mold", ar: "عفن"}}, {value: "Allergy concern", label: {en: "Allergy concern", ar: "قلق من الحساسية"}}]
+  - When last cleaned? *(attribute_key: when_last_cleaned, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "When last cleaned?", ar: "متى تم التنظيف آخر مرة؟"}
+    - options: [{value: "< 6 months", label: {en: "< 6 months", ar: "أقل من 6 أشهر"}}, {value: "6–12 months", label: {en: "6–12 months", ar: "6-12 شهر"}}, {value: "> 12 months", label: {en: "> 12 months", ar: "أكثر من 12 شهر"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Manhole Cleaning**
+  - Systems to clean *(attribute_key: systems_to_clean, type: multiselect, required: true)*
+    - label: {en: "Systems to clean", ar: "الأنظمة المراد تنظيفها"}
+    - options: [{value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Kitchen hood", label: {en: "Kitchen hood", ar: "شفاط مطبخ"}}, {value: "Bathroom extractors", label: {en: "Bathroom extractors", ar: "شفاطات الحمام"}}]
+  - How many units / vents? *(attribute_key: how_many_units_vents, type: number, required: true)*
+    - label: {en: "How many units / vents?", ar: "كم عدد الوحدات/الفتحات؟"}
+  - Issues noticed *(attribute_key: issues_noticed, type: multiselect, required: true)*
+    - label: {en: "Issues noticed", ar: "المشاكل الملاحظة"}
+    - options: [{value: "Dust", label: {en: "Dust", ar: "غبار"}}, {value: "Odor", label: {en: "Odor", ar: "رائحة"}}, {value: "Mold", label: {en: "Mold", ar: "عفن"}}, {value: "Allergy concern", label: {en: "Allergy concern", ar: "قلق من الحساسية"}}]
+  - When last cleaned? *(attribute_key: when_last_cleaned, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "When last cleaned?", ar: "متى تم التنظيف آخر مرة؟"}
+    - options: [{value: "< 6 months", label: {en: "< 6 months", ar: "أقل من 6 أشهر"}}, {value: "6–12 months", label: {en: "6–12 months", ar: "6-12 شهر"}}, {value: "> 12 months", label: {en: "> 12 months", ar: "أكثر من 12 شهر"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Pipe Imaging**
+  - Systems to clean *(attribute_key: systems_to_clean, type: multiselect, required: true)*
+    - label: {en: "Systems to clean", ar: "الأنظمة المراد تنظيفها"}
+    - options: [{value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Kitchen hood", label: {en: "Kitchen hood", ar: "شفاط مطبخ"}}, {value: "Bathroom extractors", label: {en: "Bathroom extractors", ar: "شفاطات الحمام"}}]
+  - How many units / vents? *(attribute_key: how_many_units_vents, type: number, required: true)*
+    - label: {en: "How many units / vents?", ar: "كم عدد الوحدات/الفتحات؟"}
+  - Issues noticed *(attribute_key: issues_noticed, type: multiselect, required: true)*
+    - label: {en: "Issues noticed", ar: "المشاكل الملاحظة"}
+    - options: [{value: "Dust", label: {en: "Dust", ar: "غبار"}}, {value: "Odor", label: {en: "Odor", ar: "رائحة"}}, {value: "Mold", label: {en: "Mold", ar: "عفن"}}, {value: "Allergy concern", label: {en: "Allergy concern", ar: "قلق من الحساسية"}}]
+  - When last cleaned? *(attribute_key: when_last_cleaned, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "When last cleaned?", ar: "متى تم التنظيف آخر مرة؟"}
+    - options: [{value: "< 6 months", label: {en: "< 6 months", ar: "أقل من 6 أشهر"}}, {value: "6–12 months", label: {en: "6–12 months", ar: "6-12 شهر"}}, {value: "> 12 months", label: {en: "> 12 months", ar: "أكثر من 12 شهر"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Pit Cleaning**
+  - Systems to clean *(attribute_key: systems_to_clean, type: multiselect, required: true)*
+    - label: {en: "Systems to clean", ar: "الأنظمة المراد تنظيفها"}
+    - options: [{value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Kitchen hood", label: {en: "Kitchen hood", ar: "شفاط مطبخ"}}, {value: "Bathroom extractors", label: {en: "Bathroom extractors", ar: "شفاطات الحمام"}}]
+  - How many units / vents? *(attribute_key: how_many_units_vents, type: number, required: true)*
+    - label: {en: "How many units / vents?", ar: "كم عدد الوحدات/الفتحات؟"}
+  - Issues noticed *(attribute_key: issues_noticed, type: multiselect, required: true)*
+    - label: {en: "Issues noticed", ar: "المشاكل الملاحظة"}
+    - options: [{value: "Dust", label: {en: "Dust", ar: "غبار"}}, {value: "Odor", label: {en: "Odor", ar: "رائحة"}}, {value: "Mold", label: {en: "Mold", ar: "عفن"}}, {value: "Allergy concern", label: {en: "Allergy concern", ar: "قلق من الحساسية"}}]
+  - When last cleaned? *(attribute_key: when_last_cleaned, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "When last cleaned?", ar: "متى تم التنظيف آخر مرة؟"}
+    - options: [{value: "< 6 months", label: {en: "< 6 months", ar: "أقل من 6 أشهر"}}, {value: "6–12 months", label: {en: "6–12 months", ar: "6-12 شهر"}}, {value: "> 12 months", label: {en: "> 12 months", ar: "أكثر من 12 شهر"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Pump Installation**
+  - Systems to clean *(attribute_key: systems_to_clean, type: multiselect, required: true)*
+    - label: {en: "Systems to clean", ar: "الأنظمة المراد تنظيفها"}
+    - options: [{value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Kitchen hood", label: {en: "Kitchen hood", ar: "شفاط مطبخ"}}, {value: "Bathroom extractors", label: {en: "Bathroom extractors", ar: "شفاطات الحمام"}}]
+  - How many units / vents? *(attribute_key: how_many_units_vents, type: number, required: true)*
+    - label: {en: "How many units / vents?", ar: "كم عدد الوحدات/الفتحات؟"}
+  - Issues noticed *(attribute_key: issues_noticed, type: multiselect, required: true)*
+    - label: {en: "Issues noticed", ar: "المشاكل الملاحظة"}
+    - options: [{value: "Dust", label: {en: "Dust", ar: "غبار"}}, {value: "Odor", label: {en: "Odor", ar: "رائحة"}}, {value: "Mold", label: {en: "Mold", ar: "عفن"}}, {value: "Allergy concern", label: {en: "Allergy concern", ar: "قلق من الحساسية"}}]
+  - When last cleaned? *(attribute_key: when_last_cleaned, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "When last cleaned?", ar: "متى تم التنظيف آخر مرة؟"}
+    - options: [{value: "< 6 months", label: {en: "< 6 months", ar: "أقل من 6 أشهر"}}, {value: "6–12 months", label: {en: "6–12 months", ar: "6-12 شهر"}}, {value: "> 12 months", label: {en: "> 12 months", ar: "أكثر من 12 شهر"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Electrician
+- **Blueprints**
+  - Service *(attribute_key: electrician_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Fault repair", label: {en: "Fault repair", ar: "إصلاح عطل"}}, {value: "New power points", label: {en: "New power points", ar: "نقاط طاقة جديدة"}}, {value: "Extensions", label: {en: "Extensions", ar: "تمديدات"}}, {value: "Chandelier install", label: {en: "Chandelier install", ar: "تركيب ثريا"}}, {value: "Spotlights", label: {en: "Spotlights", ar: "أضواء موضعية"}}, {value: "Blueprints/Design", label: {en: "Blueprints/Design", ar: "مخططات/تصميم"}}]
+  - How many points/lights? (if applicable) *(attribute_key: how_many_pointslights_if_applicable, type: number, required: false)*
+    - label: {en: "How many points/lights? (if applicable)", ar: "كم عدد النقاط/الأضواء؟ (إن وجدت)"}
+  - Fault location/room *(attribute_key: fault_locationroom, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Fault location/room", ar: "موقع/غرفة العطل"}
+    - options: [{value: "Kitchen", label: {en: "Kitchen", ar: "مطبخ"}}, {value: "Bathroom", label: {en: "Bathroom", ar: "حمام"}}, {value: "Bedroom", label: {en: "Bedroom", ar: "غرفة نوم"}}, {value: "Living room", label: {en: "Living room", ar: "غرفة معيشة"}}, {value: "Corridor", label: {en: "Corridor", ar: "رواق"}}, {value: "Outdoor", label: {en: "Outdoor", ar: "خارجي"}}, {value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Who supplies materials? *(attribute_key: electrician_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Chandelier Installation**
+  - Service *(attribute_key: electrician_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Fault repair", label: {en: "Fault repair", ar: "إصلاح عطل"}}, {value: "New power points", label: {en: "New power points", ar: "نقاط طاقة جديدة"}}, {value: "Extensions", label: {en: "Extensions", ar: "تمديدات"}}, {value: "Chandelier install", label: {en: "Chandelier install", ar: "تركيب ثريا"}}, {value: "Spotlights", label: {en: "Spotlights", ar: "أضواء موضعية"}}, {value: "Blueprints/Design", label: {en: "Blueprints/Design", ar: "مخططات/تصميم"}}]
+  - How many points/lights? (if applicable) *(attribute_key: how_many_pointslights_if_applicable, type: number, required: false)*
+    - label: {en: "How many points/lights? (if applicable)", ar: "كم عدد النقاط/الأضواء؟ (إن وجدت)"}
+  - Fault location/room *(attribute_key: fault_locationroom, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Fault location/room", ar: "موقع/غرفة العطل"}
+    - options: [{value: "Kitchen", label: {en: "Kitchen", ar: "مطبخ"}}, {value: "Bathroom", label: {en: "Bathroom", ar: "حمام"}}, {value: "Bedroom", label: {en: "Bedroom", ar: "غرفة نوم"}}, {value: "Living room", label: {en: "Living room", ar: "غرفة معيشة"}}, {value: "Corridor", label: {en: "Corridor", ar: "رواق"}}, {value: "Outdoor", label: {en: "Outdoor", ar: "خارجي"}}, {value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Who supplies materials? *(attribute_key: electrician_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Electrical Fault Repair**
+  - Service *(attribute_key: electrician_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Fault repair", label: {en: "Fault repair", ar: "إصلاح عطل"}}, {value: "New power points", label: {en: "New power points", ar: "نقاط طاقة جديدة"}}, {value: "Extensions", label: {en: "Extensions", ar: "تمديدات"}}, {value: "Chandelier install", label: {en: "Chandelier install", ar: "تركيب ثريا"}}, {value: "Spotlights", label: {en: "Spotlights", ar: "أضواء موضعية"}}, {value: "Blueprints/Design", label: {en: "Blueprints/Design", ar: "مخططات/تصميم"}}]
+  - How many points/lights? (if applicable) *(attribute_key: how_many_pointslights_if_applicable, type: number, required: false)*
+    - label: {en: "How many points/lights? (if applicable)", ar: "كم عدد النقاط/الأضواء؟ (إن وجدت)"}
+  - Fault location/room *(attribute_key: fault_locationroom, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Fault location/room", ar: "موقع/غرفة العطل"}
+    - options: [{value: "Kitchen", label: {en: "Kitchen", ar: "مطبخ"}}, {value: "Bathroom", label: {en: "Bathroom", ar: "حمام"}}, {value: "Bedroom", label: {en: "Bedroom", ar: "غرفة نوم"}}, {value: "Living room", label: {en: "Living room", ar: "غرفة معيشة"}}, {value: "Corridor", label: {en: "Corridor", ar: "رواق"}}, {value: "Outdoor", label: {en: "Outdoor", ar: "خارجي"}}, {value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Who supplies materials? *(attribute_key: electrician_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Extensions**
+  - Service *(attribute_key: electrician_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Fault repair", label: {en: "Fault repair", ar: "إصلاح عطل"}}, {value: "New power points", label: {en: "New power points", ar: "نقاط طاقة جديدة"}}, {value: "Extensions", label: {en: "Extensions", ar: "تمديدات"}}, {value: "Chandelier install", label: {en: "Chandelier install", ar: "تركيب ثريا"}}, {value: "Spotlights", label: {en: "Spotlights", ar: "أضواء موضعية"}}, {value: "Blueprints/Design", label: {en: "Blueprints/Design", ar: "مخططات/تصميم"}}]
+  - How many points/lights? (if applicable) *(attribute_key: how_many_pointslights_if_applicable, type: number, required: false)*
+    - label: {en: "How many points/lights? (if applicable)", ar: "كم عدد النقاط/الأضواء؟ (إن وجدت)"}
+  - Fault location/room *(attribute_key: fault_locationroom, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Fault location/room", ar: "موقع/غرفة العطل"}
+    - options: [{value: "Kitchen", label: {en: "Kitchen", ar: "مطبخ"}}, {value: "Bathroom", label: {en: "Bathroom", ar: "حمام"}}, {value: "Bedroom", label: {en: "Bedroom", ar: "غرفة نوم"}}, {value: "Living room", label: {en: "Living room", ar: "غرفة معيشة"}}, {value: "Corridor", label: {en: "Corridor", ar: "رواق"}}, {value: "Outdoor", label: {en: "Outdoor", ar: "خارجي"}}, {value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Who supplies materials? *(attribute_key: electrician_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Lamp Installation**
+  - Service *(attribute_key: electrician_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Fault repair", label: {en: "Fault repair", ar: "إصلاح عطل"}}, {value: "New power points", label: {en: "New power points", ar: "نقاط طاقة جديدة"}}, {value: "Extensions", label: {en: "Extensions", ar: "تمديدات"}}, {value: "Chandelier install", label: {en: "Chandelier install", ar: "تركيب ثريا"}}, {value: "Spotlights", label: {en: "Spotlights", ar: "أضواء موضعية"}}, {value: "Blueprints/Design", label: {en: "Blueprints/Design", ar: "مخططات/تصميم"}}]
+  - How many points/lights? (if applicable) *(attribute_key: how_many_pointslights_if_applicable, type: number, required: false)*
+    - label: {en: "How many points/lights? (if applicable)", ar: "كم عدد النقاط/الأضواء؟ (إن وجدت)"}
+  - Fault location/room *(attribute_key: fault_locationroom, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Fault location/room", ar: "موقع/غرفة العطل"}
+    - options: [{value: "Kitchen", label: {en: "Kitchen", ar: "مطبخ"}}, {value: "Bathroom", label: {en: "Bathroom", ar: "حمام"}}, {value: "Bedroom", label: {en: "Bedroom", ar: "غرفة نوم"}}, {value: "Living room", label: {en: "Living room", ar: "غرفة معيشة"}}, {value: "Corridor", label: {en: "Corridor", ar: "رواق"}}, {value: "Outdoor", label: {en: "Outdoor", ar: "خارجي"}}, {value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Who supplies materials? *(attribute_key: electrician_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Plug Replacement**
+  - Service *(attribute_key: electrician_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Fault repair", label: {en: "Fault repair", ar: "إصلاح عطل"}}, {value: "New power points", label: {en: "New power points", ar: "نقاط طاقة جديدة"}}, {value: "Extensions", label: {en: "Extensions", ar: "تمديدات"}}, {value: "Chandelier install", label: {en: "Chandelier install", ar: "تركيب ثريا"}}, {value: "Spotlights", label: {en: "Spotlights", ar: "أضواء موضعية"}}, {value: "Blueprints/Design", label: {en: "Blueprints/Design", ar: "مخططات/تصميم"}}]
+  - How many points/lights? (if applicable) *(attribute_key: how_many_pointslights_if_applicable, type: number, required: false)*
+    - label: {en: "How many points/lights? (if applicable)", ar: "كم عدد النقاط/الأضواء؟ (إن وجدت)"}
+  - Fault location/room *(attribute_key: fault_locationroom, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Fault location/room", ar: "موقع/غرفة العطل"}
+    - options: [{value: "Kitchen", label: {en: "Kitchen", ar: "مطبخ"}}, {value: "Bathroom", label: {en: "Bathroom", ar: "حمام"}}, {value: "Bedroom", label: {en: "Bedroom", ar: "غرفة نوم"}}, {value: "Living room", label: {en: "Living room", ar: "غرفة معيشة"}}, {value: "Corridor", label: {en: "Corridor", ar: "رواق"}}, {value: "Outdoor", label: {en: "Outdoor", ar: "خارجي"}}, {value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Who supplies materials? *(attribute_key: electrician_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Plugs Provision**
+  - Service *(attribute_key: electrician_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Fault repair", label: {en: "Fault repair", ar: "إصلاح عطل"}}, {value: "New power points", label: {en: "New power points", ar: "نقاط طاقة جديدة"}}, {value: "Extensions", label: {en: "Extensions", ar: "تمديدات"}}, {value: "Chandelier install", label: {en: "Chandelier install", ar: "تركيب ثريا"}}, {value: "Spotlights", label: {en: "Spotlights", ar: "أضواء موضعية"}}, {value: "Blueprints/Design", label: {en: "Blueprints/Design", ar: "مخططات/تصميم"}}]
+  - How many points/lights? (if applicable) *(attribute_key: how_many_pointslights_if_applicable, type: number, required: false)*
+    - label: {en: "How many points/lights? (if applicable)", ar: "كم عدد النقاط/الأضواء؟ (إن وجدت)"}
+  - Fault location/room *(attribute_key: fault_locationroom, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Fault location/room", ar: "موقع/غرفة العطل"}
+    - options: [{value: "Kitchen", label: {en: "Kitchen", ar: "مطبخ"}}, {value: "Bathroom", label: {en: "Bathroom", ar: "حمام"}}, {value: "Bedroom", label: {en: "Bedroom", ar: "غرفة نوم"}}, {value: "Living room", label: {en: "Living room", ar: "غرفة معيشة"}}, {value: "Corridor", label: {en: "Corridor", ar: "رواق"}}, {value: "Outdoor", label: {en: "Outdoor", ar: "خارجي"}}, {value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Who supplies materials? *(attribute_key: electrician_who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Spotlight Installation**
+  - Service *(attribute_key: electrician_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Fault repair", label: {en: "Fault repair", ar: "إصلاح عطل"}}, {value: "New power points", label: {en: "New power points", ar: "نقاط طاقة جديدة"}}, {value: "Extensions", label: {en: "Extensions", ar: "تمديدات"}}, {value: "Chandelier install", label: {en: "Chandelier install", ar: "تركيب ثريا"}}, {value: "Spotlights", label: {en: "Spotlights", ar: "أضواء موضعية"}}, {value: "Blueprints/Design", label: {en: "Blueprints/Design", ar: "مخططات/تصميم"}}]
+  - How many points/lights? (if applicable) *(attribute_key: how_many_pointslights_if_applicable, type: number, required: false)*
+    - label: {en: "How many points/lights? (if applicable)", ar: "كم عدد النقاط/الأضواء؟ (إن وجدت)"}
+  - Fault location/room *(attribute_key: fault_locationroom, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Fault location/room", ar: "موقع/غرفة العطل"}
+    - options: [{value: "Kitchen", label: {en: "Kitchen", ar: "مطبخ"}}, {value: "Bathroom", label: {en: "Bathroom", ar: "حمام"}}, {value: "Bedroom", label: {en: "Bedroom", ar: "غرفة نوم"}}, {value: "Living room", label: {en: "Living room", ar: "غرفة معيشة"}}, {value: "Corridor", label: {en: "Corridor", ar: "رواق"}}, {value: "Outdoor", label: {en: "Outdoor", ar: "خارجي"}}, {value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Who supplies materials? *(attribute_key: who_supplies_materials, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Who supplies materials?", ar: "من يوفر المواد؟"}
+    - options: [{value: "I have materials", label: {en: "I have materials", ar: "لدي المواد"}}, {value: "Provider to supply", label: {en: "Provider to supply", ar: "المزود يوفر"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Elevators
+- **Adding Floors**
+  - Service *(attribute_key: elevators_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Maintenance", label: {en: "Maintenance", ar: "صيانة"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Adding floors", label: {en: "Adding floors", ar: "إضافة طوابق"}}]
+  - Number of floors (if applicable) *(attribute_key: number_of_floors_if_applicable, type: number, required: false)*
+    - label: {en: "Number of floors (if applicable)", ar: "عدد الطوابق (إن وجدت)"}
+  - Required capacity (kg) if known *(attribute_key: required_capacity_kg_if_known, type: number, required: true)*
+    - label: {en: "Required capacity (kg) if known", ar: "السعة المطلوبة (كجم) إن كانت معروفة"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Installation**
+  - Service *(attribute_key: elevators_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Maintenance", label: {en: "Maintenance", ar: "صيانة"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Adding floors", label: {en: "Adding floors", ar: "إضافة طوابق"}}]
+  - Number of floors (if applicable) *(attribute_key: number_of_floors_if_applicable, type: number, required: false)*
+    - label: {en: "Number of floors (if applicable)", ar: "عدد الطوابق (إن وجدت)"}
+  - Required capacity (kg) if known *(attribute_key: required_capacity_kg_if_known, type: number, required: true)*
+    - label: {en: "Required capacity (kg) if known", ar: "السعة المطلوبة (كجم) إن كانت معروفة"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Maintenance**
+  - Service *(attribute_key: elevators_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Maintenance", label: {en: "Maintenance", ar: "صيانة"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Adding floors", label: {en: "Adding floors", ar: "إضافة طوابق"}}]
+  - Number of floors (if applicable) *(attribute_key: number_of_floors_if_applicable, type: number, required: false)*
+    - label: {en: "Number of floors (if applicable)", ar: "عدد الطوابق (إن وجدت)"}
+  - Required capacity (kg) if known *(attribute_key: required_capacity_kg_if_known, type: number, required: true)*
+    - label: {en: "Required capacity (kg) if known", ar: "السعة المطلوبة (كجم) إن كانت معروفة"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Gardener
+- **Artificial Turf Installation**
+  - Scope *(attribute_key: scope, type: multiselect, required: true)*
+    - label: {en: "Scope", ar: "النطاق"}
+    - options: [{value: "Lawn care", label: {en: "Lawn care", ar: "رعاية العشب"}}, {value: "Tree pruning", label: {en: "Tree pruning", ar: "تقليم الأشجار"}}, {value: "New plants", label: {en: "New plants", ar: "نباتات جديدة"}}, {value: "Irrigation", label: {en: "Irrigation", ar: "ري"}}, {value: "Pest control", label: {en: "Pest control", ar: "مكافحة آفات"}}, {value: "Cleanup", label: {en: "Cleanup", ar: "تنظيف"}}]
+  - Garden area (m²) *(attribute_key: garden_area_m², type: number, required: true)*
+    - label: {en: "Garden area (m²)", ar: "مساحة الحديقة (م²)"}
+  - Frequency *(attribute_key: gardener_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}, {value: "Seasonal", label: {en: "Seasonal", ar: "موسمي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Interlocking Tiles Installation**
+  - Scope *(attribute_key: scope, type: multiselect, required: true)*
+    - label: {en: "Scope", ar: "النطاق"}
+    - options: [{value: "Lawn care", label: {en: "Lawn care", ar: "رعاية العشب"}}, {value: "Tree pruning", label: {en: "Tree pruning", ar: "تقليم الأشجار"}}, {value: "New plants", label: {en: "New plants", ar: "نباتات جديدة"}}, {value: "Irrigation", label: {en: "Irrigation", ar: "ري"}}, {value: "Pest control", label: {en: "Pest control", ar: "مكافحة آفات"}}, {value: "Cleanup", label: {en: "Cleanup", ar: "تنظيف"}}]
+  - Garden area (m²) *(attribute_key: garden_area_m², type: number, required: true)*
+    - label: {en: "Garden area (m²)", ar: "مساحة الحديقة (م²)"}
+  - Frequency *(attribute_key: gardener_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}, {value: "Seasonal", label: {en: "Seasonal", ar: "موسمي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Irrigation Network Extension**
+  - Scope *(attribute_key: scope, type: multiselect, required: true)*
+    - label: {en: "Scope", ar: "النطاق"}
+    - options: [{value: "Lawn care", label: {en: "Lawn care", ar: "رعاية العشب"}}, {value: "Tree pruning", label: {en: "Tree pruning", ar: "تقليم الأشجار"}}, {value: "New plants", label: {en: "New plants", ar: "نباتات جديدة"}}, {value: "Irrigation", label: {en: "Irrigation", ar: "ري"}}, {value: "Pest control", label: {en: "Pest control", ar: "مكافحة آفات"}}, {value: "Cleanup", label: {en: "Cleanup", ar: "تنظيف"}}]
+  - Garden area (m²) *(attribute_key: garden_area_m², type: number, required: true)*
+    - label: {en: "Garden area (m²)", ar: "مساحة الحديقة (م²)"}
+  - Frequency *(attribute_key: gardener_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}, {value: "Seasonal", label: {en: "Seasonal", ar: "موسمي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Natural Turf Planting**
+  - Scope *(attribute_key: scope, type: multiselect, required: true)*
+    - label: {en: "Scope", ar: "النطاق"}
+    - options: [{value: "Lawn care", label: {en: "Lawn care", ar: "رعاية العشب"}}, {value: "Tree pruning", label: {en: "Tree pruning", ar: "تقليم الأشجار"}}, {value: "New plants", label: {en: "New plants", ar: "نباتات جديدة"}}, {value: "Irrigation", label: {en: "Irrigation", ar: "ري"}}, {value: "Pest control", label: {en: "Pest control", ar: "مكافحة آفات"}}, {value: "Cleanup", label: {en: "Cleanup", ar: "تنظيف"}}]
+  - Garden area (m²) *(attribute_key: garden_area_m², type: number, required: true)*
+    - label: {en: "Garden area (m²)", ar: "مساحة الحديقة (م²)"}
+  - Frequency *(attribute_key: gardener_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}, {value: "Seasonal", label: {en: "Seasonal", ar: "موسمي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Palm Cleaning**
+  - Scope *(attribute_key: scope, type: multiselect, required: true)*
+    - label: {en: "Scope", ar: "النطاق"}
+    - options: [{value: "Lawn care", label: {en: "Lawn care", ar: "رعاية العشب"}}, {value: "Tree pruning", label: {en: "Tree pruning", ar: "تقليم الأشجار"}}, {value: "New plants", label: {en: "New plants", ar: "نباتات جديدة"}}, {value: "Irrigation", label: {en: "Irrigation", ar: "ري"}}, {value: "Pest control", label: {en: "Pest control", ar: "مكافحة آفات"}}, {value: "Cleanup", label: {en: "Cleanup", ar: "تنظيف"}}]
+  - Garden area (m²) *(attribute_key: garden_area_m², type: number, required: true)*
+    - label: {en: "Garden area (m²)", ar: "مساحة الحديقة (م²)"}
+  - Frequency *(attribute_key: gardener_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}, {value: "Seasonal", label: {en: "Seasonal", ar: "موسمي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Planting Roses and Herbs**
+  - Scope *(attribute_key: scope, type: multiselect, required: true)*
+    - label: {en: "Scope", ar: "النطاق"}
+    - options: [{value: "Lawn care", label: {en: "Lawn care", ar: "رعاية العشب"}}, {value: "Tree pruning", label: {en: "Tree pruning", ar: "تقليم الأشجار"}}, {value: "New plants", label: {en: "New plants", ar: "نباتات جديدة"}}, {value: "Irrigation", label: {en: "Irrigation", ar: "ري"}}, {value: "Pest control", label: {en: "Pest control", ar: "مكافحة آفات"}}, {value: "Cleanup", label: {en: "Cleanup", ar: "تنظيف"}}]
+  - Garden area (m²) *(attribute_key: garden_area_m², type: number, required: true)*
+    - label: {en: "Garden area (m²)", ar: "مساحة الحديقة (م²)"}
+  - Frequency *(attribute_key: gardener_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}, {value: "Seasonal", label: {en: "Seasonal", ar: "موسمي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Tree Sales and Planting**
+  - Scope *(attribute_key: scope, type: multiselect, required: true)*
+    - label: {en: "Scope", ar: "النطاق"}
+    - options: [{value: "Lawn care", label: {en: "Lawn care", ar: "رعاية العشب"}}, {value: "Tree pruning", label: {en: "Tree pruning", ar: "تقليم الأشجار"}}, {value: "New plants", label: {en: "New plants", ar: "نباتات جديدة"}}, {value: "Irrigation", label: {en: "Irrigation", ar: "ري"}}, {value: "Pest control", label: {en: "Pest control", ar: "مكافحة آفات"}}, {value: "Cleanup", label: {en: "Cleanup", ar: "تنظيف"}}]
+  - Garden area (m²) *(attribute_key: garden_area_m², type: number, required: true)*
+    - label: {en: "Garden area (m²)", ar: "مساحة الحديقة (م²)"}
+  - Frequency *(attribute_key: gardener_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}, {value: "Seasonal", label: {en: "Seasonal", ar: "موسمي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Turkish Fence Installation**
+  - Scope *(attribute_key: scope, type: multiselect, required: true)*
+    - label: {en: "Scope", ar: "النطاق"}
+    - options: [{value: "Lawn care", label: {en: "Lawn care", ar: "رعاية العشب"}}, {value: "Tree pruning", label: {en: "Tree pruning", ar: "تقليم الأشجار"}}, {value: "New plants", label: {en: "New plants", ar: "نباتات جديدة"}}, {value: "Irrigation", label: {en: "Irrigation", ar: "ري"}}, {value: "Pest control", label: {en: "Pest control", ar: "مكافحة آفات"}}, {value: "Cleanup", label: {en: "Cleanup", ar: "تنظيف"}}]
+  - Garden area (m²) *(attribute_key: garden_area_m², type: number, required: true)*
+    - label: {en: "Garden area (m²)", ar: "مساحة الحديقة (م²)"}
+  - Frequency *(attribute_key: gardener_frequency, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Frequency", ar: "التكرار"}
+    - options: [{value: "One-time", label: {en: "One-time", ar: "مرة واحدة"}}, {value: "Weekly", label: {en: "Weekly", ar: "أسبوعي"}}, {value: "Biweekly", label: {en: "Biweekly", ar: "كل أسبوعين"}}, {value: "Monthly", label: {en: "Monthly", ar: "شهري"}}, {value: "Seasonal", label: {en: "Seasonal", ar: "موسمي"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Glass
+- **Glass Tables**
+  - Glass item *(attribute_key: glass_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass item", ar: "عنصر الزجاج"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Door", label: {en: "Door", ar: "باب"}}, {value: "Shower", label: {en: "Shower", ar: "دش"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Mirror", label: {en: "Mirror", ar: "مرآة"}}, {value: "Table top", label: {en: "Table top", ar: "طاولة"}}]
+  - Glass thickness (mm) *(attribute_key: glass_thickness_mm, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass thickness (mm)", ar: "سمك الزجاج (مم)"}
+  - Tempered/safety glass? *(attribute_key: temperedsafety_glass, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tempered/safety glass?", ar: "زجاج مقسى/آمن؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Dimensions per piece (W×H cm) *(attribute_key: dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Dimensions per piece (W×H cm)", ar: "الأبعاد لكل قطعة (ع×ط سم)"}
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Mirror Shelves**
+  - Glass item *(attribute_key: glass_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass item", ar: "عنصر الزجاج"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Door", label: {en: "Door", ar: "باب"}}, {value: "Shower", label: {en: "Shower", ar: "دش"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Mirror", label: {en: "Mirror", ar: "مرآة"}}, {value: "Table top", label: {en: "Table top", ar: "طاولة"}}]
+  - Glass thickness (mm) *(attribute_key: glass_thickness_mm, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass thickness (mm)", ar: "سمك الزجاج (مم)"}
+  - Tempered/safety glass? *(attribute_key: temperedsafety_glass, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tempered/safety glass?", ar: "زجاج مقسى/آمن؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Dimensions per piece (W×H cm) *(attribute_key: dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Dimensions per piece (W×H cm)", ar: "الأبعاد لكل قطعة (ع×ط سم)"}
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Mirrors**
+  - Glass item *(attribute_key: glass_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass item", ar: "عنصر الزجاج"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Door", label: {en: "Door", ar: "باب"}}, {value: "Shower", label: {en: "Shower", ar: "دش"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Mirror", label: {en: "Mirror", ar: "مرآة"}}, {value: "Table top", label: {en: "Table top", ar: "طاولة"}}]
+  - Glass thickness (mm) *(attribute_key: glass_thickness_mm, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass thickness (mm)", ar: "سمك الزجاج (مم)"}
+  - Tempered/safety glass? *(attribute_key: temperedsafety_glass, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tempered/safety glass?", ar: "زجاج مقسى/آمن؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Dimensions per piece (W×H cm) *(attribute_key: dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Dimensions per piece (W×H cm)", ar: "الأبعاد لكل قطعة (ع×ط سم)"}
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Railings**
+  - Glass item *(attribute_key: glass_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass item", ar: "عنصر الزجاج"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Door", label: {en: "Door", ar: "باب"}}, {value: "Shower", label: {en: "Shower", ar: "دش"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Mirror", label: {en: "Mirror", ar: "مرآة"}}, {value: "Table top", label: {en: "Table top", ar: "طاولة"}}]
+  - Glass thickness (mm) *(attribute_key: glass_thickness_mm, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass thickness (mm)", ar: "سمك الزجاج (مم)"}
+  - Tempered/safety glass? *(attribute_key: temperedsafety_glass, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tempered/safety glass?", ar: "زجاج مقسى/آمن؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Dimensions per piece (W×H cm) *(attribute_key: dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Dimensions per piece (W×H cm)", ar: "الأبعاد لكل قطعة (ع×ط سم)"}
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Shower Box**
+  - Glass item *(attribute_key: glass_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass item", ar: "عنصر الزجاج"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Door", label: {en: "Door", ar: "باب"}}, {value: "Shower", label: {en: "Shower", ar: "دش"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Mirror", label: {en: "Mirror", ar: "مرآة"}}, {value: "Table top", label: {en: "Table top", ar: "طاولة"}}]
+  - Glass thickness (mm) *(attribute_key: glass_thickness_mm, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass thickness (mm)", ar: "سمك الزجاج (مم)"}
+  - Tempered/safety glass? *(attribute_key: temperedsafety_glass, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tempered/safety glass?", ar: "زجاج مقسى/آمن؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Dimensions per piece (W×H cm) *(attribute_key: dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Dimensions per piece (W×H cm)", ar: "الأبعاد لكل قطعة (ع×ط سم)"}
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Tempered Glass**
+  - Glass item *(attribute_key: glass_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass item", ar: "عنصر الزجاج"}
+    - options: [{value: "Window", label: {en: "Window", ar: "نافذة"}}, {value: "Door", label: {en: "Door", ar: "باب"}}, {value: "Shower", label: {en: "Shower", ar: "دش"}}, {value: "Partition", label: {en: "Partition", ar: "حاجز"}}, {value: "Mirror", label: {en: "Mirror", ar: "مرآة"}}, {value: "Table top", label: {en: "Table top", ar: "طاولة"}}]
+  - Glass thickness (mm) *(attribute_key: glass_thickness_mm, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Glass thickness (mm)", ar: "سمك الزجاج (مم)"}
+  - Tempered/safety glass? *(attribute_key: temperedsafety_glass, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tempered/safety glass?", ar: "زجاج مقسى/آمن؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Dimensions per piece (W×H cm) *(attribute_key: dimensions_per_piece_wh_cm, type: text, required: true)*
+    - label: {en: "Dimensions per piece (W×H cm)", ar: "الأبعاد لكل قطعة (ع×ط سم)"}
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Home Appliances Maintenance
+- **AC Repair**
+  - Appliance *(attribute_key: appliance, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Appliance", ar: "الجهاز"}
+    - options: [{value: "Refrigerator", label: {en: "Refrigerator", ar: "ثلاجة"}}, {value: "Washer", label: {en: "Washer", ar: "غسالة"}}, {value: "Dryer", label: {en: "Dryer", ar: "مجفف"}}, {value: "Oven/Cooker", label: {en: "Oven/Cooker", ar: "فرن/طباخ"}}, {value: "Dishwasher", label: {en: "Dishwasher", ar: "غسالة صحون"}}, {value: "TV", label: {en: "TV", ar: "تلفاز"}}, {value: "AC", label: {en: "AC", ar: "تكييف"}}]
+  - Issue *(attribute_key: appliance_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Not working", label: {en: "Not working", ar: "لا يعمل"}}, {value: "Not cooling/heating", label: {en: "Not cooling/heating", ar: "لا يبرد/يسخن"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "Leak", label: {en: "Leak", ar: "تسرب"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - On-site visit or carry-in? *(attribute_key: on_site_visit_or_carry_in, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "On-site visit or carry-in?", ar: "زيارة في الموقع أم إحضار؟"}
+    - options: [{value: "On-site", label: {en: "On-site", ar: "في الموقع"}}, {value: "Carry-in/Workshop", label: {en: "Carry-in/Workshop", ar: "إحضار/ورشة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Dryer Repair**
+  - Appliance *(attribute_key: appliance, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Appliance", ar: "الجهاز"}
+    - options: [{value: "Refrigerator", label: {en: "Refrigerator", ar: "ثلاجة"}}, {value: "Washer", label: {en: "Washer", ar: "غسالة"}}, {value: "Dryer", label: {en: "Dryer", ar: "مجفف"}}, {value: "Oven/Cooker", label: {en: "Oven/Cooker", ar: "فرن/طباخ"}}, {value: "Dishwasher", label: {en: "Dishwasher", ar: "غسالة صحون"}}, {value: "TV", label: {en: "TV", ar: "تلفاز"}}, {value: "AC", label: {en: "AC", ar: "تكييف"}}]
+  - Issue *(attribute_key: appliance_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Not working", label: {en: "Not working", ar: "لا يعمل"}}, {value: "Not cooling/heating", label: {en: "Not cooling/heating", ar: "لا يبرد/يسخن"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "Leak", label: {en: "Leak", ar: "تسرب"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - On-site visit or carry-in? *(attribute_key: on_site_visit_or_carry_in, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "On-site visit or carry-in?", ar: "زيارة في الموقع أم إحضار؟"}
+    - options: [{value: "On-site", label: {en: "On-site", ar: "في الموقع"}}, {value: "Carry-in/Workshop", label: {en: "Carry-in/Workshop", ar: "إحضار/ورشة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Fridge Repair**
+  - Appliance *(attribute_key: appliance, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Appliance", ar: "الجهاز"}
+    - options: [{value: "Refrigerator", label: {en: "Refrigerator", ar: "ثلاجة"}}, {value: "Washer", label: {en: "Washer", ar: "غسالة"}}, {value: "Dryer", label: {en: "Dryer", ar: "مجفف"}}, {value: "Oven/Cooker", label: {en: "Oven/Cooker", ar: "فرن/طباخ"}}, {value: "Dishwasher", label: {en: "Dishwasher", ar: "غسالة صحون"}}, {value: "TV", label: {en: "TV", ar: "تلفاز"}}, {value: "AC", label: {en: "AC", ar: "تكييف"}}]
+  - Issue *(attribute_key: appliance_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Not working", label: {en: "Not working", ar: "لا يعمل"}}, {value: "Not cooling/heating", label: {en: "Not cooling/heating", ar: "لا يبرد/يسخن"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "Leak", label: {en: "Leak", ar: "تسرب"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - On-site visit or carry-in? *(attribute_key: on_site_visit_or_carry_in, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "On-site visit or carry-in?", ar: "زيارة في الموقع أم إحضار؟"}
+    - options: [{value: "On-site", label: {en: "On-site", ar: "في الموقع"}}, {value: "Carry-in/Workshop", label: {en: "Carry-in/Workshop", ar: "إحضار/ورشة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Stove Repair**
+  - Appliance *(attribute_key: appliance, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Appliance", ar: "الجهاز"}
+    - options: [{value: "Refrigerator", label: {en: "Refrigerator", ar: "ثلاجة"}}, {value: "Washer", label: {en: "Washer", ar: "غسالة"}}, {value: "Dryer", label: {en: "Dryer", ar: "مجفف"}}, {value: "Oven/Cooker", label: {en: "Oven/Cooker", ar: "فرن/طباخ"}}, {value: "Dishwasher", label: {en: "Dishwasher", ar: "غسالة صحون"}}, {value: "TV", label: {en: "TV", ar: "تلفاز"}}, {value: "AC", label: {en: "AC", ar: "تكييف"}}]
+  - Issue *(attribute_key: appliance_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Not working", label: {en: "Not working", ar: "لا يعمل"}}, {value: "Not cooling/heating", label: {en: "Not cooling/heating", ar: "لا يبرد/يسخن"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "Leak", label: {en: "Leak", ar: "تسرب"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - On-site visit or carry-in? *(attribute_key: on_site_visit_or_carry_in, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "On-site visit or carry-in?", ar: "زيارة في الموقع أم إحضار؟"}
+    - options: [{value: "On-site", label: {en: "On-site", ar: "في الموقع"}}, {value: "Carry-in/Workshop", label: {en: "Carry-in/Workshop", ar: "إحضار/ورشة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **TV Repair**
+  - Appliance *(attribute_key: appliance, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Appliance", ar: "الجهاز"}
+    - options: [{value: "Refrigerator", label: {en: "Refrigerator", ar: "ثلاجة"}}, {value: "Washer", label: {en: "Washer", ar: "غسالة"}}, {value: "Dryer", label: {en: "Dryer", ar: "مجفف"}}, {value: "Oven/Cooker", label: {en: "Oven/Cooker", ar: "فرن/طباخ"}}, {value: "Dishwasher", label: {en: "Dishwasher", ar: "غسالة صحون"}}, {value: "TV", label: {en: "TV", ar: "تلفاز"}}, {value: "AC", label: {en: "AC", ar: "تكييف"}}]
+  - Issue *(attribute_key: appliance_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Not working", label: {en: "Not working", ar: "لا يعمل"}}, {value: "Not cooling/heating", label: {en: "Not cooling/heating", ar: "لا يبرد/يسخن"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "Leak", label: {en: "Leak", ar: "تسرب"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - On-site visit or carry-in? *(attribute_key: on_site_visit_or_carry_in, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "On-site visit or carry-in?", ar: "زيارة في الموقع أم إحضار؟"}
+    - options: [{value: "On-site", label: {en: "On-site", ar: "في الموقع"}}, {value: "Carry-in/Workshop", label: {en: "Carry-in/Workshop", ar: "إحضار/ورشة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Washing Machine Repair**
+  - Appliance *(attribute_key: appliance, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Appliance", ar: "الجهاز"}
+    - options: [{value: "Refrigerator", label: {en: "Refrigerator", ar: "ثلاجة"}}, {value: "Washer", label: {en: "Washer", ar: "غسالة"}}, {value: "Dryer", label: {en: "Dryer", ar: "مجفف"}}, {value: "Oven/Cooker", label: {en: "Oven/Cooker", ar: "فرن/طباخ"}}, {value: "Dishwasher", label: {en: "Dishwasher", ar: "غسالة صحون"}}, {value: "TV", label: {en: "TV", ar: "تلفاز"}}, {value: "AC", label: {en: "AC", ar: "تكييف"}}]
+  - Issue *(attribute_key: appliance_issue, type: multiselect, required: true)*
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Not working", label: {en: "Not working", ar: "لا يعمل"}}, {value: "Not cooling/heating", label: {en: "Not cooling/heating", ar: "لا يبرد/يسخن"}}, {value: "Noise", label: {en: "Noise", ar: "ضوضاء"}}, {value: "Leak", label: {en: "Leak", ar: "تسرب"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}]
+  - On-site visit or carry-in? *(attribute_key: on_site_visit_or_carry_in, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "On-site visit or carry-in?", ar: "زيارة في الموقع أم إحضار؟"}
+    - options: [{value: "On-site", label: {en: "On-site", ar: "في الموقع"}}, {value: "Carry-in/Workshop", label: {en: "Carry-in/Workshop", ar: "إحضار/ورشة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Insulated Roof
+- **Bathroom Insulation**
+  - Roof area (m²) *(attribute_key: roof_area_m², type: number, required: true)*
+    - label: {en: "Roof area (m²)", ar: "مساحة السقف (م²)"}
+  - Main problem *(attribute_key: main_problem, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Main problem", ar: "المشكلة الرئيسية"}
+    - options: [{value: "Heat", label: {en: "Heat", ar: "حرارة"}}, {value: "Leakage", label: {en: "Leakage", ar: "تسرب"}}, {value: "Both", label: {en: "Both", ar: "كلاهما"}}, {value: "New insulation", label: {en: "New insulation", ar: "عزل جديد"}}]
+  - Preferred insulation *(attribute_key: preferred_insulation, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Preferred insulation", ar: "العزل المفضل"}
+    - options: [{value: "PU foam", label: {en: "PU foam", ar: "رغوة PU"}}, {value: "Bitumen", label: {en: "Bitumen", ar: "بيتومين"}}, {value: "Thermal board", label: {en: "Thermal board", ar: "لوح حراري"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Access constraints *(attribute_key: roof_access_constraints, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Easy access", label: {en: "Easy access", ar: "وصول سهل"}}, {value: "Ladder", label: {en: "Ladder", ar: "سلم"}}, {value: "Hoist required", label: {en: "Hoist required", ar: "يحتاج رافعة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Cement Insulation**
+  - Roof area (m²) *(attribute_key: roof_area_m², type: number, required: true)*
+    - label: {en: "Roof area (m²)", ar: "مساحة السقف (م²)"}
+  - Main problem *(attribute_key: main_problem, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Main problem", ar: "المشكلة الرئيسية"}
+    - options: [{value: "Heat", label: {en: "Heat", ar: "حرارة"}}, {value: "Leakage", label: {en: "Leakage", ar: "تسرب"}}, {value: "Both", label: {en: "Both", ar: "كلاهما"}}, {value: "New insulation", label: {en: "New insulation", ar: "عزل جديد"}}]
+  - Preferred insulation *(attribute_key: preferred_insulation, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Preferred insulation", ar: "العزل المفضل"}
+    - options: [{value: "PU foam", label: {en: "PU foam", ar: "رغوة PU"}}, {value: "Bitumen", label: {en: "Bitumen", ar: "بيتومين"}}, {value: "Thermal board", label: {en: "Thermal board", ar: "لوح حراري"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Access constraints *(attribute_key: roof_access_constraints, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Easy access", label: {en: "Easy access", ar: "وصول سهل"}}, {value: "Ladder", label: {en: "Ladder", ar: "سلم"}}, {value: "Hoist required", label: {en: "Hoist required", ar: "يحتاج رافعة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Foam Insulation**
+  - Roof area (m²) *(attribute_key: roof_area_m², type: number, required: true)*
+    - label: {en: "Roof area (m²)", ar: "مساحة السقف (م²)"}
+  - Main problem *(attribute_key: main_problem, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Main problem", ar: "المشكلة الرئيسية"}
+    - options: [{value: "Heat", label: {en: "Heat", ar: "حرارة"}}, {value: "Leakage", label: {en: "Leakage", ar: "تسرب"}}, {value: "Both", label: {en: "Both", ar: "كلاهما"}}, {value: "New insulation", label: {en: "New insulation", ar: "عزل جديد"}}]
+  - Preferred insulation *(attribute_key: preferred_insulation, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Preferred insulation", ar: "العزل المفضل"}
+    - options: [{value: "PU foam", label: {en: "PU foam", ar: "رغوة PU"}}, {value: "Bitumen", label: {en: "Bitumen", ar: "بيتومين"}}, {value: "Thermal board", label: {en: "Thermal board", ar: "لوح حراري"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Access constraints *(attribute_key: roof_access_constraints, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Easy access", label: {en: "Easy access", ar: "وصول سهل"}}, {value: "Ladder", label: {en: "Ladder", ar: "سلم"}}, {value: "Hoist required", label: {en: "Hoist required", ar: "يحتاج رافعة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Gypsum Plaster**
+  - Roof area (m²) *(attribute_key: roof_area_m², type: number, required: true)*
+    - label: {en: "Roof area (m²)", ar: "مساحة السقف (م²)"}
+  - Main problem *(attribute_key: main_problem, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Main problem", ar: "المشكلة الرئيسية"}
+    - options: [{value: "Heat", label: {en: "Heat", ar: "حرارة"}}, {value: "Leakage", label: {en: "Leakage", ar: "تسرب"}}, {value: "Both", label: {en: "Both", ar: "كلاهما"}}, {value: "New insulation", label: {en: "New insulation", ar: "عزل جديد"}}]
+  - Preferred insulation *(attribute_key: preferred_insulation, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Preferred insulation", ar: "العزل المفضل"}
+    - options: [{value: "PU foam", label: {en: "PU foam", ar: "رغوة PU"}}, {value: "Bitumen", label: {en: "Bitumen", ar: "بيتومين"}}, {value: "Thermal board", label: {en: "Thermal board", ar: "لوح حراري"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Access constraints *(attribute_key: roof_access_constraints, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Easy access", label: {en: "Easy access", ar: "وصول سهل"}}, {value: "Ladder", label: {en: "Ladder", ar: "سلم"}}, {value: "Hoist required", label: {en: "Hoist required", ar: "يحتاج رافعة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Swimming Pools**
+  - Roof area (m²) *(attribute_key: roof_area_m², type: number, required: true)*
+    - label: {en: "Roof area (m²)", ar: "مساحة السقف (م²)"}
+  - Main problem *(attribute_key: main_problem, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Main problem", ar: "المشكلة الرئيسية"}
+    - options: [{value: "Heat", label: {en: "Heat", ar: "حرارة"}}, {value: "Leakage", label: {en: "Leakage", ar: "تسرب"}}, {value: "Both", label: {en: "Both", ar: "كلاهما"}}, {value: "New insulation", label: {en: "New insulation", ar: "عزل جديد"}}]
+  - Preferred insulation *(attribute_key: preferred_insulation, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Preferred insulation", ar: "العزل المفضل"}
+    - options: [{value: "PU foam", label: {en: "PU foam", ar: "رغوة PU"}}, {value: "Bitumen", label: {en: "Bitumen", ar: "بيتومين"}}, {value: "Thermal board", label: {en: "Thermal board", ar: "لوح حراري"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Access constraints *(attribute_key: roof_access_constraints, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Easy access", label: {en: "Easy access", ar: "وصول سهل"}}, {value: "Ladder", label: {en: "Ladder", ar: "سلم"}}, {value: "Hoist required", label: {en: "Hoist required", ar: "يحتاج رافعة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Tarpaulin Making**
+  - Roof area (m²) *(attribute_key: roof_area_m², type: number, required: true)*
+    - label: {en: "Roof area (m²)", ar: "مساحة السقف (م²)"}
+  - Main problem *(attribute_key: main_problem, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Main problem", ar: "المشكلة الرئيسية"}
+    - options: [{value: "Heat", label: {en: "Heat", ar: "حرارة"}}, {value: "Leakage", label: {en: "Leakage", ar: "تسرب"}}, {value: "Both", label: {en: "Both", ar: "كلاهما"}}, {value: "New insulation", label: {en: "New insulation", ar: "عزل جديد"}}]
+  - Preferred insulation *(attribute_key: preferred_insulation, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Preferred insulation", ar: "العزل المفضل"}
+    - options: [{value: "PU foam", label: {en: "PU foam", ar: "رغوة PU"}}, {value: "Bitumen", label: {en: "Bitumen", ar: "بيتومين"}}, {value: "Thermal board", label: {en: "Thermal board", ar: "لوح حراري"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Access constraints *(attribute_key: roof_access_constraints, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Easy access", label: {en: "Easy access", ar: "وصول سهل"}}, {value: "Ladder", label: {en: "Ladder", ar: "سلم"}}, {value: "Hoist required", label: {en: "Hoist required", ar: "يحتاج رافعة"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Ladies
+- **Abaya Tailoring**
+  - Garment type *(attribute_key: ladies_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Abaya", label: {en: "Abaya", ar: "عباءة"}}, {value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Dress", label: {en: "Dress", ar: "فستان"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Clothing Repair**
+  - Garment type *(attribute_key: ladies_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Abaya", label: {en: "Abaya", ar: "عباءة"}}, {value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Dress", label: {en: "Dress", ar: "فستان"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Daraa Tailoring**
+  - Garment type *(attribute_key: ladies_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Abaya", label: {en: "Abaya", ar: "عباءة"}}, {value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Dress", label: {en: "Dress", ar: "فستان"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Dishdasha Tailoring**
+  - Garment type *(attribute_key: ladies_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Abaya", label: {en: "Abaya", ar: "عباءة"}}, {value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Dress", label: {en: "Dress", ar: "فستان"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Dress Tailoring**
+  - Garment type *(attribute_key: ladies_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Abaya", label: {en: "Abaya", ar: "عباءة"}}, {value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Dress", label: {en: "Dress", ar: "فستان"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Locksmith
+- **Car Key Making**
+  - Issue *(attribute_key: locksmith_issue, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Locked out", label: {en: "Locked out", ar: "مقفول"}}, {value: "Lost key", label: {en: "Lost key", ar: "مفتاح مفقود"}}, {value: "Broken cylinder", label: {en: "Broken cylinder", ar: "أسطوانة مكسورة"}}, {value: "Install new lock", label: {en: "Install new lock", ar: "تركيب قفل جديد"}}, {value: "Duplicate keys", label: {en: "Duplicate keys", ar: "نسخ مفاتيح"}}, {value: "Car key/Unlock", label: {en: "Car key/Unlock", ar: "مفتاح سيارة/فتح"}}]
+  - Door type *(attribute_key: locksmith_door_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Door type", ar: "نوع الباب"}
+    - options: [{value: "Wood", label: {en: "Wood", ar: "خشب"}}, {value: "Metal", label: {en: "Metal", ar: "معدن"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}, {value: "Car", label: {en: "Car", ar: "سيارة"}}]
+  - Urgent? *(attribute_key: urgent, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Urgent?", ar: "عاجل؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Car Unlocking**
+  - Issue *(attribute_key: locksmith_issue, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Locked out", label: {en: "Locked out", ar: "مقفول"}}, {value: "Lost key", label: {en: "Lost key", ar: "مفتاح مفقود"}}, {value: "Broken cylinder", label: {en: "Broken cylinder", ar: "أسطوانة مكسورة"}}, {value: "Install new lock", label: {en: "Install new lock", ar: "تركيب قفل جديد"}}, {value: "Duplicate keys", label: {en: "Duplicate keys", ar: "نسخ مفاتيح"}}, {value: "Car key/Unlock", label: {en: "Car key/Unlock", ar: "مفتاح سيارة/فتح"}}]
+  - Door type *(attribute_key: locksmith_door_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Door type", ar: "نوع الباب"}
+    - options: [{value: "Wood", label: {en: "Wood", ar: "خشب"}}, {value: "Metal", label: {en: "Metal", ar: "معدن"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}, {value: "Car", label: {en: "Car", ar: "سيارة"}}]
+  - Urgent? *(attribute_key: urgent, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Urgent?", ar: "عاجل؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Door Opening**
+  - Issue *(attribute_key: locksmith_issue, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Locked out", label: {en: "Locked out", ar: "مقفول"}}, {value: "Lost key", label: {en: "Lost key", ar: "مفتاح مفقود"}}, {value: "Broken cylinder", label: {en: "Broken cylinder", ar: "أسطوانة مكسورة"}}, {value: "Install new lock", label: {en: "Install new lock", ar: "تركيب قفل جديد"}}, {value: "Duplicate keys", label: {en: "Duplicate keys", ar: "نسخ مفاتيح"}}, {value: "Car key/Unlock", label: {en: "Car key/Unlock", ar: "مفتاح سيارة/فتح"}}]
+  - Door type *(attribute_key: locksmith_door_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Door type", ar: "نوع الباب"}
+    - options: [{value: "Wood", label: {en: "Wood", ar: "خشب"}}, {value: "Metal", label: {en: "Metal", ar: "معدن"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}, {value: "Car", label: {en: "Car", ar: "سيارة"}}]
+  - Urgent? *(attribute_key: urgent, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Urgent?", ar: "عاجل؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Master Key Making**
+  - Issue *(attribute_key: locksmith_issue, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Locked out", label: {en: "Locked out", ar: "مقفول"}}, {value: "Lost key", label: {en: "Lost key", ar: "مفتاح مفقود"}}, {value: "Broken cylinder", label: {en: "Broken cylinder", ar: "أسطوانة مكسورة"}}, {value: "Install new lock", label: {en: "Install new lock", ar: "تركيب قفل جديد"}}, {value: "Duplicate keys", label: {en: "Duplicate keys", ar: "نسخ مفاتيح"}}, {value: "Car key/Unlock", label: {en: "Car key/Unlock", ar: "مفتاح سيارة/فتح"}}]
+  - Door type *(attribute_key: locksmith_door_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Door type", ar: "نوع الباب"}
+    - options: [{value: "Wood", label: {en: "Wood", ar: "خشب"}}, {value: "Metal", label: {en: "Metal", ar: "معدن"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}, {value: "Car", label: {en: "Car", ar: "سيارة"}}]
+  - Urgent? *(attribute_key: urgent, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Urgent?", ar: "عاجل؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Safe Opening**
+  - Issue *(attribute_key: locksmith_issue, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Issue", ar: "المشكلة"}
+    - options: [{value: "Locked out", label: {en: "Locked out", ar: "مقفول"}}, {value: "Lost key", label: {en: "Lost key", ar: "مفتاح مفقود"}}, {value: "Broken cylinder", label: {en: "Broken cylinder", ar: "أسطوانة مكسورة"}}, {value: "Install new lock", label: {en: "Install new lock", ar: "تركيب قفل جديد"}}, {value: "Duplicate keys", label: {en: "Duplicate keys", ar: "نسخ مفاتيح"}}, {value: "Car key/Unlock", label: {en: "Car key/Unlock", ar: "مفتاح سيارة/فتح"}}]
+  - Door type *(attribute_key: locksmith_door_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Door type", ar: "نوع الباب"}
+    - options: [{value: "Wood", label: {en: "Wood", ar: "خشب"}}, {value: "Metal", label: {en: "Metal", ar: "معدن"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}, {value: "Car", label: {en: "Car", ar: "سيارة"}}]
+  - Urgent? *(attribute_key: urgent, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Urgent?", ar: "عاجل؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No", label: {en: "No", ar: "لا"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Men
+- **Abaya Tailoring**
+  - Garment type *(attribute_key: men_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Suit", label: {en: "Suit", ar: "بدلة"}}, {value: "Pants", label: {en: "Pants", ar: "بنطلون"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Clothing Repair**
+  - Garment type *(attribute_key: men_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Suit", label: {en: "Suit", ar: "بدلة"}}, {value: "Pants", label: {en: "Pants", ar: "بنطلون"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Daraa Tailoring**
+  - Garment type *(attribute_key: men_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Suit", label: {en: "Suit", ar: "بدلة"}}, {value: "Pants", label: {en: "Pants", ar: "بنطلون"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Dishdasha Tailoring**
+  - Garment type *(attribute_key: men_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Suit", label: {en: "Suit", ar: "بدلة"}}, {value: "Pants", label: {en: "Pants", ar: "بنطلون"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Dress Tailoring**
+  - Garment type *(attribute_key: men_garment_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Garment type", ar: "نوع الثوب"}
+    - options: [{value: "Dishdasha", label: {en: "Dishdasha", ar: "دشداشة"}}, {value: "Suit", label: {en: "Suit", ar: "بدلة"}}, {value: "Pants", label: {en: "Pants", ar: "بنطلون"}}, {value: "Repair/Alteration", label: {en: "Repair/Alteration", ar: "إصلاح/تعديل"}}]
+  - Number of pieces *(attribute_key: number_of_pieces, type: number, required: true)*
+    - label: {en: "Number of pieces", ar: "عدد القطع"}
+  - Do you have fabric? *(attribute_key: do_you_have_fabric, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have fabric?", ar: "هل لديك القماش؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "No, provider to supply", label: {en: "No, provider to supply", ar: "لا، المزود يوفر"}}]
+  - Do you have measurements? *(attribute_key: do_you_have_measurements, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "Do you have measurements?", ar: "هل لديك المقاسات؟"}
+    - options: [{value: "Yes", label: {en: "Yes", ar: "نعم"}}, {value: "Need measurement service", label: {en: "Need measurement service", ar: "يحتاج خدمة قياس"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Metalwork
+- **Awnings**
+  - Item *(attribute_key: metalwork_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Item", ar: "العنصر"}
+    - options: [{value: "Gate", label: {en: "Gate", ar: "بوابة"}}, {value: "Fence", label: {en: "Fence", ar: "سياج"}}, {value: "Stair/Handrail", label: {en: "Stair/Handrail", ar: "درج/درابزين"}}, {value: "Canopy/Awning", label: {en: "Canopy/Awning", ar: "مظلة"}}]
+  - Material *(attribute_key: material, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material", ar: "المادة"}
+    - options: [{value: "Iron", label: {en: "Iron", ar: "حديد"}}, {value: "Steel", label: {en: "Steel", ar: "فولاذ"}}, {value: "Stainless", label: {en: "Stainless", ar: "ستانلس"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}]
+  - Finish *(attribute_key: metal_finish, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finish", ar: "الإنهاء"}
+    - options: [{value: "Galvanized", label: {en: "Galvanized", ar: "مطلي بالزنك"}}, {value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Powder coat", label: {en: "Powder coat", ar: "طلاء بودرة"}}]
+  - Quantity *(attribute_key: quantity, type: number, required: true)*
+    - label: {en: "Quantity", ar: "الكمية"}
+  - Main dimensions (W×H×L cm) *(attribute_key: main_dimensions_whl_cm, type: text, required: true)*
+    - label: {en: "Main dimensions (W×H×L cm)", ar: "الأبعاد الرئيسية (ع×ط×ل سم)"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Blacksmithing**
+  - Item *(attribute_key: metalwork_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Item", ar: "العنصر"}
+    - options: [{value: "Gate", label: {en: "Gate", ar: "بوابة"}}, {value: "Fence", label: {en: "Fence", ar: "سياج"}}, {value: "Stair/Handrail", label: {en: "Stair/Handrail", ar: "درج/درابزين"}}, {value: "Canopy/Awning", label: {en: "Canopy/Awning", ar: "مظلة"}}]
+  - Material *(attribute_key: material, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material", ar: "المادة"}
+    - options: [{value: "Iron", label: {en: "Iron", ar: "حديد"}}, {value: "Steel", label: {en: "Steel", ar: "فولاذ"}}, {value: "Stainless", label: {en: "Stainless", ar: "ستانلس"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}]
+  - Finish *(attribute_key: metal_finish, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finish", ar: "الإنهاء"}
+    - options: [{value: "Galvanized", label: {en: "Galvanized", ar: "مطلي بالزنك"}}, {value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Powder coat", label: {en: "Powder coat", ar: "طلاء بودرة"}}]
+  - Quantity *(attribute_key: quantity, type: number, required: true)*
+    - label: {en: "Quantity", ar: "الكمية"}
+  - Main dimensions (W×H×L cm) *(attribute_key: main_dimensions_whl_cm, type: text, required: true)*
+    - label: {en: "Main dimensions (W×H×L cm)", ar: "الأبعاد الرئيسية (ع×ط×ل سم)"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Raw Awnings**
+  - Item *(attribute_key: metalwork_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Item", ar: "العنصر"}
+    - options: [{value: "Gate", label: {en: "Gate", ar: "بوابة"}}, {value: "Fence", label: {en: "Fence", ar: "سياج"}}, {value: "Stair/Handrail", label: {en: "Stair/Handrail", ar: "درج/درابزين"}}, {value: "Canopy/Awning", label: {en: "Canopy/Awning", ar: "مظلة"}}]
+  - Material *(attribute_key: material, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material", ar: "المادة"}
+    - options: [{value: "Iron", label: {en: "Iron", ar: "حديد"}}, {value: "Steel", label: {en: "Steel", ar: "فولاذ"}}, {value: "Stainless", label: {en: "Stainless", ar: "ستانلس"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}]
+  - Finish *(attribute_key: metal_finish, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finish", ar: "الإنهاء"}
+    - options: [{value: "Galvanized", label: {en: "Galvanized", ar: "مطلي بالزنك"}}, {value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Powder coat", label: {en: "Powder coat", ar: "طلاء بودرة"}}]
+  - Quantity *(attribute_key: quantity, type: number, required: true)*
+    - label: {en: "Quantity", ar: "الكمية"}
+  - Main dimensions (W×H×L cm) *(attribute_key: main_dimensions_whl_cm, type: text, required: true)*
+    - label: {en: "Main dimensions (W×H×L cm)", ar: "الأبعاد الرئيسية (ع×ط×ل سم)"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Sandwich Panels**
+  - Item *(attribute_key: metalwork_item, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Item", ar: "العنصر"}
+    - options: [{value: "Gate", label: {en: "Gate", ar: "بوابة"}}, {value: "Fence", label: {en: "Fence", ar: "سياج"}}, {value: "Stair/Handrail", label: {en: "Stair/Handrail", ar: "درج/درابزين"}}, {value: "Canopy/Awning", label: {en: "Canopy/Awning", ar: "مظلة"}}]
+  - Material *(attribute_key: material, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Material", ar: "المادة"}
+    - options: [{value: "Iron", label: {en: "Iron", ar: "حديد"}}, {value: "Steel", label: {en: "Steel", ar: "فولاذ"}}, {value: "Stainless", label: {en: "Stainless", ar: "ستانلس"}}, {value: "Aluminum", label: {en: "Aluminum", ar: "ألومنيوم"}}]
+  - Finish *(attribute_key: finish, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Finish", ar: "الإنهاء"}
+    - options: [{value: "Galvanized", label: {en: "Galvanized", ar: "مطلي بالزنك"}}, {value: "Painted", label: {en: "Painted", ar: "مطلي"}}, {value: "Powder coat", label: {en: "Powder coat", ar: "طلاء بودرة"}}]
+  - Quantity *(attribute_key: quantity, type: number, required: true)*
+    - label: {en: "Quantity", ar: "الكمية"}
+  - Main dimensions (W×H×L cm) *(attribute_key: main_dimensions_whl_cm, type: text, required: true)*
+    - label: {en: "Main dimensions (W×H×L cm)", ar: "الأبعاد الرئيسية (ع×ط×ل سم)"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Pack & Move
+- **Dismantle and install**
+
+  - Size *(attribute_key: size, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Size", ar: "الحجم"}
+    - options: [{value: "A few items", label: {en: "A few items", ar: "بعض العناصر"}}, {value: "Studio/1 BR", label: {en: "Studio/1 BR", ar: "استوديو/غرفة واحدة"}}, {value: "2–3 BR", label: {en: "2–3 BR", ar: "2-3 غرف"}}, {value: "4+ BR", label: {en: "4+ BR", ar: "أكثر من 4 غرف"}}, {value: "Office <100m²", label: {en: "Office <100m²", ar: "مكتب أقل من 100م²"}}, {value: "Office 100–300m²", label: {en: "Office 100–300m²", ar: "مكتب 100-300م²"}}, {value: "Office 300m²+", label: {en: "Office 300m²+", ar: "مكتب أكثر من 300م²"}}]
+  - Special items *(attribute_key: special_items, type: multiselect, required: true)*
+    - label: {en: "Special items", ar: "عناصر خاصة"}
+    - options: [{value: "Piano", label: {en: "Piano", ar: "بيانو"}}, {value: "Safe", label: {en: "Safe", ar: "خزنة"}}, {value: "Large mirror/glass", label: {en: "Large mirror/glass", ar: "مرآة/زجاج كبير"}}, {value: "Fragile art", label: {en: "Fragile art", ar: "فن هش"}}, {value: "Aquarium", label: {en: "Aquarium", ar: "حوض أسماك"}}, {value: "Treadmill", label: {en: "Treadmill", ar: "جهاز مشي"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Elevator/truck access available? *(attribute_key: elevatortruck_access_available, type: switch, required: true)*
+    - label: {en: "Elevator/truck access available?", ar: "هل يوجد وصول للمصعد/الشاحنة؟"}
+  - From location *(attribute_key: move_from_location_area_block_landmark, type: location, required: true)*
+    - label: {en: "From location", ar: "موقع الانطلاق"}
+  - To location *(attribute_key: move_to_location_area_block_landmark, type: text, required: true)*
+    - label: {en: "To location", ar: "موقع الوصول"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **In-house Moving**
+
+  - Size *(attribute_key: size, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Size", ar: "الحجم"}
+    - options: [{value: "A few items", label: {en: "A few items", ar: "بعض العناصر"}}, {value: "Studio/1 BR", label: {en: "Studio/1 BR", ar: "استوديو/غرفة واحدة"}}, {value: "2–3 BR", label: {en: "2–3 BR", ar: "2-3 غرف"}}, {value: "4+ BR", label: {en: "4+ BR", ar: "أكثر من 4 غرف"}}, {value: "Office <100m²", label: {en: "Office <100m²", ar: "مكتب أقل من 100م²"}}, {value: "Office 100–300m²", label: {en: "Office 100–300m²", ar: "مكتب 100-300م²"}}, {value: "Office 300m²+", label: {en: "Office 300m²+", ar: "مكتب أكثر من 300م²"}}]
+  - Special items *(attribute_key: special_items, type: multiselect, required: true)*
+    - label: {en: "Special items", ar: "عناصر خاصة"}
+    - options: [{value: "Piano", label: {en: "Piano", ar: "بيانو"}}, {value: "Safe", label: {en: "Safe", ar: "خزنة"}}, {value: "Large mirror/glass", label: {en: "Large mirror/glass", ar: "مرآة/زجاج كبير"}}, {value: "Fragile art", label: {en: "Fragile art", ar: "فن هش"}}, {value: "Aquarium", label: {en: "Aquarium", ar: "حوض أسماك"}}, {value: "Treadmill", label: {en: "Treadmill", ar: "جهاز مشي"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Elevator/truck access available? *(attribute_key: elevatortruck_access_available, type: switch, required: true)*
+    - label: {en: "Elevator/truck access available?", ar: "هل يوجد وصول للمصعد/الشاحنة؟"}
+  - From location *(attribute_key: move_from_location_area_block_landmark, type: location, required: true)*
+    - label: {en: "From location", ar: "موقع الانطلاق"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Inter-area Moving**
+
+  - Size *(attribute_key: size, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Size", ar: "الحجم"}
+    - options: [{value: "A few items", label: {en: "A few items", ar: "بعض العناصر"}}, {value: "Studio/1 BR", label: {en: "Studio/1 BR", ar: "استوديو/غرفة واحدة"}}, {value: "2–3 BR", label: {en: "2–3 BR", ar: "2-3 غرف"}}, {value: "4+ BR", label: {en: "4+ BR", ar: "أكثر من 4 غرف"}}, {value: "Office <100m²", label: {en: "Office <100m²", ar: "مكتب أقل من 100م²"}}, {value: "Office 100–300m²", label: {en: "Office 100–300m²", ar: "مكتب 100-300م²"}}, {value: "Office 300m²+", label: {en: "Office 300m²+", ar: "مكتب أكثر من 300م²"}}]
+  - Special items *(attribute_key: special_items, type: multiselect, required: true)*
+    - label: {en: "Special items", ar: "عناصر خاصة"}
+    - options: [{value: "Piano", label: {en: "Piano", ar: "بيانو"}}, {value: "Safe", label: {en: "Safe", ar: "خزنة"}}, {value: "Large mirror/glass", label: {en: "Large mirror/glass", ar: "مرآة/زجاج كبير"}}, {value: "Fragile art", label: {en: "Fragile art", ar: "فن هش"}}, {value: "Aquarium", label: {en: "Aquarium", ar: "حوض أسماك"}}, {value: "Treadmill", label: {en: "Treadmill", ar: "جهاز مشي"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Elevator/truck access available? *(attribute_key: elevatortruck_access_available, type: switch, required: true)*
+    - label: {en: "Elevator/truck access available?", ar: "هل يوجد وصول للمصعد/الشاحنة؟"}
+  - From location *(attribute_key: move_from_location_area_block_landmark, type: location, required: true)*
+    - label: {en: "From location", ar: "موقع الانطلاق"}
+  - To location *(attribute_key: move_to_location_area_block_landmark, type: text, required: true)*
+    - label: {en: "To location", ar: "موقع الوصول"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Packaging**
+
+  - Size *(attribute_key: size, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Size", ar: "الحجم"}
+    - options: [{value: "A few items", label: {en: "A few items", ar: "بعض العناصر"}}, {value: "Studio/1 BR", label: {en: "Studio/1 BR", ar: "استوديو/غرفة واحدة"}}, {value: "2–3 BR", label: {en: "2–3 BR", ar: "2-3 غرف"}}, {value: "4+ BR", label: {en: "4+ BR", ar: "أكثر من 4 غرف"}}, {value: "Office <100m²", label: {en: "Office <100m²", ar: "مكتب أقل من 100م²"}}, {value: "Office 100–300m²", label: {en: "Office 100–300m²", ar: "مكتب 100-300م²"}}, {value: "Office 300m²+", label: {en: "Office 300m²+", ar: "مكتب أكثر من 300م²"}}]
+  - Special items *(attribute_key: special_items, type: multiselect, required: true)*
+    - label: {en: "Special items", ar: "عناصر خاصة"}
+    - options: [{value: "Piano", label: {en: "Piano", ar: "بيانو"}}, {value: "Safe", label: {en: "Safe", ar: "خزنة"}}, {value: "Large mirror/glass", label: {en: "Large mirror/glass", ar: "مرآة/زجاج كبير"}}, {value: "Fragile art", label: {en: "Fragile art", ar: "فن هش"}}, {value: "Aquarium", label: {en: "Aquarium", ar: "حوض أسماك"}}, {value: "Treadmill", label: {en: "Treadmill", ar: "جهاز مشي"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Elevator/truck access available? *(attribute_key: elevatortruck_access_available, type: switch, required: true)*
+    - label: {en: "Elevator/truck access available?", ar: "هل يوجد وصول للمصعد/الشاحنة؟"}
+  - From location *(attribute_key: move_from_location_area_block_landmark, type: location, required: true)*
+    - label: {en: "From location", ar: "موقع الانطلاق"}
+  - To location *(attribute_key: move_to_location_area_block_landmark, type: text, required: true)*
+    - label: {en: "To location", ar: "موقع الوصول"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Painter
+- **Facade Painting**
+  - Area (m²) or rooms *(attribute_key: area_m²_or_rooms, type: text, required: true)*
+    - label: {en: "Area (m²) or rooms", ar: "المساحة (م²) أو الغرف"}
+  - Paint type *(attribute_key: paint_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Paint type", ar: "نوع الطلاء"}
+    - options: [{value: "Emulsion", label: {en: "Emulsion", ar: "دهان مستحلب"}}, {value: "Oil-based", label: {en: "Oil-based", ar: "زيتي"}}, {value: "Anti-mold", label: {en: "Anti-mold", ar: "مضاد للعفن"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Wall condition issues *(attribute_key: wall_condition_issues, type: multiselect, required: true)*
+    - label: {en: "Wall condition issues", ar: "مشاكل حالة الجدار"}
+    - options: [{value: "Cracks", label: {en: "Cracks", ar: "تشققات"}}, {value: "Holes", label: {en: "Holes", ar: "ثقوب"}}, {value: "Damp/Mold", label: {en: "Damp/Mold", ar: "رطوبة/عفن"}}, {value: "Peeling", label: {en: "Peeling", ar: "تقشير"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - How many colors? *(attribute_key: how_many_colors, type: number, required: true)*
+    - label: {en: "How many colors?", ar: "كم عدد الألوان؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Gloss Painting**
+  - Area (m²) or rooms *(attribute_key: area_m²_or_rooms, type: text, required: true)*
+    - label: {en: "Area (m²) or rooms", ar: "المساحة (م²) أو الغرف"}
+  - Paint type *(attribute_key: paint_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Paint type", ar: "نوع الطلاء"}
+    - options: [{value: "Emulsion", label: {en: "Emulsion", ar: "دهان مستحلب"}}, {value: "Oil-based", label: {en: "Oil-based", ar: "زيتي"}}, {value: "Anti-mold", label: {en: "Anti-mold", ar: "مضاد للعفن"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Wall condition issues *(attribute_key: wall_condition_issues, type: multiselect, required: true)*
+    - label: {en: "Wall condition issues", ar: "مشاكل حالة الجدار"}
+    - options: [{value: "Cracks", label: {en: "Cracks", ar: "تشققات"}}, {value: "Holes", label: {en: "Holes", ar: "ثقوب"}}, {value: "Damp/Mold", label: {en: "Damp/Mold", ar: "رطوبة/عفن"}}, {value: "Peeling", label: {en: "Peeling", ar: "تقشير"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - How many colors? *(attribute_key: how_many_colors, type: number, required: true)*
+    - label: {en: "How many colors?", ar: "كم عدد الألوان؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Italian Painting**
+  - Area (m²) or rooms *(attribute_key: area_m²_or_rooms, type: text, required: true)*
+    - label: {en: "Area (m²) or rooms", ar: "المساحة (م²) أو الغرف"}
+  - Paint type *(attribute_key: paint_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Paint type", ar: "نوع الطلاء"}
+    - options: [{value: "Emulsion", label: {en: "Emulsion", ar: "دهان مستحلب"}}, {value: "Oil-based", label: {en: "Oil-based", ar: "زيتي"}}, {value: "Anti-mold", label: {en: "Anti-mold", ar: "مضاد للعفن"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Wall condition issues *(attribute_key: wall_condition_issues, type: multiselect, required: true)*
+    - label: {en: "Wall condition issues", ar: "مشاكل حالة الجدار"}
+    - options: [{value: "Cracks", label: {en: "Cracks", ar: "تشققات"}}, {value: "Holes", label: {en: "Holes", ar: "ثقوب"}}, {value: "Damp/Mold", label: {en: "Damp/Mold", ar: "رطوبة/عفن"}}, {value: "Peeling", label: {en: "Peeling", ar: "تقشير"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - How many colors? *(attribute_key: how_many_colors, type: number, required: true)*
+    - label: {en: "How many colors?", ar: "كم عدد الألوان؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Matte Painting**
+  - Area (m²) or rooms *(attribute_key: area_m²_or_rooms, type: text, required: true)*
+    - label: {en: "Area (m²) or rooms", ar: "المساحة (م²) أو الغرف"}
+  - Paint type *(attribute_key: paint_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Paint type", ar: "نوع الطلاء"}
+    - options: [{value: "Emulsion", label: {en: "Emulsion", ar: "دهان مستحلب"}}, {value: "Oil-based", label: {en: "Oil-based", ar: "زيتي"}}, {value: "Anti-mold", label: {en: "Anti-mold", ar: "مضاد للعفن"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Wall condition issues *(attribute_key: wall_condition_issues, type: multiselect, required: true)*
+    - label: {en: "Wall condition issues", ar: "مشاكل حالة الجدار"}
+    - options: [{value: "Cracks", label: {en: "Cracks", ar: "تشققات"}}, {value: "Holes", label: {en: "Holes", ar: "ثقوب"}}, {value: "Damp/Mold", label: {en: "Damp/Mold", ar: "رطوبة/عفن"}}, {value: "Peeling", label: {en: "Peeling", ar: "تقشير"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - How many colors? *(attribute_key: how_many_colors, type: number, required: true)*
+    - label: {en: "How many colors?", ar: "كم عدد الألوان؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Wallpaper**
+  - Area (m²) or rooms *(attribute_key: area_m²_or_rooms, type: text, required: true)*
+    - label: {en: "Area (m²) or rooms", ar: "المساحة (م²) أو الغرف"}
+  - Paint type *(attribute_key: paint_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Paint type", ar: "نوع الطلاء"}
+    - options: [{value: "Emulsion", label: {en: "Emulsion", ar: "دهان مستحلب"}}, {value: "Oil-based", label: {en: "Oil-based", ar: "زيتي"}}, {value: "Anti-mold", label: {en: "Anti-mold", ar: "مضاد للعفن"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Wall condition issues *(attribute_key: wall_condition_issues, type: multiselect, required: true)*
+    - label: {en: "Wall condition issues", ar: "مشاكل حالة الجدار"}
+    - options: [{value: "Cracks", label: {en: "Cracks", ar: "تشققات"}}, {value: "Holes", label: {en: "Holes", ar: "ثقوب"}}, {value: "Damp/Mold", label: {en: "Damp/Mold", ar: "رطوبة/عفن"}}, {value: "Peeling", label: {en: "Peeling", ar: "تقشير"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - How many colors? *(attribute_key: how_many_colors, type: number, required: true)*
+    - label: {en: "How many colors?", ar: "كم عدد الألوان؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Plumber
+- **Breaking and Extension**
+  - Service *(attribute_key: plumber_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Leak detection", label: {en: "Leak detection", ar: "كشف تسرب"}}, {value: "Pump replacement", label: {en: "Pump replacement", ar: "استبدال مضخة"}}, {value: "Manhole cover install", label: {en: "Manhole cover install", ar: "تركيب غطاء بئر"}}, {value: "Heater maintenance/replacement", label: {en: "Heater maintenance/replacement", ar: "صيانة/استبدال سخان"}}, {value: "Pit machine repair", label: {en: "Pit machine repair", ar: "إصلاح مضخة البئر"}}, {value: "Breaking/extension", label: {en: "Breaking/extension", ar: "كسر/تمديد"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}, {value: "Bad odor fix", label: {en: "Bad odor fix", ar: "إصلاح رائحة كريهة"}}]
+  - Number of fixtures affected (if applicable) *(attribute_key: number_of_fixtures_affected_if_applicable, type: number, required: false)*
+    - label: {en: "Number of fixtures affected (if applicable)", ar: "عدد التركيبات المتأثرة (إن وجدت)"}
+  - Access constraints *(attribute_key: plumber_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Shaft", label: {en: "Shaft", ar: "بئر"}}, {value: "In-ceiling", label: {en: "In-ceiling", ar: "في السقف"}}, {value: "Pit", label: {en: "Pit", ar: "بئر"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Water cutoff possible? *(attribute_key: water_cutoff_possible, type: switch, required: true)*
+    - label: {en: "Water cutoff possible?", ar: "هل يمكن قطع الماء؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Central Heater Maintenance and Replacement**
+  - Service *(attribute_key: plumber_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Leak detection", label: {en: "Leak detection", ar: "كشف تسرب"}}, {value: "Pump replacement", label: {en: "Pump replacement", ar: "استبدال مضخة"}}, {value: "Manhole cover install", label: {en: "Manhole cover install", ar: "تركيب غطاء بئر"}}, {value: "Heater maintenance/replacement", label: {en: "Heater maintenance/replacement", ar: "صيانة/استبدال سخان"}}, {value: "Pit machine repair", label: {en: "Pit machine repair", ar: "إصلاح مضخة البئر"}}, {value: "Breaking/extension", label: {en: "Breaking/extension", ar: "كسر/تمديد"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}, {value: "Bad odor fix", label: {en: "Bad odor fix", ar: "إصلاح رائحة كريهة"}}]
+  - Number of fixtures affected (if applicable) *(attribute_key: number_of_fixtures_affected_if_applicable, type: number, required: false)*
+    - label: {en: "Number of fixtures affected (if applicable)", ar: "عدد التركيبات المتأثرة (إن وجدت)"}
+  - Access constraints *(attribute_key: plumber_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Shaft", label: {en: "Shaft", ar: "بئر"}}, {value: "In-ceiling", label: {en: "In-ceiling", ar: "في السقف"}}, {value: "Pit", label: {en: "Pit", ar: "بئر"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Water cutoff possible? *(attribute_key: water_cutoff_possible, type: switch, required: true)*
+    - label: {en: "Water cutoff possible?", ar: "هل يمكن قطع الماء؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Eliminating Bad Odors**
+  - Service *(attribute_key: plumber_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Leak detection", label: {en: "Leak detection", ar: "كشف تسرب"}}, {value: "Pump replacement", label: {en: "Pump replacement", ar: "استبدال مضخة"}}, {value: "Manhole cover install", label: {en: "Manhole cover install", ar: "تركيب غطاء بئر"}}, {value: "Heater maintenance/replacement", label: {en: "Heater maintenance/replacement", ar: "صيانة/استبدال سخان"}}, {value: "Pit machine repair", label: {en: "Pit machine repair", ar: "إصلاح مضخة البئر"}}, {value: "Breaking/extension", label: {en: "Breaking/extension", ar: "كسر/تمديد"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}, {value: "Bad odor fix", label: {en: "Bad odor fix", ar: "إصلاح رائحة كريهة"}}]
+  - Number of fixtures affected (if applicable) *(attribute_key: number_of_fixtures_affected_if_applicable, type: number, required: false)*
+    - label: {en: "Number of fixtures affected (if applicable)", ar: "عدد التركيبات المتأثرة (إن وجدت)"}
+  - Access constraints *(attribute_key: plumber_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Shaft", label: {en: "Shaft", ar: "بئر"}}, {value: "In-ceiling", label: {en: "In-ceiling", ar: "في السقف"}}, {value: "Pit", label: {en: "Pit", ar: "بئر"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Water cutoff possible? *(attribute_key: water_cutoff_possible, type: switch, required: true)*
+    - label: {en: "Water cutoff possible?", ar: "هل يمكن قطع الماء؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Fresh Water Pump Replacement**
+  - Service *(attribute_key: plumber_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Leak detection", label: {en: "Leak detection", ar: "كشف تسرب"}}, {value: "Pump replacement", label: {en: "Pump replacement", ar: "استبدال مضخة"}}, {value: "Manhole cover install", label: {en: "Manhole cover install", ar: "تركيب غطاء بئر"}}, {value: "Heater maintenance/replacement", label: {en: "Heater maintenance/replacement", ar: "صيانة/استبدال سخان"}}, {value: "Pit machine repair", label: {en: "Pit machine repair", ar: "إصلاح مضخة البئر"}}, {value: "Breaking/extension", label: {en: "Breaking/extension", ar: "كسر/تمديد"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}, {value: "Bad odor fix", label: {en: "Bad odor fix", ar: "إصلاح رائحة كريهة"}}]
+  - Number of fixtures affected (if applicable) *(attribute_key: number_of_fixtures_affected_if_applicable, type: number, required: false)*
+    - label: {en: "Number of fixtures affected (if applicable)", ar: "عدد التركيبات المتأثرة (إن وجدت)"}
+  - Access constraints *(attribute_key: plumber_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Shaft", label: {en: "Shaft", ar: "بئر"}}, {value: "In-ceiling", label: {en: "In-ceiling", ar: "في السقف"}}, {value: "Pit", label: {en: "Pit", ar: "بئر"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Water cutoff possible? *(attribute_key: water_cutoff_possible, type: switch, required: true)*
+    - label: {en: "Water cutoff possible?", ar: "هل يمكن قطع الماء؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Full Finishing**
+  - Service *(attribute_key: plumber_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Leak detection", label: {en: "Leak detection", ar: "كشف تسرب"}}, {value: "Pump replacement", label: {en: "Pump replacement", ar: "استبدال مضخة"}}, {value: "Manhole cover install", label: {en: "Manhole cover install", ar: "تركيب غطاء بئر"}}, {value: "Heater maintenance/replacement", label: {en: "Heater maintenance/replacement", ar: "صيانة/استبدال سخان"}}, {value: "Pit machine repair", label: {en: "Pit machine repair", ar: "إصلاح مضخة البئر"}}, {value: "Breaking/extension", label: {en: "Breaking/extension", ar: "كسر/تمديد"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}, {value: "Bad odor fix", label: {en: "Bad odor fix", ar: "إصلاح رائحة كريهة"}}]
+  - Number of fixtures affected (if applicable) *(attribute_key: number_of_fixtures_affected_if_applicable, type: number, required: false)*
+    - label: {en: "Number of fixtures affected (if applicable)", ar: "عدد التركيبات المتأثرة (إن وجدت)"}
+  - Access constraints *(attribute_key: plumber_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Shaft", label: {en: "Shaft", ar: "بئر"}}, {value: "In-ceiling", label: {en: "In-ceiling", ar: "في السقف"}}, {value: "Pit", label: {en: "Pit", ar: "بئر"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Water cutoff possible? *(attribute_key: water_cutoff_possible, type: switch, required: true)*
+    - label: {en: "Water cutoff possible?", ar: "هل يمكن قطع الماء؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Leak Detection**
+  - Service *(attribute_key: plumber_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Leak detection", label: {en: "Leak detection", ar: "كشف تسرب"}}, {value: "Pump replacement", label: {en: "Pump replacement", ar: "استبدال مضخة"}}, {value: "Manhole cover install", label: {en: "Manhole cover install", ar: "تركيب غطاء بئر"}}, {value: "Heater maintenance/replacement", label: {en: "Heater maintenance/replacement", ar: "صيانة/استبدال سخان"}}, {value: "Pit machine repair", label: {en: "Pit machine repair", ar: "إصلاح مضخة البئر"}}, {value: "Breaking/extension", label: {en: "Breaking/extension", ar: "كسر/تمديد"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}, {value: "Bad odor fix", label: {en: "Bad odor fix", ar: "إصلاح رائحة كريهة"}}]
+  - Number of fixtures affected (if applicable) *(attribute_key: number_of_fixtures_affected_if_applicable, type: number, required: false)*
+    - label: {en: "Number of fixtures affected (if applicable)", ar: "عدد التركيبات المتأثرة (إن وجدت)"}
+  - Access constraints *(attribute_key: plumber_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Shaft", label: {en: "Shaft", ar: "بئر"}}, {value: "In-ceiling", label: {en: "In-ceiling", ar: "في السقف"}}, {value: "Pit", label: {en: "Pit", ar: "بئر"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Water cutoff possible? *(attribute_key: water_cutoff_possible, type: switch, required: true)*
+    - label: {en: "Water cutoff possible?", ar: "هل يمكن قطع الماء؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Manhole Cover Installation**
+  - Service *(attribute_key: plumber_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Leak detection", label: {en: "Leak detection", ar: "كشف تسرب"}}, {value: "Pump replacement", label: {en: "Pump replacement", ar: "استبدال مضخة"}}, {value: "Manhole cover install", label: {en: "Manhole cover install", ar: "تركيب غطاء بئر"}}, {value: "Heater maintenance/replacement", label: {en: "Heater maintenance/replacement", ar: "صيانة/استبدال سخان"}}, {value: "Pit machine repair", label: {en: "Pit machine repair", ar: "إصلاح مضخة البئر"}}, {value: "Breaking/extension", label: {en: "Breaking/extension", ar: "كسر/تمديد"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}, {value: "Bad odor fix", label: {en: "Bad odor fix", ar: "إصلاح رائحة كريهة"}}]
+  - Number of fixtures affected (if applicable) *(attribute_key: number_of_fixtures_affected_if_applicable, type: number, required: false)*
+    - label: {en: "Number of fixtures affected (if applicable)", ar: "عدد التركيبات المتأثرة (إن وجدت)"}
+  - Access constraints *(attribute_key: plumber_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Shaft", label: {en: "Shaft", ar: "بئر"}}, {value: "In-ceiling", label: {en: "In-ceiling", ar: "في السقف"}}, {value: "Pit", label: {en: "Pit", ar: "بئر"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Water cutoff possible? *(attribute_key: water_cutoff_possible, type: switch, required: true)*
+    - label: {en: "Water cutoff possible?", ar: "هل يمكن قطع الماء؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Repair and Replace Pit Machines**
+  - Service *(attribute_key: plumber_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Leak detection", label: {en: "Leak detection", ar: "كشف تسرب"}}, {value: "Pump replacement", label: {en: "Pump replacement", ar: "استبدال مضخة"}}, {value: "Manhole cover install", label: {en: "Manhole cover install", ar: "تركيب غطاء بئر"}}, {value: "Heater maintenance/replacement", label: {en: "Heater maintenance/replacement", ar: "صيانة/استبدال سخان"}}, {value: "Pit machine repair", label: {en: "Pit machine repair", ar: "إصلاح مضخة البئر"}}, {value: "Breaking/extension", label: {en: "Breaking/extension", ar: "كسر/تمديد"}}, {value: "Full finishing", label: {en: "Full finishing", ar: "تشطيب كامل"}}, {value: "Bad odor fix", label: {en: "Bad odor fix", ar: "إصلاح رائحة كريهة"}}]
+  - Number of fixtures affected (if applicable) *(attribute_key: number_of_fixtures_affected_if_applicable, type: number, required: false)*
+    - label: {en: "Number of fixtures affected (if applicable)", ar: "عدد التركيبات المتأثرة (إن وجدت)"}
+  - Access constraints *(attribute_key: plumber_access_constraints, type: multiselect, required: true)*
+    - label: {en: "Access constraints", ar: "قيود الوصول"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Shaft", label: {en: "Shaft", ar: "بئر"}}, {value: "In-ceiling", label: {en: "In-ceiling", ar: "في السقف"}}, {value: "Pit", label: {en: "Pit", ar: "بئر"}}, {value: "Street permit", label: {en: "Street permit", ar: "تصريح شارع"}}, {value: "None", label: {en: "None", ar: "لا شيء"}}]
+  - Water cutoff possible? *(attribute_key: water_cutoff_possible, type: switch, required: true)*
+    - label: {en: "Water cutoff possible?", ar: "هل يمكن قطع الماء؟"}
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Satellite
+- **Central Satellite Extension**
+  - Service *(attribute_key: satellite_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "New install", label: {en: "New install", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Realignment", label: {en: "Realignment", ar: "إعادة محاذاة"}}, {value: "Extra points", label: {en: "Extra points", ar: "نقاط إضافية"}}, {value: "Stands install", label: {en: "Stands install", ar: "تركيب حاملات"}}, {value: "Remote sales", label: {en: "Remote sales", ar: "مبيعات عن بُعد"}}]
+  - Number of TVs/points (if applicable) *(attribute_key: number_of_tvspoints_if_applicable, type: number, required: false)*
+    - label: {en: "Number of TVs/points (if applicable)", ar: "عدد أجهزة التلفاز/النقاط (إن وجدت)"}
+  - Dish type *(attribute_key: dish_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Dish type", ar: "نوع الطبق"}
+    - options: [{value: "Fixed", label: {en: "Fixed", ar: "ثابت"}}, {value: "Motorized", label: {en: "Motorized", ar: "محرك"}}, {value: "Unknown", label: {en: "Unknown", ar: "غير معروف"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Maintenance and Programming**
+  - Service *(attribute_key: satellite_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "New install", label: {en: "New install", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Realignment", label: {en: "Realignment", ar: "إعادة محاذاة"}}, {value: "Extra points", label: {en: "Extra points", ar: "نقاط إضافية"}}, {value: "Stands install", label: {en: "Stands install", ar: "تركيب حاملات"}}, {value: "Remote sales", label: {en: "Remote sales", ar: "مبيعات عن بُعد"}}]
+  - Number of TVs/points (if applicable) *(attribute_key: number_of_tvspoints_if_applicable, type: number, required: false)*
+    - label: {en: "Number of TVs/points (if applicable)", ar: "عدد أجهزة التلفاز/النقاط (إن وجدت)"}
+  - Dish type *(attribute_key: dish_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Dish type", ar: "نوع الطبق"}
+    - options: [{value: "Fixed", label: {en: "Fixed", ar: "ثابت"}}, {value: "Motorized", label: {en: "Motorized", ar: "محرك"}}, {value: "Unknown", label: {en: "Unknown", ar: "غير معروف"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Remote Sales**
+  - Service *(attribute_key: satellite_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "New install", label: {en: "New install", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Realignment", label: {en: "Realignment", ar: "إعادة محاذاة"}}, {value: "Extra points", label: {en: "Extra points", ar: "نقاط إضافية"}}, {value: "Stands install", label: {en: "Stands install", ar: "تركيب حاملات"}}, {value: "Remote sales", label: {en: "Remote sales", ar: "مبيعات عن بُعد"}}]
+  - Number of TVs/points (if applicable) *(attribute_key: number_of_tvspoints_if_applicable, type: number, required: false)*
+    - label: {en: "Number of TVs/points (if applicable)", ar: "عدد أجهزة التلفاز/النقاط (إن وجدت)"}
+  - Dish type *(attribute_key: dish_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Dish type", ar: "نوع الطبق"}
+    - options: [{value: "Fixed", label: {en: "Fixed", ar: "ثابت"}}, {value: "Motorized", label: {en: "Motorized", ar: "محرك"}}, {value: "Unknown", label: {en: "Unknown", ar: "غير معروف"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Satellite Installation**
+  - Service *(attribute_key: satellite_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "New install", label: {en: "New install", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Realignment", label: {en: "Realignment", ar: "إعادة محاذاة"}}, {value: "Extra points", label: {en: "Extra points", ar: "نقاط إضافية"}}, {value: "Stands install", label: {en: "Stands install", ar: "تركيب حاملات"}}, {value: "Remote sales", label: {en: "Remote sales", ar: "مبيعات عن بُعد"}}]
+  - Number of TVs/points (if applicable) *(attribute_key: number_of_tvspoints_if_applicable, type: number, required: false)*
+    - label: {en: "Number of TVs/points (if applicable)", ar: "عدد أجهزة التلفاز/النقاط (إن وجدت)"}
+  - Dish type *(attribute_key: dish_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Dish type", ar: "نوع الطبق"}
+    - options: [{value: "Fixed", label: {en: "Fixed", ar: "ثابت"}}, {value: "Motorized", label: {en: "Motorized", ar: "محرك"}}, {value: "Unknown", label: {en: "Unknown", ar: "غير معروف"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Stands Installation**
+  - Service *(attribute_key: satellite_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "New install", label: {en: "New install", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Realignment", label: {en: "Realignment", ar: "إعادة محاذاة"}}, {value: "Extra points", label: {en: "Extra points", ar: "نقاط إضافية"}}, {value: "Stands install", label: {en: "Stands install", ar: "تركيب حاملات"}}, {value: "Remote sales", label: {en: "Remote sales", ar: "مبيعات عن بُعد"}}]
+  - Number of TVs/points (if applicable) *(attribute_key: number_of_tvspoints_if_applicable, type: number, required: false)*
+    - label: {en: "Number of TVs/points (if applicable)", ar: "عدد أجهزة التلفاز/النقاط (إن وجدت)"}
+  - Dish type *(attribute_key: dish_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Dish type", ar: "نوع الطبق"}
+    - options: [{value: "Fixed", label: {en: "Fixed", ar: "ثابت"}}, {value: "Motorized", label: {en: "Motorized", ar: "محرك"}}, {value: "Unknown", label: {en: "Unknown", ar: "غير معروف"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Wi-Fi Receiver**
+  - Service *(attribute_key: satellite_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "New install", label: {en: "New install", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Realignment", label: {en: "Realignment", ar: "إعادة محاذاة"}}, {value: "Extra points", label: {en: "Extra points", ar: "نقاط إضافية"}}, {value: "Stands install", label: {en: "Stands install", ar: "تركيب حاملات"}}, {value: "Remote sales", label: {en: "Remote sales", ar: "مبيعات عن بُعد"}}]
+  - Number of TVs/points (if applicable) *(attribute_key: number_of_tvspoints_if_applicable, type: number, required: false)*
+    - label: {en: "Number of TVs/points (if applicable)", ar: "عدد أجهزة التلفاز/النقاط (إن وجدت)"}
+  - Dish type *(attribute_key: dish_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Dish type", ar: "نوع الطبق"}
+    - options: [{value: "Fixed", label: {en: "Fixed", ar: "ثابت"}}, {value: "Motorized", label: {en: "Motorized", ar: "محرك"}}, {value: "Unknown", label: {en: "Unknown", ar: "غير معروف"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Ventilation Works
+- **AC Ducts**
+  - System *(attribute_key: system, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "System", ar: "النظام"}
+    - options: [{value: "Central ventilation", label: {en: "Central ventilation", ar: "تهوية مركزية"}}, {value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Extractors", label: {en: "Extractors", ar: "شفاطات"}}]
+  - Preferred duct material *(attribute_key: preferred_duct_material, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Preferred duct material", ar: "مادة القناة المفضلة"}
+    - options: [{value: "GI sheet", label: {en: "GI sheet", ar: "صفيح مجلفن"}}, {value: "Pre-insulated", label: {en: "Pre-insulated", ar: "معزول مسبقاً"}}, {value: "PVC", label: {en: "PVC", ar: "PVC"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - New installation or repair? *(attribute_key: new_installation_or_repair, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "New installation or repair?", ar: "تركيب جديد أم إصلاح؟"}
+    - options: [{value: "New installation", label: {en: "New installation", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Central Ventilation**
+  - System *(attribute_key: system, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "System", ar: "النظام"}
+    - options: [{value: "Central ventilation", label: {en: "Central ventilation", ar: "تهوية مركزية"}}, {value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Extractors", label: {en: "Extractors", ar: "شفاطات"}}]
+  - Preferred duct material *(attribute_key: preferred_duct_material, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Preferred duct material", ar: "مادة القناة المفضلة"}
+    - options: [{value: "GI sheet", label: {en: "GI sheet", ar: "صفيح مجلفن"}}, {value: "Pre-insulated", label: {en: "Pre-insulated", ar: "معزول مسبقاً"}}, {value: "PVC", label: {en: "PVC", ar: "PVC"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - New installation or repair? *(attribute_key: new_installation_or_repair, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "New installation or repair?", ar: "تركيب جديد أم إصلاح؟"}
+    - options: [{value: "New installation", label: {en: "New installation", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Extractors**
+  - System *(attribute_key: system, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "System", ar: "النظام"}
+    - options: [{value: "Central ventilation", label: {en: "Central ventilation", ar: "تهوية مركزية"}}, {value: "AC ducts", label: {en: "AC ducts", ar: "قنوات التكييف"}}, {value: "Extractors", label: {en: "Extractors", ar: "شفاطات"}}]
+  - Preferred duct material *(attribute_key: preferred_duct_material, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Preferred duct material", ar: "مادة القناة المفضلة"}
+    - options: [{value: "GI sheet", label: {en: "GI sheet", ar: "صفيح مجلفن"}}, {value: "Pre-insulated", label: {en: "Pre-insulated", ar: "معزول مسبقاً"}}, {value: "PVC", label: {en: "PVC", ar: "PVC"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - New installation or repair? *(attribute_key: new_installation_or_repair, type: radio, required: true)*
+    - allow_other: true
+    - label: {en: "New installation or repair?", ar: "تركيب جديد أم إصلاح؟"}
+    - options: [{value: "New installation", label: {en: "New installation", ar: "تركيب جديد"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+
+## Water Tanks
+- **Central Filter Installation**
+  - Service *(attribute_key: water_tanks_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Cleaning", label: {en: "Cleaning", ar: "تنظيف"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Central filter installation", label: {en: "Central filter installation", ar: "تركيب فلتر مركزي"}}]
+  - Tank capacity (liters) if known *(attribute_key: tank_capacity_liters_if_known, type: number, required: true)*
+    - label: {en: "Tank capacity (liters) if known", ar: "سعة الخزان (لتر) إن كانت معروفة"}
+  - Tank type *(attribute_key: tank_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tank type", ar: "نوع الخزان"}
+    - options: [{value: "Plastic", label: {en: "Plastic", ar: "بلاستيك"}}, {value: "Concrete", label: {en: "Concrete", ar: "خرسانة"}}, {value: "Fiberglass", label: {en: "Fiberglass", ar: "ألياف زجاجية"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Tank location/access *(attribute_key: tank_locationaccess, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tank location/access", ar: "موقع/وصول الخزان"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Underground", label: {en: "Underground", ar: "تحت الأرض"}}, {value: "Yard", label: {en: "Yard", ar: "فناء"}}, {value: "Indoor room", label: {en: "Indoor room", ar: "غرفة داخلية"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Maintenance**
+  - Service *(attribute_key: water_tanks_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Cleaning", label: {en: "Cleaning", ar: "تنظيف"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Central filter installation", label: {en: "Central filter installation", ar: "تركيب فلتر مركزي"}}]
+  - Tank capacity (liters) if known *(attribute_key: tank_capacity_liters_if_known, type: number, required: true)*
+    - label: {en: "Tank capacity (liters) if known", ar: "سعة الخزان (لتر) إن كانت معروفة"}
+  - Tank type *(attribute_key: tank_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tank type", ar: "نوع الخزان"}
+    - options: [{value: "Plastic", label: {en: "Plastic", ar: "بلاستيك"}}, {value: "Concrete", label: {en: "Concrete", ar: "خرسانة"}}, {value: "Fiberglass", label: {en: "Fiberglass", ar: "ألياف زجاجية"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Tank location/access *(attribute_key: tank_locationaccess, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tank location/access", ar: "موقع/وصول الخزان"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Underground", label: {en: "Underground", ar: "تحت الأرض"}}, {value: "Yard", label: {en: "Yard", ar: "فناء"}}, {value: "Indoor room", label: {en: "Indoor room", ar: "غرفة داخلية"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Pump Installation**
+  - Service *(attribute_key: water_tanks_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Cleaning", label: {en: "Cleaning", ar: "تنظيف"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Central filter installation", label: {en: "Central filter installation", ar: "تركيب فلتر مركزي"}}]
+  - Tank capacity (liters) if known *(attribute_key: tank_capacity_liters_if_known, type: number, required: true)*
+    - label: {en: "Tank capacity (liters) if known", ar: "سعة الخزان (لتر) إن كانت معروفة"}
+  - Tank type *(attribute_key: tank_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tank type", ar: "نوع الخزان"}
+    - options: [{value: "Plastic", label: {en: "Plastic", ar: "بلاستيك"}}, {value: "Concrete", label: {en: "Concrete", ar: "خرسانة"}}, {value: "Fiberglass", label: {en: "Fiberglass", ar: "ألياف زجاجية"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Tank location/access *(attribute_key: tank_locationaccess, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tank location/access", ar: "موقع/وصول الخزان"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Underground", label: {en: "Underground", ar: "تحت الأرض"}}, {value: "Yard", label: {en: "Yard", ar: "فناء"}}, {value: "Indoor room", label: {en: "Indoor room", ar: "غرفة داخلية"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}
+- **Tank Washing**
+  - Service *(attribute_key: water_tanks_service, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Service", ar: "الخدمة"}
+    - options: [{value: "Cleaning", label: {en: "Cleaning", ar: "تنظيف"}}, {value: "Installation", label: {en: "Installation", ar: "تركيب"}}, {value: "Repair", label: {en: "Repair", ar: "إصلاح"}}, {value: "Central filter installation", label: {en: "Central filter installation", ar: "تركيب فلتر مركزي"}}]
+  - Tank capacity (liters) if known *(attribute_key: tank_capacity_liters_if_known, type: number, required: true)*
+    - label: {en: "Tank capacity (liters) if known", ar: "سعة الخزان (لتر) إن كانت معروفة"}
+  - Tank type *(attribute_key: tank_type, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tank type", ar: "نوع الخزان"}
+    - options: [{value: "Plastic", label: {en: "Plastic", ar: "بلاستيك"}}, {value: "Concrete", label: {en: "Concrete", ar: "خرسانة"}}, {value: "Fiberglass", label: {en: "Fiberglass", ar: "ألياف زجاجية"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Tank location/access *(attribute_key: tank_locationaccess, type: select, required: true)*
+    - allow_other: true
+    - label: {en: "Tank location/access", ar: "موقع/وصول الخزان"}
+    - options: [{value: "Roof", label: {en: "Roof", ar: "سقف"}}, {value: "Underground", label: {en: "Underground", ar: "تحت الأرض"}}, {value: "Yard", label: {en: "Yard", ar: "فناء"}}, {value: "Indoor room", label: {en: "Indoor room", ar: "غرفة داخلية"}}, {value: "Not sure", label: {en: "Not sure", ar: "غير متأكد"}}]
+  - Location *(attribute_key: location_area_block_landmark, type: location, required: true)*
+    - label: {en: "Location", ar: "الموقع"}
+
+  - Brief description (optional) *(attribute_key: brief_description_optional, type: textarea, required: false)*
+    - label: {en: "Brief description (optional)", ar: "وصف مختصر (اختياري)"}

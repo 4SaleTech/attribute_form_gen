@@ -52,6 +52,9 @@ type FormConfig struct {
     Submit              *SubmitPipeline `json:"submit"`
     SupportedLocales    []string      `json:"supported_locales"`
     DefaultLocale       string        `json:"default_locale"`
+    FormType            string        `json:"form_type,omitempty"` // "normal" or "user_specific"
+    InstanceID          string        `json:"instance_id,omitempty"` // Only present when instanceId query param is provided
+    InstanceUserToken   string        `json:"instance_user_token,omitempty"` // Only present when instanceId query param is provided
 }
 
 

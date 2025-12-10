@@ -32,17 +32,19 @@ function renderError(message: string, details?: string) {
 }
 
 try {
-  // Get formId, version, and lang from URL
-  // URL format: /{formId}/{version}?lang={en|ar}
+  // Get formId, version, lang, and instanceId from URL
+  // URL format: /{formId}/{version}?lang={en|ar}&instanceId={instanceId}
   const pathParts = window.location.pathname.split('/').filter(Boolean)
   const formId = pathParts[0] || new URLSearchParams(window.location.search).get('formId') || ''
   const version = pathParts[1] || new URLSearchParams(window.location.search).get('version') || ''
-  const lang = new URLSearchParams(window.location.search).get('lang') || 'en'
+  const urlParams = new URLSearchParams(window.location.search)
+  const lang = urlParams.get('lang') || 'en'
+  const instanceId = urlParams.get('instanceId') || null // Get instanceId from URL if present
 
   if (!formId || !version) {
     renderError(
       'Missing formId or version in URL',
-      `Expected format: /{formId}/{version}?lang={en|ar}`
+      `Expected format: /{formId}/{version}?lang={en|ar}&instanceId={instanceId}`
     )
   } else {
     // Show loading state
@@ -55,8 +57,14 @@ try {
       </div>
     )
     
+    // Build API URL with instanceId if present
+    let apiUrl = `/api/forms/${encodeURIComponent(formId)}/${version}?lang=${lang}`
+    if (instanceId) {
+      apiUrl += `&instanceId=${encodeURIComponent(instanceId)}`
+    }
+    
     // Fetch and render form
-    fetch(`/api/forms/${encodeURIComponent(formId)}/${version}?lang=${lang}`)
+    fetch(apiUrl)
       .then(async r => {
         if (!r.ok) {
           const errorText = await r.text()

@@ -36,6 +36,7 @@ export const FormBuilder: React.FC = () => {
     on_error:'continue'
   })
   const [nextjsConfig, setNextjsConfig] = React.useState<{url:string, enabled:boolean} | null>(null)
+  const [userToken, setUserToken] = React.useState<string>('')
   const previewRef = React.useRef<HTMLDivElement | null>(null)
   const rendererRef = React.useRef<ReturnType<typeof createRenderer> | null>(null)
 
@@ -81,13 +82,26 @@ export const FormBuilder: React.FC = () => {
     if (red?.enabled && !(String(red.url||'').startsWith('http://') || String(red.url||'').startsWith('https://') || String(red.url||'').startsWith('/'))) { alert('Redirect URL must be http(s) or a relative path'); return }
     const nextjs = submit.actions.find((a:any)=>a.type==='nextjs_post')
     if (nextjs?.enabled && (!nextjsConfig?.enabled || !nextjsConfig?.url)) { alert('Next.js POST is not configured. Set NEXTJS_POST_URL and NEXTJS_POST_ENABLED environment variables.'); return }
-    const body = { formId, title, attributes:selected, thankYou: thank, submit }
-    const res = await fetch('/api/forms/publish', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer dev-admin-token' }, body: JSON.stringify(body) })
+    const body: any = { formId, title, attributes:selected, thankYou: thank, submit }
+    
+    // Conditionally include Authorization header only if user token is provided
+    // If user token is provided, it will create a user-specific form
+    // If not provided, it will create a normal form
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (userToken.trim()) {
+      headers['Authorization'] = `Bearer ${userToken.trim()}`
+    }
+    
+    const res = await fetch('/api/forms/publish', { method:'POST', headers, body: JSON.stringify(body) })
     const j = await res.json()
     if (j.isDuplicate) {
       alert(`A form with the same configuration already exists!\n\nForm ID: ${j.formId}\nVersion: ${j.version}\n\nURLs:\nEN: ${j.urls.en}\nAR: ${j.urls.ar}`)
     } else {
+      if (j.instanceId) {
+        alert(`Form published successfully!\n\nForm ID: ${j.formId}\nVersion: ${j.version}\nInstance ID: ${j.instanceId}\n\nURLs:\nEN: ${j.urls.en}\nAR: ${j.urls.ar}`)
+    } else {
       alert(`Form published successfully!\n\nForm ID: ${j.formId}\nVersion: ${j.version}\n\nURLs:\nEN: ${j.urls.en}\nAR: ${j.urls.ar}`)
+      }
     }
   }
 
@@ -127,6 +141,22 @@ export const FormBuilder: React.FC = () => {
         </label>
         <label className="block">Title (EN)<input className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" value={title.en} onChange={e=>setTitle(prev=>({ ...prev, en:e.target.value }))} placeholder="English title" /></label>
         <label className="block">Title (AR)<input className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" value={title.ar} onChange={e=>setTitle(prev=>({ ...prev, ar:e.target.value }))} placeholder="العنوان بالعربية" /></label>
+      </div>
+
+      <div className="mb-4">
+        <label className="block">
+          User Token (Optional - for user-specific forms)
+          <input 
+            className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+            type="text"
+            value={userToken} 
+            onChange={e=>setUserToken(e.target.value)} 
+            placeholder="Enter user token (e.g., 2160720|peBF4cQygr0PAt1dsjX2B4PVQojsfhU9sKfGhKsI)" 
+          />
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            If provided, this form will be user-specific and tied to this token. Leave empty for a normal form.
+          </div>
+        </label>
       </div>
 
       <div>
