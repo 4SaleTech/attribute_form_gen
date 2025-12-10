@@ -89,7 +89,7 @@ jobs:
             --name ${{ env.EKS_CLUSTER }} \
             --region ${{ env.AWS_REGION }}
 
-      - name: Deploy to EKS
-        run: |
-          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.CONTAINER_NAME }}=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ needs.build-and-push.outputs.image_tag }} \
-            --namespace ${{ env.K8S_NAMESPACE }}
+      # - name: Deploy to EKS
+      #   run: |
+      #     kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.CONTAINER_NAME }}=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ needs.build-and-push.outputs.image_tag }} \
+      #       --namespace ${{ env.K8S_NAMESPACE }}
