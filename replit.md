@@ -71,6 +71,14 @@ Configuration fields:
 - `additional_webhooks` - Array of webhooks to call after purchase
 
 ## Recent Changes
+- December 16, 2025: Created SM Cars Instagram Promotion form
+  - Form ID: `sm-cars-instagram-promo`
+  - Fields: Name, Ad Link (from user's listings), Placement (Story/5 Days/10 Days), Notes
+  - Uses purchase_authenticated action for login and billing
+  - Bilingual support (English/Arabic)
+  - Access URLs:
+    - English: `/sm-cars-instagram-promo/1?lang=en`
+    - Arabic: `/sm-cars-instagram-promo/1?lang=ar`
 - December 16, 2025: Added Authenticated Purchase Submit Action feature
   - New auth service module (login, validate, purchase API)
   - Login modal component for phone/password authentication

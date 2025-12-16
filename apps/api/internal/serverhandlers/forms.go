@@ -358,6 +358,7 @@ var allowedActions = map[string]bool{
     "webhooks": true,
     "nextjs_post": true,
     "redirect": true,
+    "purchase_authenticated": true,
 }
 
 func validateSubmitJSON(submit *types.SubmitPipeline) []string {
