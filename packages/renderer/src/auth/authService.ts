@@ -167,34 +167,32 @@ export async function fetchMyListings(token: string, config: AuthConfig, lang: s
     console.log('[AuthService] Listings response status:', response.status);
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[AuthService] Listings error response:', errorText);
       return { success: false, listings: [], error: `Failed to fetch listings: ${response.status}` };
     }
 
     const data = await response.json();
+    console.log('[AuthService] Listings response data:', JSON.stringify(data).substring(0, 500));
     
     const listings: MyListing[] = [];
     
-    if (Array.isArray(data.data)) {
-      for (const item of data.data) {
+    // Handle response structure: { data: { listings: [...] } }
+    const listingsArray = data.data?.listings || data.listings || data.data || [];
+    
+    if (Array.isArray(listingsArray)) {
+      for (const item of listingsArray) {
         listings.push({
-          adv_id: String(item.adv_id || item.id),
-          title: item.title || item.name || `Listing ${item.adv_id || item.id}`,
-          category_id: item.category_id ? String(item.category_id) : undefined,
+          adv_id: String(item.id || item.adv_id),
+          title: item.title || item.name || `Listing ${item.id || item.adv_id}`,
+          category_id: item.category?.cat_id ? String(item.category.cat_id) : undefined,
           status: item.status,
-          thumbnail: item.thumbnail || item.image,
-        });
-      }
-    } else if (data.listings && Array.isArray(data.listings)) {
-      for (const item of data.listings) {
-        listings.push({
-          adv_id: String(item.adv_id || item.id),
-          title: item.title || item.name || `Listing ${item.adv_id || item.id}`,
-          category_id: item.category_id ? String(item.category_id) : undefined,
-          status: item.status,
-          thumbnail: item.thumbnail || item.image,
+          thumbnail: item.image || item.thumbnail,
         });
       }
     }
+    
+    console.log('[AuthService] Parsed listings count:', listings.length);
 
     return { success: true, listings };
   } catch (error: any) {
