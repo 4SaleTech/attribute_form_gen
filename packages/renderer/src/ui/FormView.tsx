@@ -293,15 +293,15 @@ const buttonDisabledStyle: React.CSSProperties = {
 // Gallery Card Styles for Ad Selection
 const galleryContainerStyle: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(2, 1fr)',
-  gap: '12px',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gap: '8px',
   width: '100%',
 };
 
 const galleryCardStyle: React.CSSProperties = {
   position: 'relative',
-  borderRadius: '12px',
-  border: `2px solid ${COLORS.border}`,
+  borderRadius: '8px',
+  border: `1.5px solid ${COLORS.border}`,
   overflow: 'hidden',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
@@ -310,8 +310,8 @@ const galleryCardStyle: React.CSSProperties = {
 
 const galleryCardSelectedStyle: React.CSSProperties = {
   ...galleryCardStyle,
-  border: `2px solid ${COLORS.primary}`,
-  boxShadow: '0 0 0 3px rgba(46, 75, 255, 0.2)',
+  border: `1.5px solid ${COLORS.primary}`,
+  boxShadow: '0 0 0 2px rgba(46, 75, 255, 0.2)',
 };
 
 const galleryCardHoverStyle: React.CSSProperties = {
@@ -334,34 +334,44 @@ const galleryNoImageStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   color: COLORS.placeholder,
-  fontSize: '14px',
+  fontSize: '11px',
 };
 
 const galleryTitleStyle: React.CSSProperties = {
-  padding: '8px 10px',
-  fontSize: '13px',
-  fontWeight: 500,
+  padding: '6px 6px 2px',
+  fontSize: '11px',
+  fontWeight: 600,
   color: COLORS.heading,
-  textAlign: 'center',
-  whiteSpace: 'nowrap',
+  textAlign: 'start',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  borderTop: `1px solid ${COLORS.border}`,
+  whiteSpace: 'nowrap',
+};
+
+const galleryDescStyle: React.CSSProperties = {
+  padding: '0 6px 6px',
+  fontSize: '10px',
+  fontWeight: 400,
+  color: COLORS.helper,
+  textAlign: 'start',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
 };
 
 const galleryCheckmarkStyle: React.CSSProperties = {
   position: 'absolute',
-  top: '8px',
-  right: '8px',
-  width: '24px',
-  height: '24px',
+  top: '4px',
+  right: '4px',
+  width: '18px',
+  height: '18px',
   borderRadius: '50%',
   backgroundColor: COLORS.primary,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   color: COLORS.white,
-  fontSize: '14px',
+  fontSize: '11px',
   fontWeight: 'bold',
 };
 
@@ -380,6 +390,16 @@ const ListingGalleryCard: React.FC<{
   locale: 'en' | 'ar';
 }> = ({ listing, isSelected, onSelect, locale }) => {
   const [isHovered, setIsHovered] = React.useState(false);
+  
+  // Build description from price and category
+  const descParts: string[] = [];
+  if (listing.price && listing.price > 0) {
+    descParts.push(`${listing.price} KD`);
+  }
+  if (listing.category_name) {
+    descParts.push(listing.category_name);
+  }
+  const description = descParts.join(' • ') || (locale === 'ar' ? 'إعلان' : 'Ad');
   
   return (
     <div
@@ -406,10 +426,13 @@ const ListingGalleryCard: React.FC<{
         ...galleryNoImageStyle,
         display: listing.thumbnail ? 'none' : 'flex',
       }}>
-        {locale === 'ar' ? 'لا توجد صورة' : 'No Image'}
+        {locale === 'ar' ? 'لا صورة' : 'No Image'}
       </div>
       <div style={galleryTitleStyle} title={listing.title}>
         {listing.title}
+      </div>
+      <div style={galleryDescStyle} title={description}>
+        {description}
       </div>
     </div>
   );

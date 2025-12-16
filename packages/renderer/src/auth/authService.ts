@@ -35,6 +35,8 @@ export type MyListing = {
   adv_id: string;
   title: string;
   category_id?: string;
+  category_name?: string;
+  price?: number;
   status?: string;
   thumbnail?: string;
 };
@@ -186,6 +188,8 @@ export async function fetchMyListings(token: string, config: AuthConfig, lang: s
           adv_id: String(item.id || item.adv_id),
           title: item.title || item.name || `Listing ${item.id || item.adv_id}`,
           category_id: item.category?.cat_id ? String(item.category.cat_id) : undefined,
+          category_name: item.category?.name,
+          price: item.price,
           status: item.status,
           thumbnail: item.image || item.thumbnail,
         });
