@@ -601,8 +601,8 @@ async function purchaseAuthenticated(
   const purchasePayload: PurchasePayload = {
     items: [{
       id: itemId,
-      category_id: String(payload.answers[config.category_id_field]?.value || payload.answers[config.category_id_field] || '2897'),
-      district_id: String(payload.answers[config.district_id_field]?.value || payload.answers[config.district_id_field] || '1'),
+      category_id: '2897',
+      district_id: '1',
     }],
     adv_id: String(advId),
     user_lang: payload.meta?.locale || config.user_lang || 'en',
