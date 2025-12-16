@@ -15,7 +15,7 @@ import {
   trackValidationError,
 } from '../analytics/amplitude';
 import { fetchUserData } from '../analytics/userApi';
-import { getStoredToken, validateToken, login, setStoredToken, type AuthConfig } from '../auth/authService';
+import { getStoredToken, validateToken, login, setStoredToken, fetchMyListings, type AuthConfig, type MyListing } from '../auth/authService';
 import { LoginModal } from './LoginModal';
 
 // Brand Colors
@@ -304,6 +304,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
   const [authToken, setAuthToken] = React.useState<string | null>(null);
   const [authConfig, setAuthConfig] = React.useState<AuthConfig | null>(null);
   const [purchaseAuthConfig, setPurchaseAuthConfig] = React.useState<PurchaseAuthConfig | null>(null);
+  const [userListings, setUserListings] = React.useState<MyListing[]>([]);
   
   // Analytics state
   const [sessionId, setSessionId] = React.useState<string | undefined>(undefined);
@@ -333,6 +334,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
       
       const authCfg: AuthConfig = {
         baseUrl: config.auth_api_base_url,
+        listingsApiBaseUrl: config.listings_api_base_url,
         deviceId: config.device_id || `web_${Date.now()}`,
         appSignature: config.app_signature || '',
         versionNumber: config.version_number || '26.0.0',
@@ -345,8 +347,15 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
         console.log('[FormView] Found stored token, validating...');
         const validation = await validateToken(storedToken, authCfg);
         if (validation.valid) {
-          console.log('[FormView] Token is valid, showing form');
+          console.log('[FormView] Token is valid, fetching listings and showing form');
           setAuthToken(storedToken);
+          
+          // Fetch user listings for valid stored token
+          const listingsResult = await fetchMyListings(storedToken, authCfg, effectiveLocale);
+          if (listingsResult.success && listingsResult.listings.length > 0) {
+            setUserListings(listingsResult.listings);
+          }
+          
           setAuthChecking(false);
           return;
         }
@@ -373,6 +382,13 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
       setStoredToken(result.accessToken);
       setAuthToken(result.accessToken);
       setShowLoginModal(false);
+      
+      // Fetch user listings after successful login
+      const listingsResult = await fetchMyListings(result.accessToken, authConfig, effectiveLocale);
+      if (listingsResult.success && listingsResult.listings.length > 0) {
+        setUserListings(listingsResult.listings);
+      }
+      
       return { success: true };
     }
     
@@ -803,6 +819,17 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
               componentProps.form = form;
               componentProps.sessionId = sessionId;
               componentProps.field = f;
+            }
+            
+            // Inject user listings into the ad_link dropdown field
+            if (purchaseAuthConfig && f.name === purchaseAuthConfig.adv_id_field && userListings.length > 0) {
+              componentProps.props = {
+                ...componentProps.props,
+                options: userListings.map(listing => ({
+                  value: listing.adv_id,
+                  label: { en: listing.title, ar: listing.title },
+                })),
+              };
             }
             return (
               <div key={f.attribute_key} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

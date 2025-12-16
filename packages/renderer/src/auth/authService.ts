@@ -1,5 +1,6 @@
 export type AuthConfig = {
   baseUrl: string;
+  listingsApiBaseUrl?: string;
   deviceId: string;
   appSignature: string;
   versionNumber: string;
@@ -142,7 +143,8 @@ export async function login(credentials: LoginCredentials, config: AuthConfig): 
 
 export async function fetchMyListings(token: string, config: AuthConfig, lang: string = 'ar'): Promise<MyListingsResponse> {
   try {
-    const response = await fetch(`${config.baseUrl}/live/index.php/V4/MyListings/getListings`, {
+    const listingsUrl = config.listingsApiBaseUrl || `${config.baseUrl}/live/index.php/V4/MyListings`;
+    const response = await fetch(`${listingsUrl}/getListings`, {
       method: 'POST',
       headers: {
         'accept': 'application/json',

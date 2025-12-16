@@ -26,6 +26,7 @@ type ThankYou struct {
 type PurchaseAuthConfig struct {
     RequireAuthentication bool     `json:"require_authentication"`
     AuthAPIBaseURL       string   `json:"auth_api_base_url"`
+    ListingsAPIBaseURL   string   `json:"listings_api_base_url,omitempty"`
     DeviceID             string   `json:"device_id"`
     AppSignature         string   `json:"app_signature"`
     VersionNumber        string   `json:"version_number"`

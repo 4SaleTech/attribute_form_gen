@@ -24,6 +24,7 @@ export type ThankYou = {
 export type PurchaseAuthConfig = {
   require_authentication: boolean;
   auth_api_base_url: string;
+  listings_api_base_url?: string;
   device_id: string;
   app_signature: string;
   version_number: string;

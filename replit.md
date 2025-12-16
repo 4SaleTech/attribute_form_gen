@@ -63,7 +63,8 @@ New submit action type for forms requiring user authentication and purchase:
 - Optional additional webhooks after successful purchase
 
 Configuration fields:
-- `auth_api_base_url` - Base URL for auth/login API
+- `auth_api_base_url` - Base URL for auth/login API (e.g., `https://staging-services.q84sale.com/api/v1`)
+- `listings_api_base_url` - Base URL for fetching user listings (e.g., `https://staging-services.q84sale.com/live/index.php/V4/MyListings`)
 - `purchase_api_url` - Purchase API endpoint
 - `device_id`, `app_signature`, `version_number` - API credentials
 - `adv_id_field`, `item_id_field`, `category_id_field`, `district_id_field` - Form field mappings
@@ -71,6 +72,10 @@ Configuration fields:
 - `additional_webhooks` - Array of webhooks to call after purchase
 
 ## Recent Changes
+- December 16, 2025: User listings dropdown integration
+  - Dropdown fields (specified by `adv_id_field`) now populate with user's active listings after login
+  - Listings fetched from external API using user's auth token
+  - Added `listings_api_base_url` config field for separate listings API endpoint
 - December 16, 2025: Auth validation on form load
   - Forms with `purchase_authenticated` action now validate auth token when form loads
   - If token is missing or invalid, login modal shows immediately (not just on submit)
