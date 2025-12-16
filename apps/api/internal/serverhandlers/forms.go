@@ -9,6 +9,7 @@ import (
     "fmt"
     "net/http"
     "net/url"
+    "os"
     "sort"
     "strings"
 
@@ -455,6 +456,20 @@ func getBaseURL(c *gin.Context, cfg *config.Config) string {
     // Use config FormBaseURL if set
     if cfg.FormBaseURL != "" {
         return cfg.FormBaseURL
+    }
+    
+    // Check for Replit environment variable
+    if replitDomain := os.Getenv("REPLIT_DEV_DOMAIN"); replitDomain != "" {
+        return fmt.Sprintf("https://%s", replitDomain)
+    }
+    
+    // Check for REPLIT_DOMAINS (production)
+    if replitDomains := os.Getenv("REPLIT_DOMAINS"); replitDomains != "" {
+        // Take first domain from comma-separated list
+        parts := strings.Split(replitDomains, ",")
+        if len(parts) > 0 && parts[0] != "" {
+            return fmt.Sprintf("https://%s", parts[0])
+        }
     }
     
     // Fallback to constructing from request
