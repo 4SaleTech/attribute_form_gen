@@ -59,16 +59,20 @@ func validateSubmission(fields []types.Field, answers any) []FieldError {
             if !has { break }
             m, ok := val.(map[string]any); if !ok { errs = append(errs, fe(f.Name, "INVALID", "Invalid value", "قيمة غير صالحة", nil)); break }
             v, _ := m["value"].(string)
-            allowCustom := boolFromProps(f.Props, "allow_custom")
-            allowOther := boolFromProps(f.Props, "allow_other")
-            if !allowCustom && !allowOther && !isInOptions(f.Props, v) {
-                errs = append(errs, fe(f.Name, "NOT_ALLOWED", "Not in options", "غير موجود ضمن الخيارات", nil))
-            }
-            // If "other" is selected, validate that other text is provided
-            if v == "other" {
-                otherText, _ := m["other"].(string)
-                if otherText == "" || strings.TrimSpace(otherText) == "" {
-                    errs = append(errs, fe(f.Name, "REQUIRED", "Please provide details for \"Other\"", "يرجى إدخال التفاصيل لـ \"أخرى\"", nil))
+            // Skip "not in options" validation for dynamic fields (like user listings)
+            dynamicSource := strFromProps(f.Props, "dynamic_source")
+            if dynamicSource == "" {
+                allowCustom := boolFromProps(f.Props, "allow_custom")
+                allowOther := boolFromProps(f.Props, "allow_other")
+                if !allowCustom && !allowOther && !isInOptions(f.Props, v) {
+                    errs = append(errs, fe(f.Name, "NOT_ALLOWED", "Not in options", "غير موجود ضمن الخيارات", nil))
+                }
+                // If "other" is selected, validate that other text is provided
+                if v == "other" {
+                    otherText, _ := m["other"].(string)
+                    if otherText == "" || strings.TrimSpace(otherText) == "" {
+                        errs = append(errs, fe(f.Name, "REQUIRED", "Please provide details for \"Other\"", "يرجى إدخال التفاصيل لـ \"أخرى\"", nil))
+                    }
                 }
             }
         case "multiselect":
