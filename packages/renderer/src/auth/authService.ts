@@ -72,7 +72,7 @@ export function clearStoredToken(): void {
 
 export async function validateToken(token: string, config: AuthConfig): Promise<ValidateResponse> {
   try {
-    const response = await fetch(`${config.baseUrl}/api/v1/users/auth/validate`, {
+    const response = await fetch(`${config.baseUrl}/users/auth/validate`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -97,7 +97,7 @@ export async function validateToken(token: string, config: AuthConfig): Promise<
 
 export async function login(credentials: LoginCredentials, config: AuthConfig): Promise<LoginResponse> {
   try {
-    const response = await fetch(`${config.baseUrl}/api/v1/users/auth/login`, {
+    const response = await fetch(`${config.baseUrl}/users/auth/login`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
