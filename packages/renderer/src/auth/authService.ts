@@ -122,11 +122,14 @@ export async function login(credentials: LoginCredentials, config: AuthConfig): 
       };
     }
 
-    const accessToken = data.access_token || data.token || data.data?.access_token || data.data?.token;
+    const accessToken = data.data?.token?.access_token || data.access_token || data.token || data.data?.access_token;
     
     if (!accessToken) {
+      console.error('[AuthService] Token extraction failed, response:', JSON.stringify(data));
       return { success: false, error: 'No access token in response' };
     }
+    
+    console.log('[AuthService] Extracted token:', accessToken.substring(0, 20) + '...');
 
     setStoredToken(accessToken);
 
@@ -144,6 +147,10 @@ export async function login(credentials: LoginCredentials, config: AuthConfig): 
 export async function fetchMyListings(token: string, config: AuthConfig, lang: string = 'ar'): Promise<MyListingsResponse> {
   try {
     const listingsUrl = config.listingsApiBaseUrl || `${config.baseUrl}/live/index.php/V4/MyListings`;
+    console.log('[AuthService] Fetching listings from:', `${listingsUrl}/getListings`);
+    console.log('[AuthService] Using token:', token.substring(0, 20) + '...');
+    console.log('[AuthService] Device ID:', config.deviceId);
+    
     const response = await fetch(`${listingsUrl}/getListings`, {
       method: 'POST',
       headers: {
@@ -167,6 +174,8 @@ export async function fetchMyListings(token: string, config: AuthConfig, lang: s
         type: 'active',
       }),
     });
+    
+    console.log('[AuthService] Listings response status:', response.status);
 
     if (!response.ok) {
       return { success: false, listings: [], error: `Failed to fetch listings: ${response.status}` };
