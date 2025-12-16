@@ -230,16 +230,22 @@ export async function callPurchaseAPI(
   payload: PurchasePayload
 ): Promise<PurchaseResponse> {
   try {
-    console.log('[AuthService] Calling purchase API:', purchaseUrl);
+    console.log('[AuthService] Calling purchase API via proxy');
     console.log('[AuthService] Purchase payload:', JSON.stringify(payload));
     
-    const response = await fetch(purchaseUrl, {
+    // Use backend proxy to avoid CORS issues
+    const proxyPayload = {
+      ...payload,
+      auth_token: token,
+      purchase_url: purchaseUrl,
+    };
+    
+    const response = await fetch('/api/purchase/proxy', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(proxyPayload),
     });
 
     const data = await response.json();
