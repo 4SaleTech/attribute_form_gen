@@ -995,7 +995,11 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
                         onSelect={() => {
                           setAnswers(prev => ({
                             ...prev,
-                            [f.name]: { value: listing.adv_id, label: { en: listing.title, ar: listing.title } }
+                            [f.name]: { 
+                              value: listing.adv_id, 
+                              label: { en: listing.title, ar: listing.title },
+                              category_id: listing.category_id,
+                            }
                           }));
                         }}
                         locale={effectiveLocale}

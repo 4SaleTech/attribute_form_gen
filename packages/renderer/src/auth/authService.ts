@@ -36,6 +36,7 @@ export type MyListing = {
   title: string;
   category_id?: string;
   category_name?: string;
+  category_hierarchy?: string[];
   price?: number;
   status?: string;
   thumbnail?: string;
@@ -184,11 +185,21 @@ export async function fetchMyListings(token: string, config: AuthConfig, lang: s
     
     if (Array.isArray(listingsArray)) {
       for (const item of listingsArray) {
+        const categoryHierarchy = item.category?.cat_hierarchy || [];
+        
+        // Only include ads with "Used Cars" in category hierarchy
+        const isUsedCar = categoryHierarchy.some((cat: string) => 
+          cat.toLowerCase().trim().includes('used cars')
+        );
+        
+        if (!isUsedCar) continue;
+        
         listings.push({
           adv_id: String(item.id || item.adv_id),
           title: item.title || item.name || `Listing ${item.id || item.adv_id}`,
           category_id: item.category?.cat_id ? String(item.category.cat_id) : undefined,
           category_name: item.category?.name,
+          category_hierarchy: categoryHierarchy,
           price: item.price,
           status: item.status,
           thumbnail: item.image || item.thumbnail,

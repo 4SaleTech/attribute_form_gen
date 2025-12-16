@@ -598,10 +598,13 @@ async function purchaseAuthenticated(
     itemId = 'instagram_10_days';
   }
   
+  // Get category_id from the selected ad
+  const categoryId = advIdAnswer?.category_id || '2897';
+  
   const purchasePayload: PurchasePayload = {
     items: [{
       id: itemId,
-      category_id: '2897',
+      category_id: String(categoryId),
       district_id: '1',
     }],
     adv_id: String(advId),
