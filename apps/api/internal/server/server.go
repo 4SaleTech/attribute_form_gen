@@ -53,15 +53,7 @@ func New(cfg *config.Config, log *zap.Logger) *Server {
     corsCfg.AllowCredentials = true
     r.Use(cors.New(corsCfg))
 
-    // DB - log connection details for debugging
-    log.Info("database connection attempt",
-        zap.String("host", cfg.DBHost),
-        zap.Int("port", cfg.DBPort),
-        zap.String("database", cfg.DBName),
-        zap.String("user", cfg.DBUser),
-        zap.Int("password_length", len(cfg.DBPassword)),
-    )
-    
+    // DB
     db, err := sql.Open("mysql", cfg.DSN())
     if err != nil {
         log.Fatal("db open", zap.Error(err))
