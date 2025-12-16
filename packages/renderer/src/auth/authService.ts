@@ -146,33 +146,22 @@ export async function login(credentials: LoginCredentials, config: AuthConfig): 
 
 export async function fetchMyListings(token: string, config: AuthConfig, lang: string = 'ar'): Promise<MyListingsResponse> {
   try {
-    const listingsUrl = config.listingsApiBaseUrl || `${config.baseUrl}/live/index.php/V4/MyListings`;
-    console.log('[AuthService] Fetching listings from:', `${listingsUrl}/getListings`);
+    const listingsUrl = config.listingsApiBaseUrl || `${config.baseUrl}/listings/my-listings`;
+    const urlWithParams = `${listingsUrl}?page=1&per_page=30`;
+    console.log('[AuthService] Fetching listings from:', urlWithParams);
     console.log('[AuthService] Using token:', token.substring(0, 20) + '...');
-    console.log('[AuthService] Device ID:', config.deviceId);
     
-    const response = await fetch(`${listingsUrl}/getListings`, {
-      method: 'POST',
+    const response = await fetch(urlWithParams, {
+      method: 'GET',
       headers: {
-        'accept': 'application/json',
-        'accept-language': lang,
-        'application-source': 'q84sale',
-        'authorization': `Bearer ${token}`,
-        'cache-control': 'no-cache',
-        'content-type': 'application/json',
-        'device-id': config.deviceId,
-        'pragma': 'no-cache',
-        'version-number': 'web',
-        'x-custom-authorization': config.appSignature,
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'Device-Type': 'phone',
+        'Accept-Language': lang,
+        'Version-Number': config.versionNumber || '31.1.0',
+        'Application-Source': 'q84sale',
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        group_by_status: 1,
-        device_id: config.deviceId,
-        page: 1,
-        page_size: 50,
-        lang: lang,
-        type: 'active',
-      }),
     });
     
     console.log('[AuthService] Listings response status:', response.status);
