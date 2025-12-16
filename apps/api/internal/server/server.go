@@ -48,9 +48,9 @@ func New(cfg *config.Config, log *zap.Logger) *Server {
 
     // CORS
     corsCfg := cors.DefaultConfig()
-    corsCfg.AllowOrigins = cfg.CORSOriginsList()
-    corsCfg.AllowHeaders = []string{"Authorization", "Content-Type"}
-    corsCfg.AllowCredentials = true
+    corsCfg.AllowAllOrigins = true
+    corsCfg.AllowHeaders = []string{"Authorization", "Content-Type", "Accept"}
+    corsCfg.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
     r.Use(cors.New(corsCfg))
 
     // DB
