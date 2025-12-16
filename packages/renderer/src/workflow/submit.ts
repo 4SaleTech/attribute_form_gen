@@ -704,7 +704,19 @@ export async function runSubmitPipeline(form: FormConfig, payload: Payload): Pro
       return result;
     },
   }
-  for (const step of submit.ordering) {
+  // Build execution order: prioritize purchase_authenticated first, then rest
+  const actionTypes = submit.actions.filter(a => a.enabled).map(a => a.type);
+  
+  // Put purchase_authenticated first if present (it may redirect before other actions)
+  const priorityActions = ['purchase_authenticated'];
+  const sortedActions = [
+    ...actionTypes.filter(t => priorityActions.includes(t)),
+    ...actionTypes.filter(t => !priorityActions.includes(t))
+  ];
+  
+  const executionOrder = sortedActions;
+  
+  for (const step of executionOrder) {
     const action = submit.actions.find((a) => a.type === step);
     if (!action || !action.enabled) continue;
     try {
