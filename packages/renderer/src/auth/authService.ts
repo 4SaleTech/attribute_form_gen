@@ -221,6 +221,7 @@ export type PurchaseResponse = {
   data?: any;
   error?: string;
   transactionId?: string;
+  paymentLink?: string;
 };
 
 export async function callPurchaseAPI(
@@ -229,6 +230,9 @@ export async function callPurchaseAPI(
   payload: PurchasePayload
 ): Promise<PurchaseResponse> {
   try {
+    console.log('[AuthService] Calling purchase API:', purchaseUrl);
+    console.log('[AuthService] Purchase payload:', JSON.stringify(payload));
+    
     const response = await fetch(purchaseUrl, {
       method: 'POST',
       headers: {
@@ -248,10 +252,13 @@ export async function callPurchaseAPI(
       };
     }
 
+    console.log('[AuthService] Purchase API response:', JSON.stringify(data));
+    
     return {
       success: true,
       data,
       transactionId: data.transaction_id || data.transactionId || data.id,
+      paymentLink: data.payment_link || data.paymentLink,
     };
   } catch (error: any) {
     console.error('[AuthService] Purchase API error:', error);

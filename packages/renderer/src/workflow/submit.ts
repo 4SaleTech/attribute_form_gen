@@ -579,18 +579,39 @@ async function purchaseAuthenticated(
     }
   }
 
+  // Get the selected ad ID from answers (could be object with value or direct string)
+  const advIdAnswer = payload.answers[config.adv_id_field];
+  const advId = advIdAnswer?.value || advIdAnswer || '';
+  
+  // Map placement value to item variant
+  const placementAnswer = payload.answers[config.item_id_field];
+  const placementValue = placementAnswer?.value || placementAnswer || '';
+  
+  // Map placement names to API item IDs
+  let itemId = placementValue;
+  const placementLower = String(placementValue).toLowerCase();
+  if (placementLower.includes('story') || placementLower.includes('1_day') || placementLower === '1') {
+    itemId = 'instagram_1_day';
+  } else if (placementLower.includes('5') || placementLower.includes('5_days')) {
+    itemId = 'instagram_5_days';
+  } else if (placementLower.includes('10') || placementLower.includes('10_days')) {
+    itemId = 'instagram_10_days';
+  }
+  
   const purchasePayload: PurchasePayload = {
     items: [{
-      id: String(payload.answers[config.item_id_field] || ''),
-      category_id: String(payload.answers[config.category_id_field] || ''),
-      district_id: String(payload.answers[config.district_id_field] || ''),
+      id: itemId,
+      category_id: String(payload.answers[config.category_id_field]?.value || payload.answers[config.category_id_field] || '2897'),
+      district_id: String(payload.answers[config.district_id_field]?.value || payload.answers[config.district_id_field] || '1'),
     }],
-    adv_id: String(payload.answers[config.adv_id_field] || ''),
-    user_lang: config.user_lang || payload.meta?.locale || 'en',
-    payment_method: config.payment_method || 'CARD',
+    adv_id: String(advId),
+    user_lang: payload.meta?.locale || config.user_lang || 'en',
+    payment_method: 'CARD',
   };
 
   console.log('[PurchaseAuth] Calling purchase API:', config.purchase_api_url);
+  console.log('[PurchaseAuth] Purchase payload:', JSON.stringify(purchasePayload));
+  
   const purchaseResult = await callPurchaseAPI(
     token || '',
     config.purchase_api_url,
@@ -603,7 +624,14 @@ async function purchaseAuthenticated(
     throw new Error(purchaseResult.error || 'Purchase failed');
   }
 
-  console.log('[PurchaseAuth] Purchase successful:', purchaseResult.transactionId);
+  console.log('[PurchaseAuth] Purchase successful');
+  
+  // If there's a payment link, redirect the user
+  if (purchaseResult.paymentLink) {
+    console.log('[PurchaseAuth] Redirecting to payment link:', purchaseResult.paymentLink);
+    window.location.href = purchaseResult.paymentLink;
+  }
+  
   callbacks?.onPurchaseSuccess?.(purchaseResult.transactionId);
 
   if (config.additional_webhooks && config.additional_webhooks.length > 0) {
