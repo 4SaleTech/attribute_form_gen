@@ -45,7 +45,37 @@ Required secrets (configured):
 - `packages/renderer/src/` - Shared form rendering components
 - `db/migrations/` - Database migration scripts
 
+## Submit Actions
+
+### Available Actions
+- **native_bridge** - Post to native mobile app bridge
+- **server_persist** - Save form responses to database
+- **webhooks** - Trigger configured webhooks
+- **nextjs_post** - Post data to Next.js endpoint
+- **redirect** - Redirect user after submit (supports templates)
+- **purchase_authenticated** - Authenticated purchase flow with login modal
+
+### Purchase Authenticated Action
+New submit action type for forms requiring user authentication and purchase:
+- Validates existing auth token or prompts login modal
+- Calls external purchase API with form data
+- Supports configurable field mappings for purchase payload
+- Optional additional webhooks after successful purchase
+
+Configuration fields:
+- `auth_api_base_url` - Base URL for auth/login API
+- `purchase_api_url` - Purchase API endpoint
+- `device_id`, `app_signature`, `version_number` - API credentials
+- `adv_id_field`, `item_id_field`, `category_id_field`, `district_id_field` - Form field mappings
+- `payment_method` - CARD, CASH, or KNET
+- `additional_webhooks` - Array of webhooks to call after purchase
+
 ## Recent Changes
+- December 16, 2025: Added Authenticated Purchase Submit Action feature
+  - New auth service module (login, validate, purchase API)
+  - Login modal component for phone/password authentication
+  - Purchase authenticated action handler in submit pipeline
+  - Admin UI configuration panel for the new action
 - December 16, 2025: Full Replit setup complete
   - Configured Admin UI for port 5000 with Replit host settings
   - Configured API Server on port 8080

@@ -28,9 +28,24 @@ export const FormBuilder: React.FC = () => {
       { type:'server_persist', enabled:false },
       { type:'webhooks', enabled:false },
       { type:'nextjs_post', enabled:false },
-      { type:'redirect', enabled:false, url:'' }
+      { type:'redirect', enabled:false, url:'' },
+      { type:'purchase_authenticated', enabled:false, purchase_auth_config: {
+        require_authentication: true,
+        auth_api_base_url: 'https://staging-services.q84sale.com',
+        device_id: '',
+        app_signature: '',
+        version_number: '26.0.0',
+        purchase_api_url: 'https://staging-services.q84sale.com/api/v1/cashier/billing/purchase-with-method',
+        adv_id_field: 'adv_id',
+        item_id_field: 'item_id',
+        category_id_field: 'category_id',
+        district_id_field: 'district_id',
+        payment_method: 'CARD',
+        user_lang: 'en',
+        additional_webhooks: []
+      }}
     ],
-    ordering:['native_bridge','server_persist','webhooks','nextjs_post','redirect'],
+    ordering:['native_bridge','server_persist','webhooks','nextjs_post','redirect','purchase_authenticated'],
     idempotency:{ enabled:false, key:'' },
     timeout_ms:6000,
     on_error:'continue'
@@ -265,7 +280,7 @@ export const FormBuilder: React.FC = () => {
         <div className="col-span-1">
           <h3 className="font-semibold mb-2">Submit Actions</h3>
           <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">Choose what happens when the user submits the form.</div>
-          {['native_bridge','server_persist','webhooks','nextjs_post','redirect'].map(t => (
+          {['native_bridge','server_persist','webhooks','nextjs_post','redirect','purchase_authenticated'].map(t => (
             <div key={t} className="mb-2">
               <label className="block"><input type="checkbox" checked={!!submit.actions.find((a:any)=>a.type===t && a.enabled)} onChange={e=>{
                 const a = submit.actions.map((x:any)=> x.type===t? { ...x, enabled:e.target.checked }: x)
@@ -275,6 +290,7 @@ export const FormBuilder: React.FC = () => {
                 t==='server_persist'? 'Save responses': 
                 t==='webhooks'? 'Trigger webhooks': 
                 t==='nextjs_post'? 'Post to Next.js': 
+                t==='purchase_authenticated'? 'Authenticated Purchase':
                 'Redirect'
               }</label>
               {t==='redirect' && submit.actions.find((a:any)=>a.type==='redirect')?.enabled && (
@@ -313,6 +329,130 @@ export const FormBuilder: React.FC = () => {
                   )}
                 </div>
               )}
+              {t==='purchase_authenticated' && submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.enabled && (
+                <div className="mt-2 p-3 border rounded bg-slate-50 dark:bg-slate-900 dark:border-slate-600 space-y-2">
+                  <div className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">Purchase Authentication Settings</div>
+                  <label className="block text-xs">
+                    <input type="checkbox" checked={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.require_authentication !== false} onChange={e=>{
+                      const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, require_authentication:e.target.checked }}: x)
+                      setSubmit((prev:any)=>({ ...prev, actions:a }))
+                    }} /> Require Authentication
+                  </label>
+                  <label className="block text-xs">
+                    Auth API Base URL
+                    <input className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                      value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.auth_api_base_url||''} 
+                      onChange={e=>{
+                        const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, auth_api_base_url:e.target.value }}: x)
+                        setSubmit((prev:any)=>({ ...prev, actions:a }))
+                      }}
+                    />
+                  </label>
+                  <label className="block text-xs">
+                    Purchase API URL
+                    <input className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                      value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.purchase_api_url||''} 
+                      onChange={e=>{
+                        const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, purchase_api_url:e.target.value }}: x)
+                        setSubmit((prev:any)=>({ ...prev, actions:a }))
+                      }}
+                    />
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <label className="block text-xs">
+                      Device ID
+                      <input className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                        value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.device_id||''} 
+                        onChange={e=>{
+                          const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, device_id:e.target.value }}: x)
+                          setSubmit((prev:any)=>({ ...prev, actions:a }))
+                        }}
+                      />
+                    </label>
+                    <label className="block text-xs">
+                      App Signature
+                      <input className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                        value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.app_signature||''} 
+                        onChange={e=>{
+                          const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, app_signature:e.target.value }}: x)
+                          setSubmit((prev:any)=>({ ...prev, actions:a }))
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <label className="block text-xs">
+                      ADV ID Field
+                      <input className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                        value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.adv_id_field||'adv_id'} 
+                        onChange={e=>{
+                          const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, adv_id_field:e.target.value }}: x)
+                          setSubmit((prev:any)=>({ ...prev, actions:a }))
+                        }}
+                      />
+                    </label>
+                    <label className="block text-xs">
+                      Item ID Field
+                      <input className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                        value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.item_id_field||'item_id'} 
+                        onChange={e=>{
+                          const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, item_id_field:e.target.value }}: x)
+                          setSubmit((prev:any)=>({ ...prev, actions:a }))
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <label className="block text-xs">
+                      Category ID Field
+                      <input className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                        value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.category_id_field||'category_id'} 
+                        onChange={e=>{
+                          const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, category_id_field:e.target.value }}: x)
+                          setSubmit((prev:any)=>({ ...prev, actions:a }))
+                        }}
+                      />
+                    </label>
+                    <label className="block text-xs">
+                      District ID Field
+                      <input className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                        value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.district_id_field||'district_id'} 
+                        onChange={e=>{
+                          const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, district_id_field:e.target.value }}: x)
+                          setSubmit((prev:any)=>({ ...prev, actions:a }))
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <label className="block text-xs">
+                      Payment Method
+                      <select className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                        value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.payment_method||'CARD'} 
+                        onChange={e=>{
+                          const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, payment_method:e.target.value }}: x)
+                          setSubmit((prev:any)=>({ ...prev, actions:a }))
+                        }}>
+                        <option value="CARD">Card</option>
+                        <option value="CASH">Cash</option>
+                        <option value="KNET">KNET</option>
+                      </select>
+                    </label>
+                    <label className="block text-xs">
+                      User Language
+                      <select className="border p-1 w-full text-xs dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
+                        value={submit.actions.find((a:any)=>a.type==='purchase_authenticated')?.purchase_auth_config?.user_lang||'en'} 
+                        onChange={e=>{
+                          const a = submit.actions.map((x:any)=> x.type==='purchase_authenticated'? { ...x, purchase_auth_config:{ ...x.purchase_auth_config, user_lang:e.target.value }}: x)
+                          setSubmit((prev:any)=>({ ...prev, actions:a }))
+                        }}>
+                        <option value="en">English</option>
+                        <option value="ar">Arabic</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
           <div className="mt-3 grid grid-cols-2 gap-2">
@@ -332,7 +472,7 @@ export const FormBuilder: React.FC = () => {
           <ul className="border rounded divide-y dark:border-slate-600">
             {submit.ordering.map((t:string, idx:number) => (
               <li key={t} className="p-2 flex items-center justify-between dark:hover:bg-slate-800">
-                <span>{t==='native_bridge'?'Bridge': t==='server_persist'?'Save': t==='webhooks'?'Webhooks': t==='nextjs_post'?'Next.js': 'Redirect'}</span>
+                <span>{t==='native_bridge'?'Bridge': t==='server_persist'?'Save': t==='webhooks'?'Webhooks': t==='nextjs_post'?'Next.js': t==='purchase_authenticated'?'Purchase Auth': 'Redirect'}</span>
                 <div className="space-x-2">
                   <button className="text-sm dark:text-slate-300" onClick={()=>{
                     if (idx===0) return; const o=[...submit.ordering]; const [it]=o.splice(idx,1); o.splice(idx-1,0,it); setSubmit((prev:any)=>({ ...prev, ordering:o }))
@@ -352,7 +492,7 @@ export const FormBuilder: React.FC = () => {
               {submit.ordering.map((t:string) => (
                 <React.Fragment key={t}>
                   <span>→</span>
-                  <span className="px-2 py-1 border rounded dark:border-slate-600">{t==='native_bridge'?'Bridge': t==='server_persist'?'Save': t==='webhooks'?'Webhooks': t==='nextjs_post'?'Next.js':'Redirect'}</span>
+                  <span className="px-2 py-1 border rounded dark:border-slate-600">{t==='native_bridge'?'Bridge': t==='server_persist'?'Save': t==='webhooks'?'Webhooks': t==='nextjs_post'?'Next.js': t==='purchase_authenticated'?'Purchase':'Redirect'}</span>
                 </React.Fragment>
               ))}
             </div>
