@@ -61,11 +61,12 @@ function getCookie(name: string): string | null {
   return null;
 }
 
-function validateClient(form: FormConfig, answers: Record<string, any>, locale: 'en'|'ar'): FieldError[] {
+function validateClient(form: FormConfig, answers: Record<string, any>, locale: 'en'|'ar', dynamicOptionsFields?: string[]): FieldError[] {
   const errs: FieldError[] = []
   const t = (en: string, ar: string) => ({ en, ar })
   const isReq = (f: Field) => !!(f as any)?.props?.required
   const get = (name: string) => answers[name]
+  const isDynamicField = (name: string) => dynamicOptionsFields?.includes(name) || false
   for (const f of form.fields) {
     const v = get(f.name)
     if (isReq(f) && (v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0))) {
@@ -93,6 +94,8 @@ function validateClient(form: FormConfig, answers: Record<string, any>, locale: 
         break
       case 'select':
         if (v == null) break
+        // Skip "not in options" validation for fields with dynamic options (like user listings)
+        if (isDynamicField(f.name)) break
         if (!(f as any).props?.allow_custom && !(f as any).props?.allow_other) {
           const options: any[] = (f as any).props?.options || []
           const found = options.some(o => o.value === v?.value)
@@ -715,7 +718,9 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const clientErrors = validateClient(form, answers, effectiveLocale);
+    // Pass dynamic options fields to skip "not in options" validation for user listings
+    const dynamicFields = purchaseAuthConfig?.adv_id_field ? [purchaseAuthConfig.adv_id_field] : [];
+    const clientErrors = validateClient(form, answers, effectiveLocale, dynamicFields);
     
     // Track validation errors
     clientErrors.forEach((error) => {
