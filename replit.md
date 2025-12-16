@@ -57,8 +57,8 @@ Required secrets (configured):
 
 ### Purchase Authenticated Action
 New submit action type for forms requiring user authentication and purchase:
-- Validates existing auth token or prompts login modal
-- Calls external purchase API with form data
+- **On form load**: Validates existing auth token and shows login modal immediately if invalid
+- Calls external purchase API with form data after successful authentication
 - Supports configurable field mappings for purchase payload
 - Optional additional webhooks after successful purchase
 
@@ -71,6 +71,10 @@ Configuration fields:
 - `additional_webhooks` - Array of webhooks to call after purchase
 
 ## Recent Changes
+- December 16, 2025: Auth validation on form load
+  - Forms with `purchase_authenticated` action now validate auth token when form loads
+  - If token is missing or invalid, login modal shows immediately (not just on submit)
+  - User must login before seeing/filling the form
 - December 16, 2025: Created SM Cars Instagram Promotion form
   - Form ID: `sm-cars-instagram-promo`
   - Fields: Name, Ad Link (from user's listings), Placement (Story/5 Days/10 Days), Notes

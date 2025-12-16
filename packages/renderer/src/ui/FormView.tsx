@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ComponentsRegistry, FormConfig, Field } from '../renderer/types';
+import type { ComponentsRegistry, FormConfig, Field, PurchaseAuthConfig } from '../renderer/types';
 import { runSubmitPipeline } from '../workflow/submit';
 import {
   initAmplitude,
@@ -15,6 +15,8 @@ import {
   trackValidationError,
 } from '../analytics/amplitude';
 import { fetchUserData } from '../analytics/userApi';
+import { getStoredToken, validateToken, login, setStoredToken, type AuthConfig } from '../auth/authService';
+import { LoginModal } from './LoginModal';
 
 // Brand Colors
 const COLORS = {
@@ -296,6 +298,13 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
   const [buttonHover, setButtonHover] = React.useState(false)
   const effectiveLocale = (locale as any) || (getLocaleFromURL(form.default_locale) as any)
   
+  // Authentication state for purchase_authenticated forms
+  const [authChecking, setAuthChecking] = React.useState(true);
+  const [showLoginModal, setShowLoginModal] = React.useState(false);
+  const [authToken, setAuthToken] = React.useState<string | null>(null);
+  const [authConfig, setAuthConfig] = React.useState<AuthConfig | null>(null);
+  const [purchaseAuthConfig, setPurchaseAuthConfig] = React.useState<PurchaseAuthConfig | null>(null);
+  
   // Analytics state
   const [sessionId, setSessionId] = React.useState<string | undefined>(undefined);
   const [userId, setUserId] = React.useState<string | number | undefined>(undefined);
@@ -304,6 +313,71 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
   const [lastFieldInteracted, setLastFieldInteracted] = React.useState<{ name: string; type: string } | undefined>(undefined);
   const [submissionId, setSubmissionId] = React.useState<number | undefined>(undefined);
   const [validationAttempts, setValidationAttempts] = React.useState<Record<string, number>>({});
+
+  // Check authentication on form load for purchase_authenticated forms
+  React.useEffect(() => {
+    const checkAuthOnLoad = async () => {
+      // Find purchase_authenticated action
+      const purchaseAuthAction = form.submit?.actions.find(
+        a => a.type === 'purchase_authenticated' && a.enabled
+      );
+      
+      if (!purchaseAuthAction?.purchase_auth_config?.require_authentication) {
+        // No auth required, show form immediately
+        setAuthChecking(false);
+        return;
+      }
+      
+      const config = purchaseAuthAction.purchase_auth_config;
+      setPurchaseAuthConfig(config);
+      
+      const authCfg: AuthConfig = {
+        baseUrl: config.auth_api_base_url,
+        deviceId: config.device_id || `web_${Date.now()}`,
+        appSignature: config.app_signature || '',
+        versionNumber: config.version_number || '26.0.0',
+      };
+      setAuthConfig(authCfg);
+      
+      // Check for existing token
+      const storedToken = getStoredToken();
+      if (storedToken) {
+        console.log('[FormView] Found stored token, validating...');
+        const validation = await validateToken(storedToken, authCfg);
+        if (validation.valid) {
+          console.log('[FormView] Token is valid, showing form');
+          setAuthToken(storedToken);
+          setAuthChecking(false);
+          return;
+        }
+        console.log('[FormView] Token is invalid, need login');
+      }
+      
+      // Token not found or invalid, show login modal
+      console.log('[FormView] Showing login modal');
+      setAuthChecking(false);
+      setShowLoginModal(true);
+    };
+    
+    checkAuthOnLoad();
+  }, [form]);
+  
+  // Handle login from modal
+  const handleLogin = async (phone: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    if (!authConfig) {
+      return { success: false, error: 'Auth config not available' };
+    }
+    
+    const result = await login({ phone, password }, authConfig);
+    if (result.success && result.accessToken) {
+      setStoredToken(result.accessToken);
+      setAuthToken(result.accessToken);
+      setShowLoginModal(false);
+      return { success: true };
+    }
+    
+    return { success: false, error: result.error || 'Login failed' };
+  };
 
   // Extract query parameters and initialize analytics
   React.useEffect(() => {
@@ -594,6 +668,44 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
     } finally {
       setSubmitting(false);
     }
+  }
+
+  // Show loading state while checking authentication
+  if (authChecking) {
+    return (
+      <div style={containerStyle}>
+        <div style={{ maxWidth: '640px', margin: '0 auto', padding: '2rem', textAlign: 'center' }}>
+          <div style={{ 
+            display: 'inline-block',
+            width: '32px',
+            height: '32px',
+            border: '3px solid #E5E7EB',
+            borderTopColor: COLORS.primary,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            marginBottom: '1rem'
+          }} />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <p style={{ fontSize: '15px', color: COLORS.helper }}>
+            {effectiveLocale === 'ar' ? 'جاري التحميل...' : 'Loading...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login modal for forms requiring authentication
+  if (showLoginModal && purchaseAuthConfig) {
+    return (
+      <div style={containerStyle}>
+        <LoginModal
+          isOpen={true}
+          onClose={() => {}} // Don't allow close without login
+          onLogin={handleLogin}
+          locale={effectiveLocale}
+        />
+      </div>
+    );
   }
 
   if (submitted && form.thankYou?.show) {
