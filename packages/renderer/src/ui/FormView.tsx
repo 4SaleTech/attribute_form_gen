@@ -290,6 +290,131 @@ const buttonDisabledStyle: React.CSSProperties = {
   boxShadow: 'none',
 };
 
+// Gallery Card Styles for Ad Selection
+const galleryContainerStyle: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gap: '12px',
+  width: '100%',
+};
+
+const galleryCardStyle: React.CSSProperties = {
+  position: 'relative',
+  borderRadius: '12px',
+  border: `2px solid ${COLORS.border}`,
+  overflow: 'hidden',
+  cursor: 'pointer',
+  transition: 'all 0.2s ease',
+  backgroundColor: COLORS.white,
+};
+
+const galleryCardSelectedStyle: React.CSSProperties = {
+  ...galleryCardStyle,
+  border: `2px solid ${COLORS.primary}`,
+  boxShadow: '0 0 0 3px rgba(46, 75, 255, 0.2)',
+};
+
+const galleryCardHoverStyle: React.CSSProperties = {
+  ...galleryCardStyle,
+  borderColor: COLORS.primary,
+};
+
+const galleryImageStyle: React.CSSProperties = {
+  width: '100%',
+  aspectRatio: '1',
+  objectFit: 'cover',
+  backgroundColor: '#F3F4F6',
+};
+
+const galleryNoImageStyle: React.CSSProperties = {
+  width: '100%',
+  aspectRatio: '1',
+  backgroundColor: '#F3F4F6',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: COLORS.placeholder,
+  fontSize: '14px',
+};
+
+const galleryTitleStyle: React.CSSProperties = {
+  padding: '8px 10px',
+  fontSize: '13px',
+  fontWeight: 500,
+  color: COLORS.heading,
+  textAlign: 'center',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  borderTop: `1px solid ${COLORS.border}`,
+};
+
+const galleryCheckmarkStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '8px',
+  right: '8px',
+  width: '24px',
+  height: '24px',
+  borderRadius: '50%',
+  backgroundColor: COLORS.primary,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: COLORS.white,
+  fontSize: '14px',
+  fontWeight: 'bold',
+};
+
+const galleryLabelStyle: React.CSSProperties = {
+  fontSize: '14px',
+  fontWeight: 500,
+  color: COLORS.heading,
+  marginBottom: '8px',
+};
+
+// Gallery Card Component
+const ListingGalleryCard: React.FC<{
+  listing: MyListing;
+  isSelected: boolean;
+  onSelect: () => void;
+  locale: 'en' | 'ar';
+}> = ({ listing, isSelected, onSelect, locale }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  
+  return (
+    <div
+      style={isSelected ? galleryCardSelectedStyle : (isHovered ? galleryCardHoverStyle : galleryCardStyle)}
+      onClick={onSelect}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {isSelected && (
+        <div style={galleryCheckmarkStyle}>✓</div>
+      )}
+      {listing.thumbnail ? (
+        <img
+          src={listing.thumbnail}
+          alt={listing.title}
+          style={galleryImageStyle}
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+            (e.target as HTMLImageElement).nextElementSibling?.setAttribute('style', 'display: flex');
+          }}
+        />
+      ) : null}
+      <div style={{
+        ...galleryNoImageStyle,
+        display: listing.thumbnail ? 'none' : 'flex',
+      }}>
+        {locale === 'ar' ? 'لا توجد صورة' : 'No Image'}
+      </div>
+      <div style={galleryTitleStyle} title={listing.title}>
+        {listing.title}
+      </div>
+    </div>
+  );
+};
+
 export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegistry; locale?: string; flags: Record<string, boolean> }> = ({ form, components, locale, flags }) => {
   const [answers, setAnswers] = React.useState<Record<string, any>>({});
   const [errors, setErrors] = React.useState<FieldError[]>([])
@@ -821,15 +946,39 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
               componentProps.field = f;
             }
             
-            // Inject user listings into the ad_link dropdown field
+            // Render gallery cards for the ad_link field when we have user listings
             if (purchaseAuthConfig && f.name === purchaseAuthConfig.adv_id_field && userListings.length > 0) {
-              componentProps.props = {
-                ...componentProps.props,
-                options: userListings.map(listing => ({
-                  value: listing.adv_id,
-                  label: { en: listing.title, ar: listing.title },
-                })),
-              };
+              const fieldLabel = f.label?.[effectiveLocale] || f.label?.en || f.name;
+              const selectedValue = answers[f.name]?.value || answers[f.name];
+              const isRequired = !!(f as any)?.props?.required;
+              
+              return (
+                <div key={f.attribute_key} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <div style={galleryLabelStyle}>
+                    {fieldLabel}
+                    {isRequired && <span style={{ color: COLORS.borderError, marginLeft: '4px' }}>*</span>}
+                  </div>
+                  <div style={galleryContainerStyle}>
+                    {userListings.map(listing => (
+                      <ListingGalleryCard
+                        key={listing.adv_id}
+                        listing={listing}
+                        isSelected={selectedValue === listing.adv_id}
+                        onSelect={() => {
+                          setAnswers(prev => ({
+                            ...prev,
+                            [f.name]: { value: listing.adv_id, label: { en: listing.title, ar: listing.title } }
+                          }));
+                        }}
+                        locale={effectiveLocale}
+                      />
+                    ))}
+                  </div>
+                  {fieldErrors.map(er => (
+                    <div key={er.code} style={{ fontSize: '14px', color: COLORS.borderError, marginLeft: '0.25rem', marginTop: '0.25rem' }}>{er.message[effectiveLocale]}</div>
+                  ))}
+                </div>
+              );
             }
             return (
               <div key={f.attribute_key} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
