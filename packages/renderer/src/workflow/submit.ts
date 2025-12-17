@@ -7,6 +7,7 @@ import {
   callPurchaseAPI,
   type AuthConfig,
   type PurchasePayload,
+  type MyListing,
 } from '../auth/authService';
 
 type Payload = {
@@ -17,6 +18,12 @@ type Payload = {
   meta: any;
   bridgeAck?: boolean;
   authToken?: string;
+  userListings?: MyListing[];
+  userData?: {
+    id?: number;
+    phone?: string;
+    name?: string;
+  };
 };
 
 type PurchaseAuthCallbacks = {
@@ -608,6 +615,63 @@ async function purchaseAuthenticated(
     user_lang: payload.meta?.locale || config.user_lang || 'en',
     payment_method: 'CARD',
   };
+
+  // Call pre-purchase webhook if configured (before purchase API)
+  if (config.pre_purchase_webhook?.url) {
+    console.log('[PurchaseAuth] Calling pre-purchase webhook:', config.pre_purchase_webhook.url);
+    
+    // Find the selected listing data
+    const selectedListing = payload.userListings?.find(
+      listing => listing.adv_id === String(advId)
+    );
+    
+    // Get form field values
+    const nameField = config.pre_purchase_webhook.name_field || '';
+    const notesField = config.pre_purchase_webhook.notes_field || '';
+    const userName = nameField ? (payload.answers[nameField]?.value || payload.answers[nameField] || '') : '';
+    const userNote = notesField ? (payload.answers[notesField]?.value || payload.answers[notesField] || '') : '';
+    
+    // Build the adv_link from slug
+    const advLink = selectedListing?.slug 
+      ? `https://staging.q84sale.com/ar/listing/${selectedListing.slug}`
+      : '';
+    
+    const webhookPayload = {
+      adv_id: String(advId),
+      category_id: selectedListing?.category_id ? parseInt(selectedListing.category_id) : 0,
+      adv_title: selectedListing?.title || '',
+      adv_description: selectedListing?.description || '',
+      adv_image: selectedListing?.thumbnail || '',
+      adv_link: advLink,
+      user_note: userNote,
+      user_id: payload.userData?.id ? String(payload.userData.id) : '',
+      user_name: userName || payload.userData?.name || '',
+      user_phone: payload.userData?.phone || '',
+      addon_type: itemId,
+    };
+    
+    console.log('[PurchaseAuth] Pre-purchase webhook payload:', JSON.stringify(webhookPayload));
+    
+    try {
+      const webhookResponse = await fetch(config.pre_purchase_webhook.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': config.pre_purchase_webhook.api_key,
+        },
+        body: JSON.stringify(webhookPayload),
+      });
+      
+      console.log('[PurchaseAuth] Pre-purchase webhook response status:', webhookResponse.status);
+      
+      if (!webhookResponse.ok) {
+        const errorText = await webhookResponse.text();
+        console.error('[PurchaseAuth] Pre-purchase webhook error:', errorText);
+      }
+    } catch (webhookError) {
+      console.error('[PurchaseAuth] Pre-purchase webhook failed:', webhookError);
+    }
+  }
 
   console.log('[PurchaseAuth] Calling purchase API:', config.purchase_api_url);
   console.log('[PurchaseAuth] Purchase payload:', JSON.stringify(purchasePayload));

@@ -456,6 +456,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
   const [authConfig, setAuthConfig] = React.useState<AuthConfig | null>(null);
   const [purchaseAuthConfig, setPurchaseAuthConfig] = React.useState<PurchaseAuthConfig | null>(null);
   const [userListings, setUserListings] = React.useState<MyListing[]>([]);
+  const [userData, setUserData] = React.useState<{ id?: number; phone?: string; name?: string }>({});
   
   // Analytics state
   const [sessionId, setSessionId] = React.useState<string | undefined>(undefined);
@@ -615,11 +616,17 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
     // Fetch user data if user_token exists - only to get user ID
     if (userToken) {
       fetchUserData(userToken)
-        .then((userData) => {
-          if (userData?.user_id) {
-            const userIdValue = userData.user_id;
+        .then((fetchedUserData) => {
+          if (fetchedUserData?.user_id) {
+            const userIdValue = fetchedUserData.user_id;
             setUserId(userIdValue);
             setAmplitudeUserId(userIdValue);
+            // Store user data for submit payload
+            setUserData({
+              id: fetchedUserData.user_id,
+              phone: fetchedUserData.phone,
+              name: fetchedUserData.first_name,
+            });
           }
         })
         .catch((error) => {
@@ -775,6 +782,8 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
         submittedAt: Date.now(),
         answers,
         meta,
+        userListings,
+        userData,
       });
       
       // Extract submission ID from result if available

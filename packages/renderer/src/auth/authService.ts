@@ -34,6 +34,8 @@ export type ValidateResponse = {
 export type MyListing = {
   adv_id: string;
   title: string;
+  description?: string;
+  slug?: string;
   category_id?: string;
   category_name?: string;
   category_hierarchy?: string[];
@@ -197,6 +199,8 @@ export async function fetchMyListings(token: string, config: AuthConfig, lang: s
         listings.push({
           adv_id: String(item.id || item.adv_id),
           title: item.title || item.name || `Listing ${item.id || item.adv_id}`,
+          description: item.description || item.desc || '',
+          slug: item.slug || '',
           category_id: item.category?.cat_id ? String(item.category.cat_id) : undefined,
           category_name: item.category?.name,
           category_hierarchy: categoryHierarchy,

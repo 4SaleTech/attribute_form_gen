@@ -21,6 +21,13 @@ export type ThankYou = {
   close_behavior?: string;
 };
 
+export type PrePurchaseWebhook = {
+  url: string;
+  api_key: string;
+  name_field?: string;
+  notes_field?: string;
+};
+
 export type PurchaseAuthConfig = {
   require_authentication: boolean;
   auth_api_base_url: string;
@@ -35,6 +42,7 @@ export type PurchaseAuthConfig = {
   district_id_field: string;
   payment_method: string;
   user_lang: string;
+  pre_purchase_webhook?: PrePurchaseWebhook;
   additional_webhooks?: Array<{
     url: string;
     method: string;
