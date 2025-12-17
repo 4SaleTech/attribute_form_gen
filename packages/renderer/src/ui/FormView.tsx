@@ -757,14 +757,25 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
         return;
       }
       
-      // Map old_id values to variant UUIDs
+      // Map option values to variant UUIDs
       const variantMapping: Record<string, string> = {
+        // old_id format
         'instagram_1_day': '4dfc118f-cf79-11f0-8b87-068146e4f871',
         'instagram_5_days': '55964ff1-cf79-11f0-8b87-068146e4f871',
         'instagram_10_days': '5dba54ea-cf79-11f0-8b87-068146e4f871',
+        // form option values (story, 5_days_ad, 10_days_ad)
+        'story': '4dfc118f-cf79-11f0-8b87-068146e4f871',
+        '5_days_ad': '55964ff1-cf79-11f0-8b87-068146e4f871',
+        '10_days_ad': '5dba54ea-cf79-11f0-8b87-068146e4f871',
       };
       
-      const variantId = variantMapping[itemValue] || itemValue;
+      const variantId = variantMapping[itemValue];
+      if (!variantId) {
+        console.error('[FormView] Unknown item value, cannot map to variant:', itemValue);
+        setSelectedItemPrice(null);
+        setLoadingItemPrice(false);
+        return;
+      }
       
       setLoadingItemPrice(true);
       try {
@@ -1182,15 +1193,23 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
                       </span>
                     ) : selectedItemPrice !== null ? (
                       <>
-                        <span style={{ fontSize: '14px', color: COLORS.helper }}>
+                        <span style={{ fontSize: '15px', color: COLORS.heading, fontWeight: 500 }}>
                           {effectiveLocale === 'ar' ? 'السعر:' : 'Price:'}
                         </span>
                         <span style={{ 
-                          fontSize: '18px', 
-                          fontWeight: 700, 
+                          fontSize: '24px', 
+                          fontWeight: 800, 
+                          color: COLORS.primary,
+                          letterSpacing: '-0.5px'
+                        }}>
+                          {selectedItemPrice}
+                        </span>
+                        <span style={{ 
+                          fontSize: '16px', 
+                          fontWeight: 600, 
                           color: COLORS.primary 
                         }}>
-                          {selectedItemPrice} {effectiveLocale === 'ar' ? 'د.ك' : 'KD'}
+                          {effectiveLocale === 'ar' ? 'د.ك' : 'KD'}
                         </span>
                       </>
                     ) : answers[f.name] ? (
