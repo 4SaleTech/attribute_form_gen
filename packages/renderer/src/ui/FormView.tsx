@@ -560,8 +560,20 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
       
       // Fetch user listings after successful login
       const listingsResult = await fetchMyListings(result.accessToken, authConfig, effectiveLocale);
-      if (listingsResult.success && listingsResult.listings.length > 0) {
-        setUserListings(listingsResult.listings);
+      if (listingsResult.success) {
+        if (listingsResult.listings.length > 0) {
+          setUserListings(listingsResult.listings);
+        }
+        // Get user data from listings response (more reliable than login response)
+        if (listingsResult.user) {
+          setUserData({
+            id: listingsResult.user.id,
+            phone: listingsResult.user.phone,
+            name: listingsResult.user.name,
+          });
+          setUserId(listingsResult.user.id);
+          setAmplitudeUserId(listingsResult.user.id);
+        }
       }
       
       return { success: true };

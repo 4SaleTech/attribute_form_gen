@@ -48,6 +48,11 @@ export type MyListingsResponse = {
   success: boolean;
   listings: MyListing[];
   error?: string;
+  user?: {
+    id: number;
+    name: string;
+    phone: string;
+  };
 };
 
 const TOKEN_STORAGE_KEY = 'q84sale_auth_token';
@@ -212,8 +217,20 @@ export async function fetchMyListings(token: string, config: AuthConfig, lang: s
     }
     
     console.log('[AuthService] Parsed listings count:', listings.length);
+    
+    // Extract user data from response
+    const userData = data.data?.user || data.user;
+    console.log('[AuthService] User data from listings:', userData);
 
-    return { success: true, listings };
+    return { 
+      success: true, 
+      listings,
+      user: userData ? {
+        id: userData.id,
+        name: userData.name,
+        phone: userData.phone,
+      } : undefined,
+    };
   } catch (error: any) {
     console.error('[AuthService] Fetch listings error:', error);
     return { success: false, listings: [], error: error.message || 'Failed to fetch listings' };
