@@ -1055,12 +1055,12 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
       {purchaseAuthConfig ? (
         <div style={{ 
           background: 'linear-gradient(135deg, #2E4BFF 0%, #1E3AD8 100%)',
-          padding: '2.5rem 1.5rem 2rem',
+          padding: '2rem 1.5rem',
           textAlign: 'center',
         }}>
           <div style={{ maxWidth: '640px', margin: '0 auto' }}>
             <h1 style={{ 
-              fontSize: '26px', 
+              fontSize: '24px', 
               fontWeight: 800, 
               color: '#FFFFFF',
               letterSpacing: '-0.025em',
@@ -1072,12 +1072,16 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
             <p style={{ 
               fontSize: '15px', 
               color: 'rgba(255, 255, 255, 0.9)', 
-              lineHeight: 1.7,
+              lineHeight: 1.8,
               margin: 0,
             }}>
               {effectiveLocale === 'ar' 
-                ? 'الحين تقدر توصل إعلان سيارتك لجمهور أضخم على إنستغرام من خلال حساب 4Sale الرسمي'
-                : 'Now you can reach a larger audience on Instagram through the official 4Sale account'}
+                ? `الحين تقدر توصل إعلان سيارتك لجمهور أضخم على إنستغرام من خلال حساب 4Sale
+إعلانك راح يوصل حق الفئة المهتمة مباشرة.
+نتكفّل بالتصميم، والاستهداف، والترويج… وإنت عليك بس تختار الباقة المناسبة وترفع إعلانك.`
+                : `Now you can reach a larger audience on Instagram through the official 4Sale account.
+Your ad will reach the interested audience directly.
+We handle the design, targeting, and promotion... you just need to choose the right package and upload your ad.`}
             </p>
           </div>
         </div>
@@ -1209,6 +1213,20 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
             
             return (
               <div key={f.attribute_key} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {/* Package selection hint - before the dropdown */}
+                {isItemIdField && (
+                  <p style={{ 
+                    fontSize: '14px', 
+                    color: COLORS.helper, 
+                    margin: '0 0 0.25rem 0',
+                    lineHeight: 1.6,
+                    textAlign: effectiveLocale === 'ar' ? 'right' : 'left'
+                  }}>
+                    {effectiveLocale === 'ar' 
+                      ? 'اختر الباقة اللي تناسب غرضك… وخلك تصل حق جمهور إنستغرام بكل سهولة.'
+                      : 'Choose the package that suits your needs... and easily reach the Instagram audience.'}
+                  </p>
+                )}
                 {Comp(componentProps)}
                 {isItemIdField && (
                   <div style={{ 
