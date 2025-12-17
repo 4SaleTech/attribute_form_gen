@@ -1095,7 +1095,11 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
             onMouseLeave={() => setButtonHover(false)}
             style={submitting ? buttonDisabledStyle : (buttonHover ? buttonHoverStyle : buttonStyle)}
           >
-            {submitting ? (effectiveLocale === 'ar' ? 'جاري الإرسال...' : 'Submitting...') : (effectiveLocale === 'ar' ? 'إرسال' : 'Submit')}
+            {submitting 
+              ? (effectiveLocale === 'ar' ? 'جاري الإرسال...' : 'Submitting...') 
+              : (purchaseAuthAction?.enabled 
+                  ? (effectiveLocale === 'ar' ? 'ادفع الآن' : 'Pay Now')
+                  : (effectiveLocale === 'ar' ? 'إرسال' : 'Submit'))}
           </button>
         </div>
       </form>
