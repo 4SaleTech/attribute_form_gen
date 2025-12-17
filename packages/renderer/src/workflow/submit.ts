@@ -619,6 +619,7 @@ async function purchaseAuthenticated(
   // Call pre-purchase webhook if configured (before purchase API)
   if (config.pre_purchase_webhook?.url) {
     console.log('[PurchaseAuth] Calling pre-purchase webhook:', config.pre_purchase_webhook.url);
+    console.log('[PurchaseAuth] userData in payload:', JSON.stringify(payload.userData));
     
     // Find the selected listing data
     const selectedListing = payload.userListings?.find(
@@ -649,6 +650,8 @@ async function purchaseAuthenticated(
       user_phone: payload.userData?.phone || '',
       addon_type: itemId,
     };
+    
+    console.log('[PurchaseAuth] Webhook user_id being sent:', webhookPayload.user_id);
     
     console.log('[PurchaseAuth] Pre-purchase webhook payload:', JSON.stringify(webhookPayload));
     

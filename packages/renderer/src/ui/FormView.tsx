@@ -566,6 +566,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
         }
         // Get user data from listings response (more reliable than login response)
         if (listingsResult.user) {
+          console.log('[FormView] Setting userData from listings response:', JSON.stringify(listingsResult.user));
           setUserData({
             id: listingsResult.user.id,
             phone: listingsResult.user.phone,
@@ -573,6 +574,8 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
           });
           setUserId(listingsResult.user.id);
           setAmplitudeUserId(listingsResult.user.id);
+        } else {
+          console.log('[FormView] No user data in listings response');
         }
       }
       
