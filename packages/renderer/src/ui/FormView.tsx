@@ -504,8 +504,21 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
           
           // Fetch user listings for valid stored token
           const listingsResult = await fetchMyListings(storedToken, authCfg, effectiveLocale);
-          if (listingsResult.success && listingsResult.listings.length > 0) {
-            setUserListings(listingsResult.listings);
+          if (listingsResult.success) {
+            if (listingsResult.listings.length > 0) {
+              setUserListings(listingsResult.listings);
+            }
+            // Also set user data from listings response
+            if (listingsResult.user) {
+              console.log('[FormView] Setting userData from stored token listings:', JSON.stringify(listingsResult.user));
+              setUserData({
+                id: listingsResult.user.id,
+                phone: listingsResult.user.phone,
+                name: listingsResult.user.name,
+              });
+              setUserId(listingsResult.user.id);
+              setAmplitudeUserId(listingsResult.user.id);
+            }
           }
           
           setAuthChecking(false);
