@@ -632,9 +632,10 @@ async function purchaseAuthenticated(
     const userName = nameField ? (payload.answers[nameField]?.value || payload.answers[nameField] || '') : '';
     const userNote = notesField ? (payload.answers[notesField]?.value || payload.answers[notesField] || '') : '';
     
-    // Build the adv_link from slug
+    // Build the adv_link from slug (use locale from payload, default to 'ar')
+    const locale = payload.meta?.locale || 'ar';
     const advLink = selectedListing?.slug 
-      ? `https://staging.q84sale.com/ar/listing/${selectedListing.slug}`
+      ? `https://staging.q84sale.com/${locale}/listing/${selectedListing.slug}`
       : '';
     
     const webhookPayload = {
