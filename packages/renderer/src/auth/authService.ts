@@ -219,7 +219,6 @@ export async function fetchMyListings(token: string, config: AuthConfig, lang: s
     console.log('[AuthService] Parsed listings count:', listings.length);
     
     // Extract user data from the first listing item (user is the same for all listings)
-    const listingsArray = data.data?.listings || data.listings || data.data || [];
     const firstListing = Array.isArray(listingsArray) && listingsArray.length > 0 ? listingsArray[0] : null;
     const userData = firstListing?.user;
     console.log('[AuthService] User data from first listing:', JSON.stringify(userData));
