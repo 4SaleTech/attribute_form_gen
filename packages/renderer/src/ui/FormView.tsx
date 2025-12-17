@@ -1051,40 +1051,94 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
 
   return (
     <div style={containerStyle}>
-      {/* Header */}
-      <div style={headerStyle}>
-        <div style={headerInnerStyle}>
-          <h1 style={titleStyle}>{form.title?.[effectiveLocale]}</h1>
-        </div>
-      </div>
-
-      {/* Introduction - for purchase forms */}
-      {purchaseAuthConfig && (
+      {/* Hero Header - for purchase forms */}
+      {purchaseAuthConfig ? (
         <div style={{ 
-          padding: '1.25rem 1.5rem', 
-          backgroundColor: '#F8FAFC',
-          borderBottom: `1px solid ${COLORS.border}`,
+          background: 'linear-gradient(135deg, #2E4BFF 0%, #1E3AD8 100%)',
+          padding: '2.5rem 1.5rem 2rem',
+          textAlign: 'center',
         }}>
           <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+            <h1 style={{ 
+              fontSize: '26px', 
+              fontWeight: 800, 
+              color: '#FFFFFF',
+              letterSpacing: '-0.025em',
+              lineHeight: 1.3,
+              margin: '0 0 1rem 0'
+            }}>
+              {form.title?.[effectiveLocale]}
+            </h1>
             <p style={{ 
               fontSize: '15px', 
-              color: COLORS.heading, 
-              lineHeight: 1.8,
+              color: 'rgba(255, 255, 255, 0.9)', 
+              lineHeight: 1.7,
               margin: 0,
-              whiteSpace: 'pre-line'
             }}>
               {effectiveLocale === 'ar' 
-                ? `الحين تقدر توصل إعلان سيارتك لجمهور أضخم على إنستغرام من خلال حساب 4Sale
-
-إعلانك راح يوصل حق الفئة المهتمة مباشرة.
-
-نتكفّل بالتصميم، والاستهداف، والترويج… وإنت عليك بس تختار الباقة المناسبة وترفع إعلانك.`
-                : `Now you can reach a larger audience on Instagram through the official 4Sale account.
-
-Your ad will reach the interested audience directly.
-
-We handle the design, targeting, and promotion... you just need to choose the right package and upload your ad.`}
+                ? 'الحين تقدر توصل إعلان سيارتك لجمهور أضخم على إنستغرام من خلال حساب 4Sale الرسمي'
+                : 'Now you can reach a larger audience on Instagram through the official 4Sale account'}
             </p>
+          </div>
+        </div>
+      ) : (
+        <div style={headerStyle}>
+          <div style={headerInnerStyle}>
+            <h1 style={titleStyle}>{form.title?.[effectiveLocale]}</h1>
+          </div>
+        </div>
+      )}
+
+      {/* Info Cards - for purchase forms */}
+      {purchaseAuthConfig && (
+        <div style={{ 
+          padding: '1.5rem',
+          backgroundColor: '#FFFFFF',
+        }}>
+          <div style={{ 
+            maxWidth: '640px', 
+            margin: '0 auto',
+            display: 'flex',
+            gap: '0.75rem',
+            flexWrap: 'wrap',
+            justifyContent: 'center'
+          }}>
+            <div style={{
+              flex: '1 1 180px',
+              padding: '1rem',
+              backgroundColor: '#F0F9FF',
+              borderRadius: '12px',
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: '20px', marginBottom: '0.5rem' }}>🎯</div>
+              <div style={{ fontSize: '13px', color: COLORS.heading, fontWeight: 600 }}>
+                {effectiveLocale === 'ar' ? 'استهداف دقيق' : 'Precise Targeting'}
+              </div>
+            </div>
+            <div style={{
+              flex: '1 1 180px',
+              padding: '1rem',
+              backgroundColor: '#FEF3C7',
+              borderRadius: '12px',
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: '20px', marginBottom: '0.5rem' }}>🎨</div>
+              <div style={{ fontSize: '13px', color: COLORS.heading, fontWeight: 600 }}>
+                {effectiveLocale === 'ar' ? 'تصميم احترافي' : 'Professional Design'}
+              </div>
+            </div>
+            <div style={{
+              flex: '1 1 180px',
+              padding: '1rem',
+              backgroundColor: '#ECFDF5',
+              borderRadius: '12px',
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: '20px', marginBottom: '0.5rem' }}>📈</div>
+              <div style={{ fontSize: '13px', color: COLORS.heading, fontWeight: 600 }}>
+                {effectiveLocale === 'ar' ? 'ترويج مضمون' : 'Guaranteed Promotion'}
+              </div>
+            </div>
           </div>
         </div>
       )}
