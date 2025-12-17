@@ -843,6 +843,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('[FormView] handleSubmit called, termsAccepted:', termsAccepted);
     // Pass dynamic options fields to skip "not in options" validation for user listings
     const dynamicFields = purchaseAuthConfig?.adv_id_field ? [purchaseAuthConfig.adv_id_field] : [];
     const clientErrors = validateClient(form, answers, effectiveLocale, dynamicFields);
@@ -1349,7 +1350,10 @@ We handle the design, targeting, and promotion... you just need to choose the ri
               <input 
                 type="checkbox"
                 checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
+                onChange={(e) => {
+                  console.log('[FormView] Terms checkbox changed:', e.target.checked);
+                  setTermsAccepted(e.target.checked);
+                }}
                 style={{
                   width: '20px',
                   height: '20px',
