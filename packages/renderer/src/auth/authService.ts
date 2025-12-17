@@ -218,10 +218,11 @@ export async function fetchMyListings(token: string, config: AuthConfig, lang: s
     
     console.log('[AuthService] Parsed listings count:', listings.length);
     
-    // Extract user data from response - check multiple possible locations
-    const userData = data.data?.user || data.user || data.data?.data?.user;
-    console.log('[AuthService] Full API response structure:', JSON.stringify(data).substring(0, 1000));
-    console.log('[AuthService] User data from listings:', JSON.stringify(userData));
+    // Extract user data from the first listing item (user is the same for all listings)
+    const listingsArray = data.data?.listings || data.listings || data.data || [];
+    const firstListing = Array.isArray(listingsArray) && listingsArray.length > 0 ? listingsArray[0] : null;
+    const userData = firstListing?.user;
+    console.log('[AuthService] User data from first listing:', JSON.stringify(userData));
 
     return { 
       success: true, 
