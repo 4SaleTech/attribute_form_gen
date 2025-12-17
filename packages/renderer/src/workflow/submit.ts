@@ -626,10 +626,8 @@ async function purchaseAuthenticated(
       listing => listing.adv_id === String(advId)
     );
     
-    // Get form field values
-    const nameField = config.pre_purchase_webhook.name_field || '';
+    // Get form field values (notes field only - user_name comes from API)
     const notesField = config.pre_purchase_webhook.notes_field || '';
-    const userName = nameField ? (payload.answers[nameField]?.value || payload.answers[nameField] || '') : '';
     const userNote = notesField ? (payload.answers[notesField]?.value || payload.answers[notesField] || '') : '';
     
     // Build the adv_link from slug (use locale from payload, default to 'ar')
@@ -647,7 +645,7 @@ async function purchaseAuthenticated(
       adv_link: advLink,
       user_note: userNote,
       user_id: payload.userData?.id ? String(payload.userData.id) : '',
-      user_name: userName || payload.userData?.name || '',
+      user_name: payload.userData?.name || '',
       user_phone: payload.userData?.phone || '',
       addon_type: itemId,
     };
