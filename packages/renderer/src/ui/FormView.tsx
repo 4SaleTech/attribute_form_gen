@@ -448,6 +448,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
   const [submitted, setSubmitted] = React.useState(false)
   const [redirectingToPayment, setRedirectingToPayment] = React.useState(false)
   const [buttonHover, setButtonHover] = React.useState(false)
+  const [termsAccepted, setTermsAccepted] = React.useState(false)
   const effectiveLocale = (locale as any) || (getLocaleFromURL(form.default_locale) as any)
   
   // Authentication state for purchase_authenticated forms
@@ -1057,6 +1058,37 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
         </div>
       </div>
 
+      {/* Introduction - for purchase forms */}
+      {purchaseAuthConfig && (
+        <div style={{ 
+          padding: '1.25rem 1.5rem', 
+          backgroundColor: '#F8FAFC',
+          borderBottom: `1px solid ${COLORS.border}`,
+        }}>
+          <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+            <p style={{ 
+              fontSize: '15px', 
+              color: COLORS.heading, 
+              lineHeight: 1.8,
+              margin: 0,
+              whiteSpace: 'pre-line'
+            }}>
+              {effectiveLocale === 'ar' 
+                ? `الحين تقدر توصل إعلان سيارتك لجمهور أضخم على إنستغرام من خلال حساب 4Sale
+
+إعلانك راح يوصل حق الفئة المهتمة مباشرة.
+
+نتكفّل بالتصميم، والاستهداف، والترويج… وإنت عليك بس تختار الباقة المناسبة وترفع إعلانك.`
+                : `Now you can reach a larger audience on Instagram through the official 4Sale account.
+
+Your ad will reach the interested audience directly.
+
+We handle the design, targeting, and promotion... you just need to choose the right package and upload your ad.`}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Form */}
       <form onSubmit={handleSubmit} style={formStyle}>
         <div style={formContainerStyle}>
@@ -1232,16 +1264,105 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
         </div>
 
 
+        {/* Terms and Conditions - for purchase forms */}
+        {purchaseAuthConfig && (
+          <div style={{ 
+            padding: '1rem 1.5rem',
+            backgroundColor: '#FFFBEB',
+            borderRadius: '12px',
+            margin: '0 1.5rem 1rem',
+            maxWidth: '640px',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}>
+            <div style={{ marginBottom: '0.75rem' }}>
+              <h3 style={{ 
+                fontSize: '16px', 
+                fontWeight: 700, 
+                color: COLORS.heading,
+                margin: '0 0 0.75rem 0'
+              }}>
+                {effectiveLocale === 'ar' ? 'الشروط والأحكام' : 'Terms and Conditions'}
+              </h3>
+              <ul style={{ 
+                fontSize: '13px', 
+                color: COLORS.helper, 
+                lineHeight: 1.7,
+                margin: 0,
+                paddingRight: effectiveLocale === 'ar' ? '1.25rem' : 0,
+                paddingLeft: effectiveLocale === 'ar' ? 0 : '1.25rem',
+                listStyleType: 'disc'
+              }}>
+                {effectiveLocale === 'ar' ? (
+                  <>
+                    <li>يجب أن يكون المحتوى المرسل متوافقًا مع سياسة النشر الخاصة بتطبيق 4Sale.</li>
+                    <li>تحتفظ 4Sale بالحق في رفض أي إعلان لا يتوافق مع الشروط والسياسات.</li>
+                    <li>في حالة رفض الإعلان، يتم استرجاع المبلغ إلى محفظة المستخدم داخل التطبيق خلال 3 أيام عمل.</li>
+                    <li>قيمة الخدمة تشمل تكلفة نشر المنشور بالإضافة إلى تكلفة الترويج.</li>
+                    <li>لا تتحمل 4Sale أي مسؤولية بخصوص بيع المركبة أو نتائج الإعلان.</li>
+                    <li>يتم إزالة المنشور أو القصة تلقائيًا بعد انتهاء المدة المحددة في الباقة المختارة.</li>
+                    <li>الحد الأعلى للصور المسموح برفعها هو 5 صور فقط.</li>
+                    <li>4Sale هي المنوطة بتصميم الإعلان واختيار الصور التي سيتم عرضها.</li>
+                    <li>يتم نشر الإعلان خلال 24 ساعة من استكمال الطلب وإتمام عملية الدفع.</li>
+                  </>
+                ) : (
+                  <>
+                    <li>Content must comply with 4Sale's publishing policy.</li>
+                    <li>4Sale reserves the right to reject any ad that doesn't comply with terms and policies.</li>
+                    <li>If an ad is rejected, the amount will be refunded to the user's wallet within 3 business days.</li>
+                    <li>Service fee includes posting and promotion costs.</li>
+                    <li>4Sale is not responsible for vehicle sales or ad results.</li>
+                    <li>Posts/stories are automatically removed after the selected package duration ends.</li>
+                    <li>Maximum of 5 photos allowed per upload.</li>
+                    <li>4Sale handles ad design and photo selection.</li>
+                    <li>Ads are published within 24 hours of completing the order and payment.</li>
+                  </>
+                )}
+              </ul>
+            </div>
+            <label style={{ 
+              display: 'flex', 
+              alignItems: 'flex-start', 
+              gap: '0.75rem',
+              cursor: 'pointer',
+              padding: '0.5rem 0'
+            }}>
+              <input 
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  marginTop: '2px',
+                  accentColor: COLORS.primary,
+                  cursor: 'pointer'
+                }}
+              />
+              <span style={{ 
+                fontSize: '14px', 
+                fontWeight: 600,
+                color: COLORS.heading,
+                lineHeight: 1.5
+              }}>
+                {effectiveLocale === 'ar' 
+                  ? 'أوافق على الشروط والأحكام المذكورة أعلاه'
+                  : 'I agree to the terms and conditions above'}
+              </span>
+            </label>
+          </div>
+        )}
+
         {/* Submit Button */}
         <div 
           style={typeof window !== 'undefined' && window.innerWidth >= 768 ? buttonContainerDesktopStyle : buttonContainerStyle}
         >
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || (purchaseAuthConfig && !termsAccepted)}
             onMouseEnter={() => setButtonHover(true)}
             onMouseLeave={() => setButtonHover(false)}
-            style={submitting ? buttonDisabledStyle : (buttonHover ? buttonHoverStyle : buttonStyle)}
+            style={(submitting || (purchaseAuthConfig && !termsAccepted)) ? buttonDisabledStyle : (buttonHover ? buttonHoverStyle : buttonStyle)}
           >
             {submitting 
               ? (effectiveLocale === 'ar' ? 'جاري الإرسال...' : 'Submitting...') 
