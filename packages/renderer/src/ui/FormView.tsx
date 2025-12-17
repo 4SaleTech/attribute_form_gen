@@ -535,6 +535,29 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
       setAuthToken(result.accessToken);
       setShowLoginModal(false);
       
+      // Set user data from login response if available
+      if (result.user) {
+        setUserData({
+          id: result.user.id,
+          phone: result.user.phone,
+          name: result.user.name,
+        });
+        setUserId(result.user.id);
+        setAmplitudeUserId(result.user.id);
+      } else {
+        // Fallback: fetch user data if not in login response
+        const fetchedUserData = await fetchUserData(result.accessToken);
+        if (fetchedUserData?.user_id) {
+          setUserData({
+            id: fetchedUserData.user_id,
+            phone: fetchedUserData.phone,
+            name: fetchedUserData.first_name,
+          });
+          setUserId(fetchedUserData.user_id);
+          setAmplitudeUserId(fetchedUserData.user_id);
+        }
+      }
+      
       // Fetch user listings after successful login
       const listingsResult = await fetchMyListings(result.accessToken, authConfig, effectiveLocale);
       if (listingsResult.success && listingsResult.listings.length > 0) {
