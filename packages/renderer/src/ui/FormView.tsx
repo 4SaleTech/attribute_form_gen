@@ -15,7 +15,7 @@ import {
   trackValidationError,
 } from '../analytics/amplitude';
 import { fetchUserData } from '../analytics/userApi';
-import { getStoredToken, validateToken, login, setStoredToken, fetchMyListings, type AuthConfig, type MyListing } from '../auth/authService';
+import { getStoredToken, validateToken, login, setStoredToken, fetchMyListings, fetchItemVariant, type AuthConfig, type MyListing, type ItemVariant } from '../auth/authService';
 import { LoginModal } from './LoginModal';
 
 // Brand Colors
@@ -459,6 +459,10 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
   const [userListings, setUserListings] = React.useState<MyListing[]>([]);
   const [userData, setUserData] = React.useState<{ id?: number; phone?: string; name?: string }>({});
   
+  // Item pricing state
+  const [selectedItemPrice, setSelectedItemPrice] = React.useState<number | null>(null);
+  const [loadingItemPrice, setLoadingItemPrice] = React.useState(false);
+  
   // Analytics state
   const [sessionId, setSessionId] = React.useState<string | undefined>(undefined);
   const [userId, setUserId] = React.useState<string | number | undefined>(undefined);
@@ -731,6 +735,56 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [submitted, submitting, answers, errors, lastFieldInteracted]);
+
+  // Fetch item variant price when placement dropdown changes
+  React.useEffect(() => {
+    const fetchItemPrice = async () => {
+      if (!purchaseAuthConfig || !authToken) return;
+      
+      const itemIdField = purchaseAuthConfig.item_id_field;
+      if (!itemIdField) return;
+      
+      const selectedValue = answers[itemIdField];
+      if (!selectedValue) {
+        setSelectedItemPrice(null);
+        return;
+      }
+      
+      // Get the value (could be string or object with value property)
+      const itemValue = typeof selectedValue === 'object' ? selectedValue.value : selectedValue;
+      if (!itemValue) {
+        setSelectedItemPrice(null);
+        return;
+      }
+      
+      // Map old_id values to variant UUIDs
+      const variantMapping: Record<string, string> = {
+        'instagram_1_day': '4dfc118f-cf79-11f0-8b87-068146e4f871',
+        'instagram_5_days': '55964ff1-cf79-11f0-8b87-068146e4f871',
+        'instagram_10_days': '5dba54ea-cf79-11f0-8b87-068146e4f871',
+      };
+      
+      const variantId = variantMapping[itemValue] || itemValue;
+      
+      setLoadingItemPrice(true);
+      try {
+        const baseUrl = purchaseAuthConfig.auth_api_base_url || 'https://staging-services.q84sale.com/api/v1';
+        const result = await fetchItemVariant(authToken, baseUrl, variantId);
+        if (result.success && result.variant) {
+          setSelectedItemPrice(result.variant.price);
+        } else {
+          setSelectedItemPrice(null);
+        }
+      } catch (err) {
+        console.error('[FormView] Error fetching item variant:', err);
+        setSelectedItemPrice(null);
+      } finally {
+        setLoadingItemPrice(false);
+      }
+    };
+    
+    fetchItemPrice();
+  }, [purchaseAuthConfig, authToken, answers[purchaseAuthConfig?.item_id_field || '']]);
 
   const onChange = (name: string, value: any) => {
     setAnswers((a) => {
@@ -1106,9 +1160,50 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
                 </div>
               );
             }
+            // Special rendering for item_id_field (placement dropdown) to show price
+            const isItemIdField = purchaseAuthConfig && f.name === purchaseAuthConfig.item_id_field;
+            
             return (
               <div key={f.attribute_key} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {Comp(componentProps)}
+                {isItemIdField && (
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '0.5rem',
+                    padding: '0.75rem 1rem',
+                    backgroundColor: selectedItemPrice !== null ? '#EFF6FF' : '#F9FAFB',
+                    borderRadius: '12px',
+                    marginTop: '0.25rem'
+                  }}>
+                    {loadingItemPrice ? (
+                      <span style={{ fontSize: '14px', color: COLORS.helper }}>
+                        {effectiveLocale === 'ar' ? 'جاري تحميل السعر...' : 'Loading price...'}
+                      </span>
+                    ) : selectedItemPrice !== null ? (
+                      <>
+                        <span style={{ fontSize: '14px', color: COLORS.helper }}>
+                          {effectiveLocale === 'ar' ? 'السعر:' : 'Price:'}
+                        </span>
+                        <span style={{ 
+                          fontSize: '18px', 
+                          fontWeight: 700, 
+                          color: COLORS.primary 
+                        }}>
+                          {selectedItemPrice} {effectiveLocale === 'ar' ? 'د.ك' : 'KD'}
+                        </span>
+                      </>
+                    ) : answers[f.name] ? (
+                      <span style={{ fontSize: '14px', color: COLORS.helper }}>
+                        {effectiveLocale === 'ar' ? 'تعذر تحميل السعر' : 'Unable to load price'}
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: '14px', color: COLORS.helper }}>
+                        {effectiveLocale === 'ar' ? 'اختر باقة لعرض السعر' : 'Select a package to see price'}
+                      </span>
+                    )}
+                  </div>
+                )}
                 {fieldErrors.map(er => (
                   <div key={er.code} style={{ fontSize: '14px', color: COLORS.borderError, marginLeft: '0.25rem', marginTop: '0.25rem' }}>{er.message[effectiveLocale]}</div>
                 ))}

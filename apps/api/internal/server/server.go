@@ -122,6 +122,7 @@ func (s *Server) registerRoutes() {
     api.POST("/forms/publish", serverhandlers.PublishFormHandler(s.db, s.cfg, s.log))
     api.POST("/submissions", serverhandlers.SubmitHandler(s.db, s.cfg, s.log))
     api.POST("/purchase/proxy", serverhandlers.PurchaseProxyHandler(s.log))
+    api.POST("/cashier/item-variant", serverhandlers.ItemVariantProxyHandler(s.log))
     
     // Public form creation endpoint (with API key auth) - register BEFORE parameterized routes
     api.POST("/forms/create", func(c *gin.Context) {

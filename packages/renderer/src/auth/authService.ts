@@ -257,6 +257,59 @@ export type PurchaseResponse = {
   paymentLink?: string;
 };
 
+export type ItemVariant = {
+  id: string;
+  old_id: string;
+  product_id: string;
+  category_id: string;
+  district_id: string;
+  price: number;
+  is_free: boolean;
+  price_before_discount: number;
+};
+
+export async function fetchItemVariant(
+  token: string,
+  baseUrl: string,
+  variantId: string
+): Promise<{ success: boolean; variant?: ItemVariant; error?: string }> {
+  try {
+    console.log('[AuthService] Fetching item variant:', variantId);
+    
+    // Use backend proxy to avoid CORS issues
+    const response = await fetch('/api/cashier/item-variant', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        auth_token: token,
+        base_url: baseUrl,
+        variant_id: variantId,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.message || data.error || `Failed to fetch variant: ${response.status}`,
+      };
+    }
+
+    console.log('[AuthService] Item variant response:', JSON.stringify(data));
+    
+    return {
+      success: true,
+      variant: data,
+    };
+  } catch (error: any) {
+    console.error('[AuthService] Fetch item variant error:', error);
+    return { success: false, error: error.message || 'Failed to fetch item variant' };
+  }
+}
+
 export async function callPurchaseAPI(
   token: string,
   purchaseUrl: string,
