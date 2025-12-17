@@ -446,6 +446,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
   const [errors, setErrors] = React.useState<FieldError[]>([])
   const [submitting, setSubmitting] = React.useState(false)
   const [submitted, setSubmitted] = React.useState(false)
+  const [redirectingToPayment, setRedirectingToPayment] = React.useState(false)
   const [buttonHover, setButtonHover] = React.useState(false)
   const effectiveLocale = (locale as any) || (getLocaleFromURL(form.default_locale) as any)
   
@@ -808,6 +809,12 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
     trackSubmissionStarted(form, effectiveLocale, answers, sessionId, submissionTime);
     
     setSubmitting(true);
+    
+    // Show "Redirecting to payment..." for purchase flows
+    if (purchaseAuthConfig) {
+      setRedirectingToPayment(true);
+    }
+    
     try {
       // Prepare meta with instance_id and user_id if available
       const meta: Record<string, any> = { 
@@ -937,8 +944,35 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
     );
   }
 
-  if (submitted && form.thankYou?.show) {
+  // Show "Redirecting to payment..." for purchase flows instead of thank you page
+  if (redirectingToPayment) {
+    return (
+      <div style={containerStyle}>
+        <div style={{ maxWidth: '640px', margin: '0 auto', padding: '3rem 1.5rem', textAlign: 'center' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            border: '4px solid #E5E7EB',
+            borderTopColor: COLORS.primary,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1.5rem'
+          }} />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <h1 style={{ ...titleStyle, marginBottom: '0.75rem' }}>
+            {effectiveLocale === 'ar' ? 'جاري التحويل للدفع...' : 'Redirecting to payment...'}
+          </h1>
+          <p style={{ fontSize: '15px', color: COLORS.helper, lineHeight: 1.6 }}>
+            {effectiveLocale === 'ar' ? 'يرجى الانتظار بينما نقوم بتحويلك إلى صفحة الدفع' : 'Please wait while we redirect you to the payment page'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (submitted && form.thankYou?.show && !purchaseAuthConfig) {
     // Thank you tracking is already done in handleSubmit
+    // Only show thank you for non-purchase flows
     return (
       <div style={containerStyle}>
         <div style={{ maxWidth: '640px', margin: '0 auto', padding: '1.5rem', textAlign: 'center' }}>
