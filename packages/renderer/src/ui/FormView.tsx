@@ -1089,59 +1089,6 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
         </div>
       )}
 
-      {/* Info Cards - for purchase forms */}
-      {purchaseAuthConfig && (
-        <div style={{ 
-          padding: '1.5rem',
-          backgroundColor: '#FFFFFF',
-        }}>
-          <div style={{ 
-            maxWidth: '640px', 
-            margin: '0 auto',
-            display: 'flex',
-            gap: '0.75rem',
-            flexWrap: 'wrap',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              flex: '1 1 180px',
-              padding: '1rem',
-              backgroundColor: '#F0F9FF',
-              borderRadius: '12px',
-              textAlign: 'center',
-            }}>
-              <div style={{ fontSize: '20px', marginBottom: '0.5rem' }}>🎯</div>
-              <div style={{ fontSize: '13px', color: COLORS.heading, fontWeight: 600 }}>
-                {effectiveLocale === 'ar' ? 'استهداف دقيق' : 'Precise Targeting'}
-              </div>
-            </div>
-            <div style={{
-              flex: '1 1 180px',
-              padding: '1rem',
-              backgroundColor: '#FEF3C7',
-              borderRadius: '12px',
-              textAlign: 'center',
-            }}>
-              <div style={{ fontSize: '20px', marginBottom: '0.5rem' }}>🎨</div>
-              <div style={{ fontSize: '13px', color: COLORS.heading, fontWeight: 600 }}>
-                {effectiveLocale === 'ar' ? 'تصميم احترافي' : 'Professional Design'}
-              </div>
-            </div>
-            <div style={{
-              flex: '1 1 180px',
-              padding: '1rem',
-              backgroundColor: '#ECFDF5',
-              borderRadius: '12px',
-              textAlign: 'center',
-            }}>
-              <div style={{ fontSize: '20px', marginBottom: '0.5rem' }}>📈</div>
-              <div style={{ fontSize: '13px', color: COLORS.heading, fontWeight: 600 }}>
-                {effectiveLocale === 'ar' ? 'ترويج مضمون' : 'Guaranteed Promotion'}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit} style={formStyle}>
