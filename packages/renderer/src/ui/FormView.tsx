@@ -1097,7 +1097,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
           >
             {submitting 
               ? (effectiveLocale === 'ar' ? 'جاري الإرسال...' : 'Submitting...') 
-              : (purchaseAuthAction?.enabled 
+              : (purchaseAuthConfig 
                   ? (effectiveLocale === 'ar' ? 'ادفع الآن' : 'Pay Now')
                   : (effectiveLocale === 'ar' ? 'إرسال' : 'Submit'))}
           </button>
