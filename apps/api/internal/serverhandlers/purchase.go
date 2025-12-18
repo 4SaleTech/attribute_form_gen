@@ -18,6 +18,7 @@ type PurchaseProxyRequest struct {
         } `json:"items"`
         AdvID         string `json:"adv_id"`
         UserLang      string `json:"user_lang"`
+        CallerService string `json:"caller_service"`
         PaymentMethod string `json:"payment_method"`
         AuthToken     string `json:"auth_token"`
         PurchaseURL   string `json:"purchase_url"`
@@ -46,6 +47,7 @@ func PurchaseProxyHandler(log *zap.Logger) gin.HandlerFunc {
                         "items":          req.Items,
                         "adv_id":         req.AdvID,
                         "user_lang":      req.UserLang,
+                        "caller_service": req.CallerService,
                         "payment_method": req.PaymentMethod,
                 }
 

@@ -246,6 +246,7 @@ export type PurchasePayload = {
   }>;
   adv_id: string;
   user_lang: string;
+  caller_service: string;
   payment_method: string;
 };
 

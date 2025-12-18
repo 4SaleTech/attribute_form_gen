@@ -615,6 +615,7 @@ async function purchaseAuthenticated(
     }],
     adv_id: String(advId),
     user_lang: payload.meta?.locale || config.user_lang || 'en',
+    caller_service: 'external_form',
     payment_method: 'CARD',
   };
   
