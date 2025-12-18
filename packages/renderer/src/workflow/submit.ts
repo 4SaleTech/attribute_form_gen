@@ -605,6 +605,8 @@ async function purchaseAuthenticated(
     itemId = 'instagram_10_days';
   }
   
+  console.log('[PurchaseAuth] Mapping placement to item_id:', placementValue, '→', itemId);
+  
   const purchasePayload: PurchasePayload = {
     items: [{
       id: itemId,
@@ -615,6 +617,8 @@ async function purchaseAuthenticated(
     user_lang: payload.meta?.locale || config.user_lang || 'en',
     payment_method: 'CARD',
   };
+  
+  console.log('[PurchaseAuth] Purchase payload items.id:', purchasePayload.items[0].id);
 
   // Call pre-purchase webhook if configured (before purchase API)
   if (config.pre_purchase_webhook?.url) {
