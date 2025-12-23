@@ -43,22 +43,6 @@ function getLocaleFromURL(defaultLocale: string) {
   return q === 'ar' || q === 'en' ? q : defaultLocale || 'en'
 }
 
-/**
- * Read a cookie value by name
- * @param name - Cookie name to read
- * @returns Cookie value or null if not found
- */
-function getCookie(name: string): string | null {
-  if (typeof document === 'undefined') return null;
-  
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    return parts.pop()?.split(';').shift() || null;
-  }
-  return null;
-}
-
 function validateClient(form: FormConfig, answers: Record<string, any>, locale: 'en'|'ar'): FieldError[] {
   const errs: FieldError[] = []
   const t = (en: string, ar: string) => ({ en, ar })
@@ -166,28 +150,13 @@ function validateClient(form: FormConfig, answers: Record<string, any>, locale: 
           errs.push({ field: f.name, code: 'INVALID', message: t('Invalid location', 'موقع غير صالح') })
           break
         }
-        // Check if manual entry (has address but no coordinates)
-        const hasAddress = typeof v.address === 'string' && v.address.trim() !== ''
-        const hasLat = typeof v.lat === 'number'
-        const hasLng = typeof v.lng === 'number'
-        
-        // Manual entry: only need address
-        if (v.detection_method === 'manual') {
-          if (!hasAddress) {
-            errs.push({ field: f.name, code: 'INVALID', message: t('Address is required', 'العنوان مطلوب') })
-          }
-          break
-        }
-        
-        // GPS entry: need coordinates, address is optional
-        if (hasLat && hasLng) {
         const lat = v.lat
         const lng = v.lng
+        if (typeof lat !== 'number' || typeof lng !== 'number') {
+          errs.push({ field: f.name, code: 'INVALID', message: t('Invalid coordinates', 'إحداثيات غير صالحة') })
+        } else {
           if (lat < -90 || lat > 90) errs.push({ field: f.name, code: 'INVALID', message: t('Invalid latitude', 'خط عرض غير صالح') })
           if (lng < -180 || lng > 180) errs.push({ field: f.name, code: 'INVALID', message: t('Invalid longitude', 'خط طول غير صالح') })
-        } else if (!hasAddress) {
-          // No coordinates and no address - invalid
-          errs.push({ field: f.name, code: 'INVALID', message: t('Location is required', 'الموقع مطلوب') })
         }
         break
     }
@@ -309,14 +278,7 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
   React.useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let extractedSessionId = urlParams.get('sessionId') || undefined;
-    
-    // Priority order: instance token > cookie token > URL token
-    // Instance token comes from form config (when instanceId query param is provided)
-    const instanceUserToken = form.instance_user_token;
-    const cookieUserToken = getCookie('_xyzW');
-    const urlUserToken = urlParams.get('user_token') || undefined;
-    const userToken = instanceUserToken || cookieUserToken || urlUserToken; // Instance takes highest priority
-    
+    const userToken = urlParams.get('user_token') || undefined;
     const shouldTestAmplitude = urlParams.get('testAmplitude') === 'true';
 
     // Generate a default session ID if none is provided
@@ -508,30 +470,12 @@ export const FormView: React.FC<{ form: FormConfig; components: ComponentsRegist
     
     setSubmitting(true);
     try {
-      // Prepare meta with instance_id and user_id if available
-      const meta: Record<string, any> = { 
-        locale: effectiveLocale, 
-        device: 'web', 
-        attributes: form.attributes, 
-        sessionId: sessionId || '' 
-      };
-      
-      // Add instance_id if form has instance
-      if (form.instance_id) {
-        meta.instance_id = form.instance_id;
-      }
-      
-      // Add user_id if we have it (from user identification)
-      if (userId) {
-        meta.user_id = userId;
-      }
-      
       const result = await runSubmitPipeline(form, {
         formId: form.formId,
         version: form.version,
         submittedAt: Date.now(),
         answers,
-        meta,
+        meta: { locale: effectiveLocale, device: 'web', attributes: form.attributes, sessionId: sessionId || '' },
       });
       
       // Extract submission ID from result if available

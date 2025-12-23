@@ -4,18 +4,8 @@ import { createRenderer } from '@pkg/renderer'
 type ENAR = { en: string; ar: string }
 type Attribute = { key: string; default_position?: number }
 
-// Generate a unique form ID
-function generateFormId(): string {
-  // Use crypto.randomUUID() if available (modern browsers)
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  // Fallback for older browsers
-  return 'form-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9);
-}
-
 export const FormBuilder: React.FC = () => {
-  const [formId, setFormId] = React.useState(() => generateFormId())
+  const [formId, setFormId] = React.useState('')
   const [title, setTitle] = React.useState<ENAR>({ en:'', ar:'' })
   const [attrs, setAttrs] = React.useState<Attribute[]>([])
   const [selected, setSelected] = React.useState<string[]>([])
@@ -27,30 +17,19 @@ export const FormBuilder: React.FC = () => {
       { type:'native_bridge', enabled:false },
       { type:'server_persist', enabled:false },
       { type:'webhooks', enabled:false },
-      { type:'nextjs_post', enabled:false },
       { type:'redirect', enabled:false, url:'' }
     ],
-    ordering:['native_bridge','server_persist','webhooks','nextjs_post','redirect'],
+    ordering:['native_bridge','server_persist','webhooks','redirect'],
     idempotency:{ enabled:false, key:'' },
     timeout_ms:6000,
     on_error:'continue'
   })
-  const [nextjsConfig, setNextjsConfig] = React.useState<{url:string, enabled:boolean} | null>(null)
-  const [userToken, setUserToken] = React.useState<string>('')
   const previewRef = React.useRef<HTMLDivElement | null>(null)
   const rendererRef = React.useRef<ReturnType<typeof createRenderer> | null>(null)
 
   React.useEffect(()=>{
     fetch('/api/attributes', { headers:{ Authorization:'Bearer dev-admin-token' } })
       .then(r=>r.json()).then((list)=>{ setAttrs(list) })
-    fetch('/api/config')
-      .then(r=>r.json())
-      .then((data:any)=>{ 
-        if (data.nextjsPost) {
-          setNextjsConfig({ url: data.nextjsPost.url || '', enabled: data.nextjsPost.enabled || false })
-        }
-      })
-      .catch(()=>{})
   },[])
 
   const move = (key: string, dir: -1|1) => {
@@ -62,11 +41,8 @@ export const FormBuilder: React.FC = () => {
     setSelected(copy)
   }
 
-  const generateNewFormId = () => {
-    setFormId(generateFormId())
-  }
-
   const publish = async () => {
+    if (!formId.trim()) { alert('Form ID is required'); return }
     if (!title.en.trim()) { alert('Title (EN) is required'); return }
     if (!title.ar.trim()) { alert('Title (AR) is required'); return }
     if (selected.length === 0) { alert('At least one attribute must be selected'); return }
@@ -80,32 +56,18 @@ export const FormBuilder: React.FC = () => {
     if (enabled.length===0) { alert('Enable at least one action'); return }
     const red = submit.actions.find((a:any)=>a.type==='redirect')
     if (red?.enabled && !(String(red.url||'').startsWith('http://') || String(red.url||'').startsWith('https://') || String(red.url||'').startsWith('/'))) { alert('Redirect URL must be http(s) or a relative path'); return }
-    const nextjs = submit.actions.find((a:any)=>a.type==='nextjs_post')
-    if (nextjs?.enabled && (!nextjsConfig?.enabled || !nextjsConfig?.url)) { alert('Next.js POST is not configured. Set NEXTJS_POST_URL and NEXTJS_POST_ENABLED environment variables.'); return }
-    const body: any = { formId, title, attributes:selected, thankYou: thank, submit }
-    
-    // Conditionally include Authorization header only if user token is provided
-    // If user token is provided, it will create a user-specific form
-    // If not provided, it will create a normal form
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (userToken.trim()) {
-      headers['Authorization'] = `Bearer ${userToken.trim()}`
-    }
-    
-    const res = await fetch('/api/forms/publish', { method:'POST', headers, body: JSON.stringify(body) })
+    const body = { formId, title, attributes:selected, thankYou: thank, submit }
+    const res = await fetch('/api/forms/publish', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer dev-admin-token' }, body: JSON.stringify(body) })
     const j = await res.json()
     if (j.isDuplicate) {
       alert(`A form with the same configuration already exists!\n\nForm ID: ${j.formId}\nVersion: ${j.version}\n\nURLs:\nEN: ${j.urls.en}\nAR: ${j.urls.ar}`)
     } else {
-      if (j.instanceId) {
-        alert(`Form published successfully!\n\nForm ID: ${j.formId}\nVersion: ${j.version}\nInstance ID: ${j.instanceId}\n\nURLs:\nEN: ${j.urls.en}\nAR: ${j.urls.ar}`)
-    } else {
       alert(`Form published successfully!\n\nForm ID: ${j.formId}\nVersion: ${j.version}\n\nURLs:\nEN: ${j.urls.en}\nAR: ${j.urls.ar}`)
-      }
     }
   }
 
   const preview = async () => {
+    if (!formId.trim()) { alert('Form ID is required'); return }
     if (!title.en.trim()) { alert('Title (EN) is required'); return }
     if (!title.ar.trim()) { alert('Title (AR) is required'); return }
     if (selected.length === 0) { alert('At least one attribute must be selected'); return }
@@ -119,44 +81,9 @@ export const FormBuilder: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-4 mb-4">
-        <label className="block">
-          Form ID
-          <div className="flex items-center gap-2">
-            <input 
-              className="border p-1 flex-1 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
-              value={formId} 
-              readOnly
-              disabled
-            />
-            <button 
-              type="button"
-              onClick={generateNewFormId}
-              className="px-2 py-1 text-sm border rounded dark:border-slate-600 dark:bg-slate-700 dark:hover:bg-slate-600 hover:bg-slate-100"
-              title="Generate new Form ID"
-            >
-              🔄
-            </button>
-          </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Auto-generated</div>
-        </label>
+        <label className="block">Form ID<input className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" value={formId} onChange={e=>setFormId(e.target.value)} placeholder="e.g. service-intake" /></label>
         <label className="block">Title (EN)<input className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" value={title.en} onChange={e=>setTitle(prev=>({ ...prev, en:e.target.value }))} placeholder="English title" /></label>
         <label className="block">Title (AR)<input className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" value={title.ar} onChange={e=>setTitle(prev=>({ ...prev, ar:e.target.value }))} placeholder="العنوان بالعربية" /></label>
-      </div>
-
-      <div className="mb-4">
-        <label className="block">
-          User Token (Optional - for user-specific forms)
-          <input 
-            className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
-            type="text"
-            value={userToken} 
-            onChange={e=>setUserToken(e.target.value)} 
-            placeholder="Enter user token (e.g., 2160720|peBF4cQygr0PAt1dsjX2B4PVQojsfhU9sKfGhKsI)" 
-          />
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            If provided, this form will be user-specific and tied to this token. Leave empty for a normal form.
-          </div>
-        </label>
       </div>
 
       <div>
@@ -265,53 +192,19 @@ export const FormBuilder: React.FC = () => {
         <div className="col-span-1">
           <h3 className="font-semibold mb-2">Submit Actions</h3>
           <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">Choose what happens when the user submits the form.</div>
-          {['native_bridge','server_persist','webhooks','nextjs_post','redirect'].map(t => (
+          {['native_bridge','server_persist','webhooks','redirect'].map(t => (
             <div key={t} className="mb-2">
               <label className="block"><input type="checkbox" checked={!!submit.actions.find((a:any)=>a.type===t && a.enabled)} onChange={e=>{
                 const a = submit.actions.map((x:any)=> x.type===t? { ...x, enabled:e.target.checked }: x)
                 setSubmit((prev:any)=>({ ...prev, actions:a }))
               }} /> {' '}{
-                t==='native_bridge'? 'Post to native bridge': 
-                t==='server_persist'? 'Save responses': 
-                t==='webhooks'? 'Trigger webhooks': 
-                t==='nextjs_post'? 'Post to Next.js': 
-                'Redirect'
+                t==='native_bridge'? 'Post to native bridge': t==='server_persist'? 'Save responses': t==='webhooks'? 'Trigger webhooks': 'Redirect'
               }</label>
               {t==='redirect' && submit.actions.find((a:any)=>a.type==='redirect')?.enabled && (
-                <div className="mt-1">
-                  <input 
-                    className="border p-1 w-full dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" 
-                    placeholder="https://example.com/booking?formSubmissionId={{.submissionId}}&name={{.name}}" 
-                    value={submit.actions.find((a:any)=>a.type==='redirect')?.url||''} 
-                    onChange={e=>{
-                      const a = submit.actions.map((x:any)=> x.type==='redirect'? { ...x, url:e.target.value }: x)
-                      setSubmit((prev:any)=>({ ...prev, actions:a }))
-                    }} 
-                  />
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    <div className="mb-1">💡 Use templates: <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.submissionId}}'}</code>, <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.formId}}'}</code>, <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.fieldName}}'}</code></div>
-                    <details className="cursor-pointer">
-                      <summary className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100">Available variables</summary>
-                      <div className="mt-1 ml-2 space-y-0.5 text-xs">
-                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.formId}}'}</code> - Form ID</div>
-                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.version}}'}</code> - Form version</div>
-                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.submissionId}}'}</code> - Submission ID (requires "Save responses" enabled)</div>
-                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.fieldName}}'}</code> - Any form field (e.g., <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.name}}'}</code>, <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.email}}'}</code>)</div>
-                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.meta.locale}}'}</code> - Submission locale</div>
-                        <div><code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">{'{{.meta.sessionId}}'}</code> - Session ID</div>
-                      </div>
-                    </details>
-                  </div>
-                </div>
-              )}
-              {t==='nextjs_post' && (
-                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  {nextjsConfig?.enabled && nextjsConfig?.url ? (
-                    <>Configured: {nextjsConfig.url}</>
-                  ) : (
-                    <>Not configured. Set NEXTJS_POST_URL and NEXTJS_POST_ENABLED env vars.</>
-                  )}
-                </div>
+                <input className="border p-1 w-full mt-1 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" placeholder="https://... or /path" value={submit.actions.find((a:any)=>a.type==='redirect')?.url||''} onChange={e=>{
+                  const a = submit.actions.map((x:any)=> x.type==='redirect'? { ...x, url:e.target.value }: x)
+                  setSubmit((prev:any)=>({ ...prev, actions:a }))
+                }} />
               )}
             </div>
           ))}
@@ -332,7 +225,7 @@ export const FormBuilder: React.FC = () => {
           <ul className="border rounded divide-y dark:border-slate-600">
             {submit.ordering.map((t:string, idx:number) => (
               <li key={t} className="p-2 flex items-center justify-between dark:hover:bg-slate-800">
-                <span>{t==='native_bridge'?'Bridge': t==='server_persist'?'Save': t==='webhooks'?'Webhooks': t==='nextjs_post'?'Next.js': 'Redirect'}</span>
+                <span>{t}</span>
                 <div className="space-x-2">
                   <button className="text-sm dark:text-slate-300" onClick={()=>{
                     if (idx===0) return; const o=[...submit.ordering]; const [it]=o.splice(idx,1); o.splice(idx-1,0,it); setSubmit((prev:any)=>({ ...prev, ordering:o }))
@@ -352,7 +245,7 @@ export const FormBuilder: React.FC = () => {
               {submit.ordering.map((t:string) => (
                 <React.Fragment key={t}>
                   <span>→</span>
-                  <span className="px-2 py-1 border rounded dark:border-slate-600">{t==='native_bridge'?'Bridge': t==='server_persist'?'Save': t==='webhooks'?'Webhooks': t==='nextjs_post'?'Next.js':'Redirect'}</span>
+                  <span className="px-2 py-1 border rounded dark:border-slate-600">{t==='native_bridge'?'Bridge': t==='server_persist'?'Save': t==='webhooks'?'Webhooks':'Redirect'}</span>
                 </React.Fragment>
               ))}
             </div>
