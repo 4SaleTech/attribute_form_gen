@@ -775,17 +775,16 @@ export async function runSubmitPipeline(form: FormConfig, payload: Payload): Pro
       return result;
     },
   }
-  // Build execution order: prioritize purchase_authenticated first, then rest
+  // Build execution order: run data-saving actions FIRST, then redirecting actions LAST
   const actionTypes = submit.actions.filter(a => a.enabled).map(a => a.type);
   
-  // Put purchase_authenticated first if present (it may redirect before other actions)
-  const priorityActions = ['purchase_authenticated'];
-  const sortedActions = [
-    ...actionTypes.filter(t => priorityActions.includes(t)),
-    ...actionTypes.filter(t => !priorityActions.includes(t))
+  // Actions that redirect should run LAST (after data is saved)
+  // server_persist and webhooks should run BEFORE purchase_authenticated/redirect
+  const redirectingActions = ['purchase_authenticated', 'redirect'];
+  const executionOrder = [
+    ...actionTypes.filter(t => !redirectingActions.includes(t)),  // Non-redirecting actions first
+    ...actionTypes.filter(t => redirectingActions.includes(t))     // Redirecting actions last
   ];
-  
-  const executionOrder = sortedActions;
   
   for (const step of executionOrder) {
     const action = submit.actions.find((a) => a.type === step);
