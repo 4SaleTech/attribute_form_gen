@@ -48,9 +48,9 @@ func New(cfg *config.Config, log *zap.Logger) *Server {
 
     // CORS
     corsCfg := cors.DefaultConfig()
-    corsCfg.AllowOrigins = cfg.CORSOriginsList()
-    corsCfg.AllowHeaders = []string{"Authorization", "Content-Type"}
-    corsCfg.AllowCredentials = true
+    corsCfg.AllowAllOrigins = true
+    corsCfg.AllowHeaders = []string{"Authorization", "Content-Type", "Accept"}
+    corsCfg.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
     r.Use(cors.New(corsCfg))
 
     // DB
@@ -88,7 +88,6 @@ func (s *Server) registerRoutes() {
     admin.Use(serverhandlers.AdminAuthMiddleware(s.cfg))
     
     // Admin form endpoints - specific routes first
-    admin.POST("/forms/publish", serverhandlers.PublishFormHandler(s.db, s.cfg, s.log))
     admin.GET("/forms", serverhandlers.ListFormsAdminHandler(s.db, s.log))
     
     // Admin form webhooks - MUST be registered BEFORE any /forms/:formId/:version routes
@@ -120,7 +119,10 @@ func (s *Server) registerRoutes() {
     // Public endpoints - register AFTER admin routes
     api.POST("/uploads/sign", serverhandlers.UploadSignHandler(s.cfg, s.log))
     api.POST("/forms/generate", serverhandlers.GenerateFormHandler(s.db, s.cfg, s.log))
+    api.POST("/forms/publish", serverhandlers.PublishFormHandler(s.db, s.cfg, s.log))
     api.POST("/submissions", serverhandlers.SubmitHandler(s.db, s.cfg, s.log))
+    api.POST("/purchase/proxy", serverhandlers.PurchaseProxyHandler(s.log))
+    api.POST("/cashier/item-variant", serverhandlers.ItemVariantProxyHandler(s.log))
     
     // Public form creation endpoint (with API key auth) - register BEFORE parameterized routes
     api.POST("/forms/create", func(c *gin.Context) {

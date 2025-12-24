@@ -22,6 +22,16 @@ apps/api/.env.*.local
 bin/
 .tmp/
 .coverage/
+# Go build artifacts
+apps/api/main
+apps/api/server
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
 
 # Docker
 **/docker/*.log

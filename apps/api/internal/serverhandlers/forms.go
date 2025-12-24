@@ -9,6 +9,7 @@ import (
     "fmt"
     "net/http"
     "net/url"
+    "os"
     "sort"
     "strings"
 
@@ -291,6 +292,7 @@ var allowedActions = map[string]bool{
     "webhooks": true,
     "nextjs_post": true,
     "redirect": true,
+    "purchase_authenticated": true,
 }
 
 func validateSubmitJSON(submit *types.SubmitPipeline) []string {
@@ -389,19 +391,33 @@ func getBaseURL(c *gin.Context, cfg *config.Config) string {
         return cfg.FormBaseURL
     }
     
-    // Try Origin header (for CORS requests) - this will be the admin app URL
-    origin := c.GetHeader("Origin")
-    if origin != "" {
-        return origin
+    // Check for Replit environment variable
+    if replitDomain := os.Getenv("REPLIT_DEV_DOMAIN"); replitDomain != "" {
+        return fmt.Sprintf("https://%s", replitDomain)
+    }
+    
+    // Check for REPLIT_DOMAINS (production)
+    if replitDomains := os.Getenv("REPLIT_DOMAINS"); replitDomains != "" {
+        // Take first domain from comma-separated list
+        parts := strings.Split(replitDomains, ",")
+        if len(parts) > 0 && parts[0] != "" {
+            return fmt.Sprintf("https://%s", parts[0])
+        }
     }
     
     // Fallback to constructing from request
-    scheme := "http"
-    if c.GetHeader("X-Forwarded-Proto") == "https" || c.Request.TLS != nil {
-        scheme = "https"
+    scheme := "https" // Default to https for cloud environments
+    if c.GetHeader("X-Forwarded-Proto") != "" {
+        scheme = c.GetHeader("X-Forwarded-Proto")
+    } else if c.Request.TLS == nil && c.GetHeader("X-Forwarded-Host") == "" {
+        scheme = "http"
     }
     
-    host := c.GetHeader("Host")
+    // Try X-Forwarded-Host first (for proxied requests like Replit)
+    host := c.GetHeader("X-Forwarded-Host")
+    if host == "" {
+        host = c.GetHeader("Host")
+    }
     if host == "" {
         host = c.Request.Host
     }

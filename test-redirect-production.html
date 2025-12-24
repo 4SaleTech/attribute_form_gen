@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Production Redirect Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 1000px; margin: 0 auto; }
+        .test-box { border: 2px solid #333; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .pass { border-color: green; background: #f0fff0; }
+        .fail { border-color: red; background: #fff0f0; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; display: block; margin: 10px 0; word-break: break-all; }
+        button { padding: 10px 20px; margin: 10px 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .warning { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Production Redirect URL Test</h1>
+    <p>Use this page to test redirect URLs in your production environment.</p>
+    
+    <div class="warning">
+        <strong>Instructions:</strong>
+        <ol>
+            <li>Open browser DevTools (F12) and go to Console tab</li>
+            <li>Fill in the test URL template below</li>
+            <li>Click "Test Redirect URL"</li>
+            <li>Check the console output and results below</li>
+            <li>If testing actual redirect, click "Simulate Redirect" (will navigate away)</li>
+        </ol>
+    </div>
+
+    <div class="test-box">
+        <h2>Test Configuration</h2>
+        <label>
+            Redirect URL Template:
+            <input type="text" id="urlTemplate" style="width: 100%; padding: 8px; margin: 10px 0;" 
+                   value="http://localhost:3000/ar/listing/booking?categoryId=1100&formSubmissionId={{.formSubmissionId}}" />
+        </label>
+        <br>
+        <label>
+            Submission ID:
+            <input type="number" id="submissionId" value="29" style="padding: 8px; margin: 10px 0;" />
+        </label>
+        <br>
+        <button onclick="testRedirect()">Test Redirect URL</button>
+        <button onclick="simulateRedirect()" style="background: #dc3545;">Simulate Redirect (will navigate)</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        // Copy the exact implementation from submit.ts
+        function evaluateTemplate(template, context) {
+            if (!template.includes('{{')) {
+                return template;
+            }
+            const templateRegex = /\{\{\.([\w.]+)\}\}/g;
+            return template.replace(templateRegex, (match, varName) => {
+                let value = context[varName];
+                if (value === undefined && varName.includes('.')) {
+                    const parts = varName.split('.');
+                    value = context;
+                    for (const part of parts) {
+                        if (value && typeof value === 'object') {
+                            value = value[part];
+                        } else {
+                            value = undefined;
+                            break;
+                        }
+                    }
+                }
+                let strValue = '';
+                if (value === null || value === undefined) {
+                    strValue = '';
+                } else if (typeof value === 'string') {
+                    strValue = value;
+                } else if (typeof value === 'number') {
+                    strValue = String(value);
+                } else if (typeof value === 'boolean') {
+                    strValue = value ? 'true' : 'false';
+                } else if (Array.isArray(value)) {
+                    strValue = value.map(v => String(v)).join(',');
+                } else if (typeof value === 'object') {
+                    if (value.e164) {
+                        strValue = value.e164;
+                    } else if (value.value === 'other' && value.other) {
+                        strValue = value.other;
+                    } else if (value.value) {
+                        strValue = String(value.value);
+                    } else if (typeof value.lat === 'number' && typeof value.lng === 'number') {
+                        strValue = `${value.lat.toFixed(6)},${value.lng.toFixed(6)}`;
+                    } else if (value.url) {
+                        strValue = value.url;
+                    } else {
+                        strValue = JSON.stringify(value);
+                    }
+                } else {
+                    strValue = String(value);
+                }
+                return strValue;
+            });
+        }
+
+        function encodeTemplateInURL(url, context) {
+            console.log('[encodeTemplateInURL] Input:', url);
+            
+            if (!url.includes('{{')) {
+                return url;
+            }
+
+            try {
+                let isAbsolute = false;
+                let urlObj = null;
+                try {
+                    urlObj = new URL(url);
+                    isAbsolute = true;
+                    console.log('[encodeTemplateInURL] Parsed as absolute URL');
+                } catch {
+                    isAbsolute = false;
+                    console.log('[encodeTemplateInURL] Treating as relative URL');
+                }
+
+                if (isAbsolute && urlObj) {
+                    const evaluatedPathname = evaluateTemplate(urlObj.pathname, context);
+                    const evaluatedSearch = urlObj.search;
+                    
+                    const existingParams = new URLSearchParams(evaluatedSearch);
+                    console.log('[encodeTemplateInURL] Parsed params:', Object.fromEntries(existingParams));
+                    
+                    const newParams = new URLSearchParams();
+                    existingParams.forEach((value, key) => {
+                        const evaluatedValue = value.includes('{{') 
+                            ? evaluateTemplate(value, context) 
+                            : value;
+                        console.log(`[encodeTemplateInURL] ${key}: "${value}" -> "${evaluatedValue}"`);
+                        newParams.append(key, evaluatedValue);
+                    });
+                    
+                    const resultUrl = new URL(evaluatedPathname, urlObj.origin);
+                    newParams.forEach((value, key) => {
+                        resultUrl.searchParams.append(key, value);
+                    });
+                    
+                    const result = resultUrl.toString();
+                    console.log('[encodeTemplateInURL] Final URL:', result);
+                    console.log('[encodeTemplateInURL] Final params:', Object.fromEntries(resultUrl.searchParams));
+                    return result;
+                } else {
+                    const [base, queryString] = url.split('?');
+                    
+                    if (!queryString) {
+                        return evaluateTemplate(base, context);
+                    }
+                    
+                    const evaluatedBase = evaluateTemplate(base, context);
+                    const queryParams = new URLSearchParams(queryString);
+                    const newParams = new URLSearchParams();
+                    
+                    queryParams.forEach((value, key) => {
+                        const evaluatedValue = value.includes('{{') 
+                            ? evaluateTemplate(value, context) 
+                            : value;
+                        newParams.append(key, evaluatedValue);
+                    });
+                    
+                    const queryStr = newParams.toString();
+                    return queryStr ? `${evaluatedBase}?${queryStr}` : evaluatedBase;
+                }
+            } catch (e) {
+                console.error('[encodeTemplateInURL] Error:', e);
+                return evaluateTemplate(url, context);
+            }
+        }
+
+        function testRedirect() {
+            const urlTemplate = document.getElementById('urlTemplate').value;
+            const submissionId = parseInt(document.getElementById('submissionId').value) || 29;
+            
+            const context = {
+                formSubmissionId: submissionId,
+                submissionId: submissionId,
+                formId: 'test-form'
+            };
+            
+            console.log('\n=== TESTING REDIRECT URL ===');
+            console.log('Template:', urlTemplate);
+            console.log('Context:', context);
+            
+            const finalUrl = encodeTemplateInURL(urlTemplate, context);
+            
+            // Check for encoding issues
+            const hasIssue = finalUrl.includes('%3F') || finalUrl.includes('%3D');
+            const issueDetails = [];
+            if (finalUrl.includes('%3F')) issueDetails.push('Found %3F (encoded ?)');
+            if (finalUrl.includes('%3D')) issueDetails.push('Found %3D (encoded =)');
+            
+            // Parse URL
+            let parsedParams = {};
+            try {
+                const url = new URL(finalUrl);
+                parsedParams = Object.fromEntries(url.searchParams);
+            } catch (e) {
+                if (finalUrl.includes('?')) {
+                    const [, query] = finalUrl.split('?');
+                    if (query) {
+                        parsedParams = Object.fromEntries(new URLSearchParams(query));
+                    }
+                }
+            }
+            
+            // Display results
+            const resultsDiv = document.getElementById('results');
+            const statusClass = hasIssue ? 'fail' : 'pass';
+            const statusIcon = hasIssue ? '❌' : '✅';
+            
+            resultsDiv.innerHTML = `
+                <div class="test-box ${statusClass}">
+                    <h2>${statusIcon} Test Results</h2>
+                    
+                    <h3>Input Template:</h3>
+                    <code>${urlTemplate}</code>
+                    
+                    <h3>Evaluated URL:</h3>
+                    <code>${finalUrl}</code>
+                    
+                    ${hasIssue ? `
+                        <div class="warning">
+                            <strong>⚠️ Encoding Issue Detected!</strong><br>
+                            ${issueDetails.join('<br>')}<br>
+                            <small>%3F = ? (should be &)<br>%3D = = (should be =)</small>
+                        </div>
+                    ` : `
+                        <div style="background: #d4edda; padding: 15px; border-radius: 4px; margin: 15px 0;">
+                            ✅ No encoding issues detected!
+                        </div>
+                    `}
+                    
+                    <h3>Parsed Query Parameters:</h3>
+                    <pre style="background: #f4f4f4; padding: 15px; border-radius: 4px;">${JSON.stringify(parsedParams, null, 2)}</pre>
+                    
+                    <h3>URL Analysis:</h3>
+                    <ul>
+                        <li>Contains %3F: ${finalUrl.includes('%3F') ? '❌ YES (BAD)' : '✅ NO (GOOD)'}</li>
+                        <li>Contains %3D: ${finalUrl.includes('%3D') ? '❌ YES (BAD)' : '✅ NO (GOOD)'}</li>
+                        <li>Contains &amp;: ${finalUrl.includes('&') ? '✅ YES (GOOD)' : '❌ NO (BAD)'}</li>
+                        <li>Contains =: ${finalUrl.includes('=') ? '✅ YES (GOOD)' : '❌ NO (BAD)'}</li>
+                    </ul>
+                </div>
+            `;
+            
+            console.log('Final URL:', finalUrl);
+            console.log('Has encoding issue:', hasIssue);
+            console.log('Parsed params:', parsedParams);
+        }
+
+        function simulateRedirect() {
+            const urlTemplate = document.getElementById('urlTemplate').value;
+            const submissionId = parseInt(document.getElementById('submissionId').value) || 29;
+            
+            const context = {
+                formSubmissionId: submissionId,
+                submissionId: submissionId,
+                formId: 'test-form'
+            };
+            
+            const finalUrl = encodeTemplateInURL(urlTemplate, context);
+            
+            if (confirm(`This will redirect to:\n\n${finalUrl}\n\nContinue?`)) {
+                window.location.href = finalUrl;
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+

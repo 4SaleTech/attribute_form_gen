@@ -1,0 +1,126 @@
+{
+    "data": {
+        "listings": [
+            {
+                "id": 20055870,
+                "slug": "jskddjndjdjdjd-20055870",
+                "date_published": "2025-10-15 12:11:33",
+                "date_sort": "2025-10-15 12:11:33",
+                "expire_date": "2025-11-04 12:11:33",
+                "title": "Jskddjndjdjdjd",
+                "price": 12343,
+                "addons": [
+                    {
+                        "name": "pinning",
+                        "icon": "https:\/\/staging-static.q84sale.com\/images\/static\/Pinning.png"
+                    }
+                ],
+                "image": "https:\/\/staging-media.q84sale.com\/images\/user_adv\/resize1000\/1759411700988824218.jpg",
+                "category": {
+                    "cat_id": 163,
+                    "name": "Bicycles",
+                    "cat_hierarchy": [
+                        "Automotive ",
+                        " Bikes ",
+                        " Bicycles "
+                    ]
+                },
+                "district": {
+                    "district_id": 1,
+                    "name": "Kuwait"
+                },
+                "region": {
+                    "region_id": 1,
+                    "name": "Kuwait"
+                },
+                "user": {
+                    "id": 789369,
+                    "name": "Mohammed ",
+                    "phone": "96500000001"
+                },
+                "action_card": {
+                    "message_content": {
+                        "experiment_variant": "Low Spender",
+                        "title": "Refresh to Top",
+                        "description": "Increase your views by pushing your ad to the top.",
+                        "metric_indicator": "positive",
+                        "icon": "https:\/\/staging-static.q84sale.com\/images\/upselling\/positive.webp"
+                    },
+                    "actions": [
+                        {
+                            "type": "refresh",
+                            "intent_action": "checkout",
+                            "intent_content": {
+                                "title": "Refresh to Top",
+                                "description": "Increase your views by pushing your ad to the top."
+                            },
+                            "cta_label": "Push Ad",
+                            "icon": "https:\/\/staging-static.q84sale.com\/images\/upselling\/Refresh.png",
+                            "price": 2
+                        }
+                    ]
+                }
+            },
+            {
+                "id": 20055316,
+                "slug": "henrnrkrnrnfjdd",
+                "date_published": "2025-09-11 08:46:42",
+                "date_sort": "2025-09-11 08:46:42",
+                "expire_date": "2025-10-11 08:46:42",
+                "title": "Henrnrkrnrnfjdd",
+                "price": 2500,
+                "addons": [
+                    {
+                        "name": "pinning",
+                        "icon": "https:\/\/staging-static.q84sale.com\/images\/static\/Pinning.png"
+                    },
+                    {
+                        "name": "premium_listing",
+                        "icon": "https:\/\/staging-static.q84sale.com\/images\/static\/Featured.png"
+                    }
+                ],
+                "image": null,
+                "category": {
+                    "cat_id": 532,
+                    "name": "Bugs Exterminator",
+                    "cat_hierarchy": [
+                        "Contracting ",
+                        " Bugs Exterminator "
+                    ]
+                },
+                "district": {
+                    "district_id": 1,
+                    "name": "Kuwait"
+                },
+                "region": {
+                    "region_id": 1,
+                    "name": "Kuwait"
+                },
+                "user": {
+                    "id": 789369,
+                    "name": "Mohammed ",
+                    "phone": "96500000001"
+                },
+                "action_card": {
+                    "message_content": {
+                        "experiment_variant": "Low Spender",
+                        "title": "Refresh to Top",
+                        "description": "Increase your views by pushing your ad to the top.",
+                        "metric_indicator": "positive",
+                        "icon": "https:\/\/staging-static.q84sale.com\/images\/upselling\/positive.webp"
+                    },
+                    "actions": [
+                        {
+                            "type": "refresh",
+                            "intent_action": "checkout",
+                            "intent_content": {
+                                "title": "Refresh to Top",
+                                "description": "Increase your views by pushing your ad to the top."
+                            },
+                            "cta_label": "Push Ad",
+                            "icon": "https:\/\/staging-static.q84sale.com\/images\/upselling\/Refresh.png",
+                            "price": 2
+                        }
+                    ]
+                }
+            },

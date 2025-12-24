@@ -323,6 +323,8 @@ const NumberInput: React.FC<any> = ({ name, label, props, locale, value, onChang
             setFocused(false);
             onBlur?.(value);
           }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           style={inputStyle}
         />
         {props?.unit?.[locale] && (
@@ -1170,16 +1172,10 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
   const [geocoding, setGeocoding] = React.useState(false);
   const [error, setError] = React.useState<string>('');
   const [addressText, setAddressText] = React.useState<string>('');
-  const isUserTypingRef = React.useRef(false);
   const isRTL = locale === 'ar';
   
-  // Initialize address text from value (only when value changes externally)
+  // Initialize address text from value
   React.useEffect(() => {
-    // Skip sync if user is actively typing
-    if (isUserTypingRef.current) {
-      return;
-    }
-    
     if (value?.address) {
       setAddressText(value.address);
     } else if (value && !value.lat) {
@@ -1310,17 +1306,12 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
   };
   
   const handleManualAddressChange = (text: string) => {
-    // Mark that user is typing to prevent useEffect from overwriting
-    isUserTypingRef.current = true;
-    
-    // Always update the input text immediately (preserve spaces while typing)
     setAddressText(text);
     
-    // Store the full text (including spaces) - trimming will happen on submit/validation if needed
     if (text.trim()) {
-      // Manual entry - store full text to preserve spaces
+      // Manual entry
       const location: any = {
-        address: text, // Store full text, not trimmed
+        address: text.trim(),
         detection_method: 'manual',
       };
       
@@ -1338,11 +1329,6 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
       // Clear location if text is empty
       onChange(null);
     }
-    
-    // Reset typing flag after a short delay to allow useEffect to sync external changes
-    setTimeout(() => {
-      isUserTypingRef.current = false;
-    }, 300);
   };
 
   const getMapsUrl = (lat: number, lng: number, label?: string): string => {
@@ -1360,7 +1346,7 @@ const LocationPicker: React.FC<any> = ({ name, label, props, locale, value, onCh
   };
 
   const containerStyle: React.CSSProperties = {
-    border: 'none',
+    border: `1px solid ${hasError ? COLORS.borderError : COLORS.border}`,
     borderRadius: '16px',
     padding: '1rem',
     backgroundColor: hasError ? COLORS.bgError : COLORS.white,
