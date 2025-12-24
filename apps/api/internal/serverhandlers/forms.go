@@ -168,28 +168,6 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
             c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "bilingual required", "details": errs})
             return
         }
-        
-        // Detect form type from Authorization header
-        // If Authorization: Bearer {token} header is present and token is not empty, treat as user_specific
-        // Otherwise, treat as normal form
-        var formType string
-        var userToken string
-        authHeader := c.GetHeader("Authorization")
-        if authHeader != "" {
-            // Extract token from "Bearer {token}" format
-            parts := strings.SplitN(authHeader, " ", 2)
-            if len(parts) == 2 && strings.ToLower(parts[0]) == "bearer" && strings.TrimSpace(parts[1]) != "" {
-                userToken = strings.TrimSpace(parts[1])
-                formType = "user_specific"
-            } else {
-                // Header present but invalid format or empty token - treat as normal
-                formType = "normal"
-            }
-        } else {
-            // No Authorization header - treat as normal form
-            formType = "normal"
-        }
-        
         // Next version
         var nextVersion int
         row := db.QueryRow("SELECT COALESCE(MAX(version),0)+1 FROM form_snapshots WHERE form_id=?", req.FormID)
@@ -217,8 +195,7 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
             baseURL := getBaseURL(c, cfg)
             existingFormIDEncoded := url.PathEscape(existingFormID)
             log.Info("duplicate form detected", zap.String("existing_form_id", existingFormID), zap.Int("existing_version", existingVersion), zap.String("requested_form_id", req.FormID))
-            
-            response := gin.H{
+            c.JSON(http.StatusOK, gin.H{
                 "formId": existingFormID,
                 "version": existingVersion,
                 "isDuplicate": true,
@@ -226,25 +203,7 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
                     "en": fmt.Sprintf("%s/%s/%d?lang=en", baseURL, existingFormIDEncoded, existingVersion),
                     "ar": fmt.Sprintf("%s/%s/%d?lang=ar", baseURL, existingFormIDEncoded, existingVersion),
                 },
-            }
-            
-            // For user-specific forms, always create a new instance (even if form config is duplicate)
-            if formType == "user_specific" && userToken != "" {
-                instanceID := generateUUID()
-                _, err = db.Exec(`INSERT INTO form_instances(id,form_id,version,user_token) VALUES(?,?,?,?)`,
-                    instanceID, existingFormID, existingVersion, userToken)
-                if err == nil {
-                    response["instanceId"] = instanceID
-                    response["urls"] = gin.H{
-                        "en": fmt.Sprintf("%s/%s/%d?lang=en&instanceId=%s", baseURL, existingFormIDEncoded, existingVersion, instanceID),
-                        "ar": fmt.Sprintf("%s/%s/%d?lang=ar&instanceId=%s", baseURL, existingFormIDEncoded, existingVersion, instanceID),
-                    }
-                } else {
-                    log.Error("failed to create instance for duplicate form", zap.Error(err), zap.String("form_id", existingFormID), zap.Int("version", existingVersion))
-                }
-            }
-            
-            c.JSON(http.StatusOK, response)
+            })
             return
         } else if err != sql.ErrNoRows {
             // Unexpected database error
@@ -260,26 +219,11 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
             return
         }
         
-        // Create form instance if form_type is user_specific
-        var instanceID string
-        if formType == "user_specific" && userToken != "" {
-            instanceID = generateUUID()
-            _, err = db.Exec(`INSERT INTO form_instances(id,form_id,version,user_token) VALUES(?,?,?,?)`,
-                instanceID, req.FormID, nextVersion, userToken)
-            if err != nil {
-                // Rollback form creation if instance creation fails
-                db.Exec("DELETE FROM form_snapshots WHERE form_id=? AND version=?", req.FormID, nextVersion)
-                log.Error("instance creation failed", zap.Error(err), zap.String("form_id", req.FormID), zap.Int("version", nextVersion))
-                c.JSON(http.StatusInternalServerError, gin.H{"error": "instance creation failed", "details": err.Error()})
-                return
-            }
-        }
-        
         // Generate form URLs
         baseURL := getBaseURL(c, cfg)
         formIDEncoded := url.PathEscape(req.FormID)
         
-        response := gin.H{
+        c.JSON(http.StatusOK, gin.H{
             "formId": req.FormID,
             "version": nextVersion,
             "isDuplicate": false,
@@ -287,18 +231,7 @@ func PublishFormHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.Han
                 "en": fmt.Sprintf("%s/%s/%d?lang=en", baseURL, formIDEncoded, nextVersion),
                 "ar": fmt.Sprintf("%s/%s/%d?lang=ar", baseURL, formIDEncoded, nextVersion),
             },
-        }
-        
-        // Include instance ID in response if user_specific form
-        if formType == "user_specific" && instanceID != "" {
-            response["instanceId"] = instanceID
-            response["urls"] = gin.H{
-                "en": fmt.Sprintf("%s/%s/%d?lang=en&instanceId=%s", baseURL, formIDEncoded, nextVersion, instanceID),
-                "ar": fmt.Sprintf("%s/%s/%d?lang=ar&instanceId=%s", baseURL, formIDEncoded, nextVersion, instanceID),
-            }
-        }
-        
-        c.JSON(http.StatusOK, response)
+        })
     }
 }
 
@@ -495,9 +428,8 @@ func getBaseURL(c *gin.Context, cfg *config.Config) string {
 func GetFormLatestHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.HandlerFunc {
     return func(c *gin.Context) {
         formId := c.Param("formId")
-        instanceId := c.Query("instanceId") // Get instanceId from query parameter
         row := db.QueryRow("SELECT version,title_json,fields_json,attributes_json,thank_you_json,submit_json,supported_locales_json,default_locale FROM form_snapshots WHERE form_id=? ORDER BY version DESC LIMIT 1", formId)
-        respondFormRow(c, formId, row, instanceId, db)
+        respondFormRow(c, formId, row)
     }
 }
 
@@ -505,14 +437,12 @@ func GetFormVersionHandler(db *sql.DB, cfg *config.Config, log *zap.Logger) gin.
     return func(c *gin.Context) {
         formId := c.Param("formId")
         ver := c.Param("version")
-        instanceId := c.Query("instanceId") // Get instanceId from query parameter
-        
         row := db.QueryRow("SELECT version,title_json,fields_json,attributes_json,thank_you_json,submit_json,supported_locales_json,default_locale FROM form_snapshots WHERE form_id=? AND version=?", formId, ver)
-        respondFormRow(c, formId, row, instanceId, db)
+        respondFormRow(c, formId, row)
     }
 }
 
-func respondFormRow(c *gin.Context, formId string, row *sql.Row, instanceId string, db *sql.DB) {
+func respondFormRow(c *gin.Context, formId string, row *sql.Row) {
     var version int
     var titleRaw, fieldsRaw, attrsRaw, thankRaw, submitRaw, localesRaw []byte
     var defaultLocale string
@@ -540,19 +470,6 @@ func respondFormRow(c *gin.Context, formId string, row *sql.Row, instanceId stri
     cfg.Submit = &submit
     cfg.SupportedLocales = locales
     cfg.DefaultLocale = defaultLocale
-    
-    // If instanceId is provided, fetch instance data
-    if instanceId != "" {
-        var userToken string
-        err := db.QueryRow("SELECT user_token FROM form_instances WHERE id=? AND form_id=? AND version=?", instanceId, formId, version).Scan(&userToken)
-        if err == nil {
-            cfg.InstanceID = instanceId
-            cfg.InstanceUserToken = userToken
-            cfg.FormType = "user_specific"
-        }
-        // Silently ignore if instance not found (might be normal form)
-    }
-    
     c.JSON(http.StatusOK, cfg)
 }
 
