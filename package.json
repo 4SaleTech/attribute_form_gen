@@ -2,6 +2,7 @@
   "name": "form-monorepo",
   "private": true,
   "version": "0.1.0",
+  "packageManager": "pnpm@9.10.0",
   "scripts": {
     "dev:admin": "pnpm --filter @app/admin dev",
     "dev:form": "pnpm --filter @app/form dev",

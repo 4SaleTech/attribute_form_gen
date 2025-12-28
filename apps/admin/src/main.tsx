@@ -19,18 +19,14 @@ function getOrCreateRoot(): Root {
 }
 
 try {
-  // Check if URL matches form pattern: /admin/{formId}/{version}?lang={en|ar}
+  // Check if URL matches form pattern: /{formId}/{version}?lang={en|ar}
   const pathParts = window.location.pathname.split('/').filter(Boolean)
-  
-  // Account for /admin/ base path - if first part is "admin", skip it
-  const startIndex = pathParts[0] === 'admin' ? 1 : 0
-  const formId = pathParts[startIndex]
-  const version = pathParts[startIndex + 1]
+  const formId = pathParts[0]
+  const version = pathParts[1]
   const lang = new URLSearchParams(window.location.search).get('lang') || 'en'
-  const instanceId = new URLSearchParams(window.location.search).get('instanceId') || null
 
-  // If URL matches form pattern and has formId and version (not just /admin/), render form
-  if (formId && formId !== 'admin' && version && !isNaN(Number(version))) {
+  // If URL matches form pattern and has formId and version, render form instead of admin
+  if (formId && version && !isNaN(Number(version))) {
     // This is a form URL - render the form
     
     // Show loading state
@@ -44,11 +40,7 @@ try {
     )
     
     // Fetch and render form
-    let apiUrl = `/api/forms/${encodeURIComponent(formId)}/${version}?lang=${lang}`
-    if (instanceId) {
-      apiUrl += `&instanceId=${encodeURIComponent(instanceId)}`
-    }
-    fetch(apiUrl)
+    fetch(`/api/forms/${encodeURIComponent(formId)}/${version}?lang=${lang}`)
       .then(async r => {
         if (!r.ok) {
           const errorText = await r.text()

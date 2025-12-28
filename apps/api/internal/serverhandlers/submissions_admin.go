@@ -3,10 +3,8 @@ package serverhandlers
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -19,7 +17,7 @@ type Submission struct {
 	SubmittedAt    int64                  `json:"submittedAt"`
 	Locale         string                 `json:"locale"`
 	Device         string                 `json:"device"`
-	Answers        interface{}            `json:"answers"` // Can be map[string]interface{} or []map[string]string
+	Answers        map[string]interface{} `json:"answers"`
 	Attributes     map[string]interface{} `json:"attributes"`
 	IdempotencyKey *string                `json:"idempotencyKey"`
 	WebhookStatus  string                 `json:"webhookStatus"`
@@ -133,8 +131,6 @@ func GetSubmissionHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
 			return
 		}
 
-		format := c.DefaultQuery("format", "object") // "object" or "array"
-
 		var s Submission
 		var answersJSON, attributesJSON string
 		var idempotencyKey sql.NullString
@@ -156,20 +152,19 @@ func GetSubmissionHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
 			&s.CreatedAt,
 		)
 
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "submission not found"})
+			return
+		}
 		if err != nil {
-			if err == sql.ErrNoRows {
-				c.JSON(http.StatusNotFound, gin.H{"error": "submission not found"})
-				return
-			}
 			log.Error("failed to query submission", zap.Error(err), zap.Uint64("id", id))
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to query submission"})
 			return
 		}
 
-		var answersMap map[string]interface{}
-		if err := json.Unmarshal([]byte(answersJSON), &answersMap); err != nil {
+		if err := json.Unmarshal([]byte(answersJSON), &s.Answers); err != nil {
 			log.Warn("failed to unmarshal answers_json", zap.Error(err), zap.Uint64("id", s.ID))
-			answersMap = make(map[string]interface{})
+			s.Answers = make(map[string]interface{})
 		}
 
 		if err := json.Unmarshal([]byte(attributesJSON), &s.Attributes); err != nil {
@@ -181,237 +176,7 @@ func GetSubmissionHandler(db *sql.DB, log *zap.Logger) gin.HandlerFunc {
 			s.IdempotencyKey = &idempotencyKey.String
 		}
 
-		// If format=array, transform answers to array format
-		if format == "array" {
-			// Fetch form fields to get labels
-			var fieldsJSON []byte
-			err = db.QueryRow(
-				"SELECT fields_json FROM form_snapshots WHERE form_id=? AND version=?",
-				s.FormID, s.Version,
-			).Scan(&fieldsJSON)
-
-			if err != nil {
-				log.Warn("failed to fetch form fields for array format", zap.Error(err))
-				// Fallback to object format if form not found
-				s.Answers = answersMap
-			} else {
-				var fields []map[string]interface{}
-				if err := json.Unmarshal(fieldsJSON, &fields); err != nil {
-					log.Warn("failed to unmarshal fields_json", zap.Error(err))
-					s.Answers = answersMap
-				} else {
-					// Build field labels map and field attributes map
-					fieldLabels := make(map[string]string)
-					fieldAttributes := make(map[string]string)
-					fieldTypes := make(map[string]string)
-					locale := s.Locale
-					if locale == "" {
-						locale = "en"
-					}
-					for _, field := range fields {
-						name, _ := field["name"].(string)
-						attributeKey, _ := field["attribute_key"].(string)
-						fieldType, _ := field["type"].(string)
-
-						// Build labels map
-						if labelMap, ok := field["label"].(map[string]interface{}); ok {
-							if label, ok := labelMap[locale].(string); ok && label != "" {
-								fieldLabels[name] = label
-							} else if label, ok := labelMap["en"].(string); ok && label != "" {
-								fieldLabels[name] = label // fallback to English
-							} else {
-								fieldLabels[name] = name // fallback to field name
-							}
-						} else {
-							fieldLabels[name] = name // fallback to field name
-						}
-
-						// Store attribute key
-						if attributeKey != "" {
-							fieldAttributes[name] = attributeKey
-						}
-
-						// Store field type
-						if fieldType != "" {
-							fieldTypes[name] = fieldType
-						}
-					}
-
-					// Transform answers to array format
-					answersArray := transformAnswersToArrayAdmin(answersMap, fieldLabels, fieldAttributes, fieldTypes, locale)
-					s.Answers = answersArray
-				}
-			}
-		} else {
-			s.Answers = answersMap
-		}
-
 		c.JSON(http.StatusOK, s)
 	}
 }
 
-// transformAnswersToArrayAdmin transforms answers map to array format with question labels, attributes, and maps URLs
-func transformAnswersToArrayAdmin(answers map[string]interface{}, fieldLabels map[string]string, fieldAttributes map[string]string, fieldTypes map[string]string, locale string) []map[string]interface{} {
-	result := []map[string]interface{}{}
-
-	for fieldName, value := range answers {
-		// Get label (question text user sees)
-		questionLabel := fieldLabels[fieldName]
-		if questionLabel == "" {
-			questionLabel = fieldName // fallback to field name
-		}
-
-		// Get attribute key
-		attributeKey := fieldAttributes[fieldName]
-
-		// Get field type
-		fieldType := fieldTypes[fieldName]
-
-		// Format answer based on type
-		answerStr, mapsUrl := formatAnswerForArray(value, fieldType, locale)
-
-		// Build result object
-		answerObj := map[string]interface{}{
-			"question": questionLabel,
-			"answer":   answerStr,
-		}
-
-		// Add attribute if available
-		if attributeKey != "" {
-			answerObj["attribute"] = attributeKey
-		}
-
-		// Add mapsUrl for location fields only
-		if fieldType == "location" {
-			if mapsUrl != "" {
-				answerObj["mapsUrl"] = mapsUrl
-			} else {
-				answerObj["mapsUrl"] = nil
-			}
-		}
-
-		result = append(result, answerObj)
-	}
-
-	return result
-}
-
-// formatAnswerForArray formats an answer value to a string representation for array format
-// Returns: (formattedAnswer, mapsUrl)
-func formatAnswerForArray(value interface{}, fieldType string, locale string) (string, string) {
-	if value == nil {
-		return "", ""
-	}
-
-	switch v := value.(type) {
-	case string:
-		return v, ""
-	case float64:
-		// Check if it's a whole number
-		if v == float64(int64(v)) {
-			return strconv.FormatInt(int64(v), 10), ""
-		}
-		return strconv.FormatFloat(v, 'f', -1, 64), ""
-	case bool:
-		if v {
-			if locale == "ar" {
-				return "نعم", ""
-			}
-			return "Yes", ""
-		}
-		if locale == "ar" {
-			return "لا", ""
-		}
-		return "No", ""
-	case map[string]interface{}:
-		// Location: format with address and coordinates, extract maps URL
-		if fieldType == "location" {
-			lat, hasLat := v["lat"].(float64)
-			lng, hasLng := v["lng"].(float64)
-			address, hasAddress := v["address"].(string)
-
-			// Extract maps URL
-			mapsUrl := ""
-			if url, ok := v["url"].(string); ok && url != "" {
-				mapsUrl = url
-			} else if hasLat && hasLng {
-				// Construct maps URL if not present
-				mapsUrl = fmt.Sprintf("https://www.google.com/maps?q=%.6f,%.6f", lat, lng)
-			}
-
-			// Format answer string
-			if hasLat && hasLng {
-				coordsStr := fmt.Sprintf("%.6f, %.6f", lat, lng)
-				if hasAddress && address != "" {
-					// Has address: "Address (lat, lng)"
-					return fmt.Sprintf("%s (%s)", address, coordsStr), mapsUrl
-				} else {
-					// No address: just coordinates
-					return coordsStr, mapsUrl
-				}
-			} else if hasAddress && address != "" {
-				// Manual entry: just address, no maps URL
-				return address, ""
-			} else {
-				// Fallback: empty or invalid
-				return "", ""
-			}
-		}
-
-		// Phone number: extract e164
-		if e164, ok := v["e164"].(string); ok {
-			return e164, ""
-		}
-		// Select/Radio with "other": use the "other" text
-		if val, ok := v["value"].(string); ok {
-			if val == "other" {
-				if other, ok := v["other"].(string); ok && other != "" {
-					return other, ""
-				}
-			}
-			return val, ""
-		}
-		// File upload: return URL
-		if url, ok := v["url"].(string); ok {
-			return url, ""
-		}
-		// Default: JSON string
-		b, _ := json.Marshal(v)
-		return string(b), ""
-	case []interface{}:
-		// Multiselect or file array: format as comma-separated
-		values := []string{}
-		for _, item := range v {
-			if itemMap, ok := item.(map[string]interface{}); ok {
-				// Check for "other" option
-				if val, ok := itemMap["value"].(string); ok {
-					if val == "other" {
-						if other, ok := itemMap["other"].(string); ok && other != "" {
-							values = append(values, other)
-							continue
-						}
-					}
-					values = append(values, val)
-					continue
-				}
-				// File upload: use URL or name
-				if url, ok := itemMap["url"].(string); ok {
-					values = append(values, url)
-					continue
-				}
-				if name, ok := itemMap["name"].(string); ok {
-					values = append(values, name)
-					continue
-				}
-				// Default: JSON string
-				b, _ := json.Marshal(itemMap)
-				values = append(values, string(b))
-			} else {
-				values = append(values, fmt.Sprintf("%v", item))
-			}
-		}
-		return strings.Join(values, ", "), ""
-	default:
-		return fmt.Sprintf("%v", v), ""
-	}
-}

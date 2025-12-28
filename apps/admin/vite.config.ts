@@ -42,12 +42,10 @@ const fixAmplitudePlugin = () => {
 };
 
 export default defineConfig({
-  base: '/',
+  base: '/admin/',
   plugins: [react(), fixAmplitudePlugin()],
   server: {
-    port: 5000,
-    host: '0.0.0.0',
-    allowedHosts: true,
+    port: 5173,
     proxy: {
       '/api': 'http://localhost:8080'
     },
