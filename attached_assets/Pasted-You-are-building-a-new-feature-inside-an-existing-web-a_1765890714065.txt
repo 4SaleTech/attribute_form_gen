@@ -1,0 +1,264 @@
+You are building a new feature inside an existing web app that already has a generic “Form Submit Action” integration.
+
+🎯 Goal
+Create a **new cloned action type** called **“Authenticated Purchase Submit Action”** that extends the current form submit action. This action will:
+
+1. Call a **mandatory purchase API webhook** when the form is submitted.
+2. Optionally call **additional configurable webhooks** (like the existing form submit action).
+3. Support an **optional access token** field on the form. If missing or invalid, the user must log in first.
+
+---
+
+🧱 Tech expectations
+
+- Frontend: modern JS (React/TypeScript is fine) that can:
+  - Render a configurable form in an admin builder.
+  - Handle runtime user login, token validation, and calling APIs.
+- Backend: Node.js/Express (or similar) with clear separation:
+  - A module for **form execution engine** (actions).
+  - A module for handling **external API calls** (purchase, login, validate, my listings).
+- Use environment variables/config for secrets & base URLs (no hardcoded tokens).
+
+Base URLs (make all configurable, don’t hardcode the example ones):
+- `https://staging-services.q84sale.com/api/v1/...`
+- `https://staging.q84sale.com/...`
+
+---
+
+🧩 New action: "Authenticated Purchase Submit Action"
+
+It is a **clone** of the existing generic form submit action, but with extra logic and config:
+
+### 1. Configuration model (admin side)
+
+For each form that uses this action, allow configuring:
+
+- **Mandatory Purchase Webhook Section**
+  - `purchase_api_url` (string, required)
+    - Default: `https://staging-services.q84sale.com/api/v1/cashier/billing/purchase-with-method`
+  - HTTP method: `POST` (fixed)
+  - Headers (configurable, but with sensible defaults):
+    - `Authorization: Bearer {{user_token}}` (token will be injected at runtime)
+    - `Content-Type: application/json`
+  - **Request body mapping** from form fields:
+    - `items[0].id` ← map from form field `item_id` (configurable)
+    - `items[0].category_id` ← map from form field `category_id` (configurable)
+    - `items[0].district_id` ← map from form field `district_id` (configurable)
+    - `adv_id` ← map from a **dropdown field bound to “My Listings” API** (see below)
+    - `user_lang` ← fixed or mapped (e.g., `en` or taken from form)
+    - `payment_method` ← fixed or mapped (e.g., `CARD`)
+
+  Purchase API reference curl (for behavior, not hardcoded token):
+  - `curl --location 'https://staging-services.q84sale.com/api/v1/cashier/billing/purchase-with-method' \
+     --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+     --header 'Content-Type: application/json' \
+     --data '{
+        "items": [
+          { "id": "instagram_1_day", "category_id": "2897", "district_id": "1" }
+        ],
+        "adv_id": "20430074",
+        "user_lang": "en",
+        "payment_method": "CARD"
+      }'`
+
+- **Additional Webhooks Section (optional)**
+  - Same as the existing form submit action:
+    - Add/remove multiple webhook URLs.
+    - Choose HTTP method (typically POST).
+    - Map headers and body fields from form submission.
+  - These are executed **after** the purchase API call, and should receive:
+    - The original form data.
+    - The purchase API response (success/failure, transaction IDs, etc.).
+
+- **Authentication Settings**
+  - `require_authentication` (boolean flag)
+    - If `false`: submit form directly and call the configured purchase API & webhooks without login flow (if a token is present, still use it).
+    - If `true`: enforce auth flow described below.
+
+---
+
+🔐 Authentication & token flow
+
+When the form using this action is submitted:
+
+1. **Check for existing token:**
+   - Look for a Bearer token from:
+     - Local storage/session storage, or
+     - A hidden field populated by the app.
+   - If a token is present, validate it first using this API:
+
+     **Validate token API:**
+     - Method: `GET` or `POST` (match actual API, assume `GET` with empty body unless required otherwise).
+     - URL: `https://staging-services.q84sale.com/api/v1/users/auth/validate`
+     - Headers:
+       - `Accept: application/json`
+       - `Authorization: Bearer {{user_token}}`
+
+     Sample curl:
+     - `curl --location 'https://staging-services.q84sale.com/api/v1/users/auth/validate' \
+        --header 'Accept: application/json' \
+        --header 'Authorization: Bearer YOUR_ACCESS_TOKEN'`
+
+   - If the API returns **valid**:
+     - Store/refresh the token.
+     - Continue with form submission flow (fetch My Listings, then call purchase API, then additional webhooks).
+
+2. **If no token OR token invalid AND `require_authentication = true`:**
+   - Interrupt normal submit flow.
+   - Present a **login form modal** (phone + password).
+
+---
+
+📲 Login form
+
+- Show a modal dialog with:
+  - `phone` (input, string)
+  - `password` (input, password)
+  - “Login” button
+- On submit, call the login API:
+
+  **Login API:**
+  - Method: `POST`
+  - URL: `https://staging-services.q84sale.com/api/v1/users/auth/login`
+  - Headers:
+    - `Accept: application/json`
+    - `Version-Number: 26.0.0`
+    - `Device-Id: 83C23169-E5E4-468C-854F-4E9AC24E1ECB` (make device-id configurable, not hardcoded)
+    - `Accept-Language: en`
+    - `Content-Type: application/json`
+  - Body:
+    ```json
+    {
+      "phone": "96500000001",
+      "password": "12345678"
+    }
+    ```
+
+  Sample curl:
+  - `curl --location 'https://staging-services.q84sale.com/api/v1/users/auth/login' \
+     --header 'Accept: application/json' \
+     --header 'Version-Number: 26.0.0' \
+     --header 'Device-Id: 83C23169-E5E4-468C-854F-4E9AC24E1ECB' \
+     --header 'Accept-Language: en' \
+     --header 'Content-Type: application/json' \
+     --data '{"phone":"96500000001","password":"12345678"}'`
+
+- On success:
+  - Extract the returned access token.
+  - Save it (e.g., in local storage + in the form runtime state).
+  - Close the modal and **resume the original form submit flow automatically**:
+    - Fetch My Listings.
+    - Then call the purchase API.
+    - Then call additional webhooks.
+
+- On failure:
+  - Show a clear error message inside the modal.
+  - Do not submit the form or call purchase/webhooks.
+
+---
+
+📄 “My Listings” dropdown field
+
+Once a valid token is available (either already present/validated or newly obtained via login), the action must support a **dynamic dropdown field** that loads the signed-in user’s listings from the API and lets them choose which listing they are purchasing for.
+
+- Field name: e.g., `adv_id` (configurable).
+- Behavior:
+  - On form load (or on focus), call the “My Listings” endpoint:
+
+    **My Listings API:**
+    - Method: `POST`
+    - URL: `https://staging-services.q84sale.com/live/index.php/V4/MyListings/getListings`
+    - Headers:
+      - `accept: application/json`
+      - `accept-language: ar`
+      - `application-source: q84sale`
+      - `authorization: Bearer {{user_token}}`
+      - `cache-control: no-cache`
+      - `content-type: application/json`
+      - `device-id: <CONFIGURABLE_DEVICE_ID>`
+      - `origin: https://staging.q84sale.com`
+      - `pragma: no-cache`
+      - `version-number: web`
+      - `x-custom-authorization: <CONFIGURABLE_APP_SIGNATURE>`
+    - Body (example, make fields configurable / overridable):
+      ```json
+      {
+        "group_by_status": 1,
+        "device_id": "web_user_30593797-5ebf-4530-868c-1ed189bc253b",
+        "page": 1,
+        "page_size": 20,
+        "lang": "ar",
+        "type": "active"
+      }
+      ```
+
+    Sample curl:
+    - `curl 'https://staging-services.q84sale.com/live/index.php/V4/MyListings/getListings' \
+       -H 'accept: application/json' \
+       -H 'accept-language: ar' \
+       -H 'application-source: q84sale' \
+       -H 'authorization: Bearer <ACCESS_TOKEN>' \
+       -H 'cache-control: no-cache' \
+       -H 'content-type: application/json' \
+       -H 'device-id: web_user_30593797-5ebf-4530-868c-1ed189bc253b' \
+       -H 'origin: https://staging.q84sale.com' \
+       -H 'pragma: no-cache' \
+       -H 'version-number: web' \
+       -H 'x-custom-authorization: <APP_SIGNATURE>' \
+       --data-raw '{"group_by_status":1,"device_id":"web_user_...","page":1,"page_size":20,"lang":"ar","type":"active"}'`
+
+  - Parse the response and fill the dropdown options:
+    - **Label:** listing title (and maybe ID)
+    - **Value:** `adv_id`
+  - When the user selects an option, the value will be used as `adv_id` in the purchase request body.
+
+- Handle errors gracefully:
+  - If the My Listings API fails, show a user-friendly error and prevent submission.
+
+---
+
+⚙️ Execution order on form submit (when `require_authentication = true`)
+
+1. Attempt to get existing token from storage.
+2. If token exists → call **validate** API.
+   - If valid → continue.
+   - If invalid → delete token and show login modal.
+3. If no token → show login modal.
+4. After successful login:
+   - Fetch **My Listings** (if not already loaded).
+   - Ensure user has selected an `adv_id`.
+   - Build purchase API payload:
+     - Using configured mappings + selected `adv_id`.
+   - Call **Purchase API** (mandatory webhook).
+   - Based on response:
+     - Show success or error to the user.
+   - Then call any **additional configured webhooks**, passing:
+     - Form data
+     - Purchase API response
+
+---
+
+🔒 Security & configurability notes
+
+- **Never hardcode** real tokens in the code; always use env vars / runtime config.
+- `Device-Id`, `application-source`, `x-custom-authorization`, and `version-number` must be configurable in a central config.
+- Clearly separate:
+  - Admin configuration UI (mapping fields, URLs, flags)
+  - Public form runtime behavior (login, validate, dropdown, submit).
+
+---
+
+Deliverables
+
+- Implement the **“Authenticated Purchase Submit Action”** with:
+  - Admin configuration schema & UI
+  - Frontend runtime behavior (auth, dropdown, submit)
+  - Backend handlers for calling:
+    - validate
+    - login
+    - my listings
+    - purchase API
+    - extra webhooks
+- Provide clean, well-documented code and explain:
+  - How to configure this action for a specific form.
+  - How it behaves end-to-end from the user’s point of view.

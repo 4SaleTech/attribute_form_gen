@@ -43,5 +43,4 @@ apps/admin/dist/
 # SQLC generated (if generated to this path)
 apps/api/internal/db/sqlc/
 
-
-
+k8s/

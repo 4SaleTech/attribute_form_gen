@@ -1,4 +1,14 @@
-import type { FormConfig } from '../renderer/types';
+import type { FormConfig, PurchaseAuthConfig, SubmitAction } from '../renderer/types';
+import {
+  getStoredToken,
+  setStoredToken,
+  validateToken,
+  login,
+  callPurchaseAPI,
+  type AuthConfig,
+  type PurchasePayload,
+  type MyListing,
+} from '../auth/authService';
 
 type Payload = {
   formId: string;
@@ -7,6 +17,19 @@ type Payload = {
   answers: any;
   meta: any;
   bridgeAck?: boolean;
+  authToken?: string;
+  userListings?: MyListing[];
+  userData?: {
+    id?: number;
+    phone?: string;
+    name?: string;
+  };
+};
+
+type PurchaseAuthCallbacks = {
+  onLoginRequired?: () => Promise<{ phone: string; password: string } | null>;
+  onPurchaseSuccess?: (transactionId?: string) => void;
+  onPurchaseError?: (error: string) => void;
 };
 
 async function nativeBridge(payload: Payload) {
@@ -514,11 +537,219 @@ function redirectAction(
   };
 }
 
-export async function runSubmitPipeline(form: FormConfig, payload: Payload): Promise<{ submissionId?: number }> {
+async function purchaseAuthenticated(
+  payload: Payload,
+  config: PurchaseAuthConfig,
+  callbacks?: PurchaseAuthCallbacks
+): Promise<{ success: boolean; transactionId?: string; error?: string }> {
+  console.log('[PurchaseAuth] Starting authenticated purchase action');
+  
+  const authConfig: AuthConfig = {
+    baseUrl: config.auth_api_base_url,
+    deviceId: config.device_id || `web_${Date.now()}`,
+    appSignature: config.app_signature || '',
+    versionNumber: config.version_number || '26.0.0',
+  };
+
+  let token = payload.authToken || getStoredToken();
+
+  if (config.require_authentication) {
+    if (token) {
+      console.log('[PurchaseAuth] Found existing token, validating...');
+      const validation = await validateToken(token, authConfig);
+      if (!validation.valid) {
+        console.log('[PurchaseAuth] Token invalid, need login');
+        token = null;
+      } else {
+        console.log('[PurchaseAuth] Token is valid');
+      }
+    }
+
+    if (!token) {
+      console.log('[PurchaseAuth] No valid token, requesting login');
+      if (!callbacks?.onLoginRequired) {
+        throw new Error('Login required but no login handler provided');
+      }
+      
+      const credentials = await callbacks.onLoginRequired();
+      if (!credentials) {
+        throw new Error('Login cancelled by user');
+      }
+
+      const loginResult = await login(credentials, authConfig);
+      if (!loginResult.success || !loginResult.accessToken) {
+        throw new Error(loginResult.error || 'Login failed');
+      }
+
+      token = loginResult.accessToken;
+      console.log('[PurchaseAuth] Login successful');
+    }
+  }
+
+  // Get the selected ad ID from answers (could be object with value or direct string)
+  const advIdAnswer = payload.answers[config.adv_id_field];
+  const advId = advIdAnswer?.value || advIdAnswer || '';
+  
+  // Map placement value to item variant
+  const placementAnswer = payload.answers[config.item_id_field];
+  const placementValue = placementAnswer?.value || placementAnswer || '';
+  
+  // Map placement names to API item IDs
+  let itemId = placementValue;
+  const placementLower = String(placementValue).toLowerCase();
+  if (placementLower.includes('story') || placementLower.includes('1_day') || placementLower === '1') {
+    itemId = 'instagram_1_day';
+  } else if (placementLower.includes('5') || placementLower.includes('5_days')) {
+    itemId = 'instagram_5_days';
+  } else if (placementLower.includes('10') || placementLower.includes('10_days')) {
+    itemId = 'instagram_10_days';
+  }
+  
+  console.log('[PurchaseAuth] Mapping placement to item_id:', placementValue, '→', itemId);
+  
+  const purchasePayload: PurchasePayload = {
+    items: [{
+      id: itemId,
+      category_id: '2897',
+      district_id: '1',
+    }],
+    adv_id: String(advId),
+    user_lang: payload.meta?.locale || config.user_lang || 'en',
+    caller_service: 'external_form',
+    payment_method: 'CARD',
+  };
+  
+  console.log('[PurchaseAuth] Purchase payload items.id:', purchasePayload.items[0].id);
+
+  // Call pre-purchase webhook if configured (before purchase API)
+  if (config.pre_purchase_webhook?.url) {
+    console.log('[PurchaseAuth] Calling pre-purchase webhook:', config.pre_purchase_webhook.url);
+    console.log('[PurchaseAuth] userData in payload:', JSON.stringify(payload.userData));
+    
+    // Find the selected listing data
+    const selectedListing = payload.userListings?.find(
+      listing => listing.adv_id === String(advId)
+    );
+    
+    // Get form field values (notes field only - user_name comes from API)
+    const notesField = config.pre_purchase_webhook.notes_field || '';
+    const userNote = notesField ? (payload.answers[notesField]?.value || payload.answers[notesField] || '') : '';
+    
+    // Build the adv_link from slug (use locale from payload, default to 'ar')
+    const locale = payload.meta?.locale || 'ar';
+    const advLink = selectedListing?.slug 
+      ? `https://staging.q84sale.com/${locale}/listing/${selectedListing.slug}`
+      : '';
+    
+    const webhookPayload = {
+      adv_id: String(advId),
+      category_id: selectedListing?.category_id ? parseInt(selectedListing.category_id) : 0,
+      adv_title: selectedListing?.title || '',
+      adv_description: selectedListing?.description || '',
+      adv_image: selectedListing?.thumbnail || '',
+      adv_link: advLink,
+      user_note: userNote,
+      user_id: payload.userData?.id ? String(payload.userData.id) : '',
+      user_name: payload.userData?.name || '',
+      user_phone: payload.userData?.phone || '',
+      addon_type: itemId,
+    };
+    
+    console.log('[PurchaseAuth] Webhook user_id being sent:', webhookPayload.user_id);
+    
+    console.log('[PurchaseAuth] Pre-purchase webhook payload:', JSON.stringify(webhookPayload));
+    
+    try {
+      const webhookResponse = await fetch(config.pre_purchase_webhook.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': config.pre_purchase_webhook.api_key,
+        },
+        body: JSON.stringify(webhookPayload),
+      });
+      
+      console.log('[PurchaseAuth] Pre-purchase webhook response status:', webhookResponse.status);
+      
+      if (!webhookResponse.ok) {
+        const errorText = await webhookResponse.text();
+        console.error('[PurchaseAuth] Pre-purchase webhook error:', errorText);
+      }
+    } catch (webhookError) {
+      console.error('[PurchaseAuth] Pre-purchase webhook failed:', webhookError);
+    }
+  }
+
+  console.log('[PurchaseAuth] Calling purchase API:', config.purchase_api_url);
+  console.log('[PurchaseAuth] Purchase payload:', JSON.stringify(purchasePayload));
+  
+  const purchaseResult = await callPurchaseAPI(
+    token || '',
+    config.purchase_api_url,
+    purchasePayload
+  );
+
+  if (!purchaseResult.success) {
+    console.error('[PurchaseAuth] Purchase failed:', purchaseResult.error);
+    callbacks?.onPurchaseError?.(purchaseResult.error || 'Purchase failed');
+    throw new Error(purchaseResult.error || 'Purchase failed');
+  }
+
+  console.log('[PurchaseAuth] Purchase successful');
+  
+  // If there's a payment link, redirect the user
+  if (purchaseResult.paymentLink) {
+    console.log('[PurchaseAuth] Redirecting to payment link:', purchaseResult.paymentLink);
+    window.location.href = purchaseResult.paymentLink;
+  }
+  
+  callbacks?.onPurchaseSuccess?.(purchaseResult.transactionId);
+
+  if (config.additional_webhooks && config.additional_webhooks.length > 0) {
+    console.log('[PurchaseAuth] Calling additional webhooks');
+    for (const webhook of config.additional_webhooks) {
+      try {
+        const webhookPayload = {
+          ...payload,
+          purchase_transaction_id: purchaseResult.transactionId,
+          purchase_data: purchaseResult.data,
+        };
+
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+          ...webhook.headers,
+        };
+
+        await fetch(webhook.url, {
+          method: webhook.method || 'POST',
+          headers,
+          body: JSON.stringify(webhookPayload),
+        });
+        console.log('[PurchaseAuth] Webhook called:', webhook.url);
+      } catch (webhookError) {
+        console.error('[PurchaseAuth] Webhook error:', webhook.url, webhookError);
+      }
+    }
+  }
+
+  return {
+    success: true,
+    transactionId: purchaseResult.transactionId,
+  };
+}
+
+let purchaseAuthCallbacks: PurchaseAuthCallbacks = {};
+
+export function setPurchaseAuthCallbacks(callbacks: PurchaseAuthCallbacks) {
+  purchaseAuthCallbacks = callbacks;
+}
+
+export async function runSubmitPipeline(form: FormConfig, payload: Payload): Promise<{ submissionId?: number; purchaseTransactionId?: string }> {
   const submit = form.submit;
   if (!submit) return {};
   
   let submissionId: number | undefined = undefined;
+  let purchaseTransactionId: string | undefined = undefined;
   
   const actionMap: Record<string, (p: Payload) => Promise<any>> = {
     native_bridge: (p) => nativeBridge(p),
@@ -532,8 +763,30 @@ export async function runSubmitPipeline(form: FormConfig, payload: Payload): Pro
     webhooks: async () => true,
     redirect: async () => true,
     nextjs_post: (p) => nextjsPost(p, form, submissionId),
+    purchase_authenticated: async (p) => {
+      const action = submit.actions.find(a => a.type === 'purchase_authenticated') as SubmitAction;
+      if (!action?.purchase_auth_config) {
+        throw new Error('Purchase auth config not found');
+      }
+      const result = await purchaseAuthenticated(p, action.purchase_auth_config, purchaseAuthCallbacks);
+      if (result.transactionId) {
+        purchaseTransactionId = result.transactionId;
+      }
+      return result;
+    },
   }
-  for (const step of submit.ordering) {
+  // Build execution order: run data-saving actions FIRST, then redirecting actions LAST
+  const actionTypes = submit.actions.filter(a => a.enabled).map(a => a.type);
+  
+  // Actions that redirect should run LAST (after data is saved)
+  // server_persist and webhooks should run BEFORE purchase_authenticated/redirect
+  const redirectingActions = ['purchase_authenticated', 'redirect'];
+  const executionOrder = [
+    ...actionTypes.filter(t => !redirectingActions.includes(t)),  // Non-redirecting actions first
+    ...actionTypes.filter(t => redirectingActions.includes(t))     // Redirecting actions last
+  ];
+  
+  for (const step of executionOrder) {
     const action = submit.actions.find((a) => a.type === step);
     if (!action || !action.enabled) continue;
     try {
@@ -552,7 +805,7 @@ export async function runSubmitPipeline(form: FormConfig, payload: Payload): Pro
     }
   }
   
-  return { submissionId };
+  return { submissionId, purchaseTransactionId };
 }
 
 

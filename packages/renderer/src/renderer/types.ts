@@ -21,8 +21,44 @@ export type ThankYou = {
   close_behavior?: string;
 };
 
+export type PrePurchaseWebhook = {
+  url: string;
+  api_key: string;
+  name_field?: string;
+  notes_field?: string;
+};
+
+export type PurchaseAuthConfig = {
+  require_authentication: boolean;
+  auth_api_base_url: string;
+  listings_api_base_url?: string;
+  device_id: string;
+  app_signature: string;
+  version_number: string;
+  purchase_api_url: string;
+  adv_id_field: string;
+  item_id_field: string;
+  category_id_field: string;
+  district_id_field: string;
+  payment_method: string;
+  user_lang: string;
+  pre_purchase_webhook?: PrePurchaseWebhook;
+  additional_webhooks?: Array<{
+    url: string;
+    method: string;
+    headers?: Record<string, string>;
+  }>;
+};
+
+export type SubmitAction = {
+  type: string;
+  enabled: boolean;
+  url?: string;
+  purchase_auth_config?: PurchaseAuthConfig;
+};
+
 export type SubmitPipeline = {
-  actions: { type: string; enabled: boolean; url?: string }[];
+  actions: SubmitAction[];
   ordering: string[];
   idempotency?: { enabled: boolean; key: string };
   timeout_ms?: number;
