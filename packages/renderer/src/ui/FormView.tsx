@@ -305,15 +305,27 @@ function validateClient(
           })
           break
         }
-        const lat = v.lat
-        const lng = v.lng
-        if (typeof lat !== 'number' || typeof lng !== 'number') {
-          errs.push({
-            field: f.name,
-            code: 'INVALID',
-            message: t('Invalid coordinates', 'إحداثيات غير صالحة'),
-          })
-        } else {
+        // Check if manual entry (has address but no coordinates)
+        const hasAddress = typeof v.address === 'string' && v.address.trim() !== ''
+        const hasLat = typeof v.lat === 'number'
+        const hasLng = typeof v.lng === 'number'
+        
+        // Manual entry: only need address
+        if (v.detection_method === 'manual') {
+          if (!hasAddress) {
+            errs.push({
+              field: f.name,
+              code: 'INVALID',
+              message: t('Address is required', 'العنوان مطلوب'),
+            })
+          }
+          break
+        }
+        
+        // GPS entry: need coordinates, address is optional
+        if (hasLat && hasLng) {
+          const lat = v.lat
+          const lng = v.lng
           if (lat < -90 || lat > 90)
             errs.push({
               field: f.name,
@@ -326,6 +338,13 @@ function validateClient(
               code: 'INVALID',
               message: t('Invalid longitude', 'خط طول غير صالح'),
             })
+        } else if (!hasAddress) {
+          // No coordinates and no address - invalid
+          errs.push({
+            field: f.name,
+            code: 'INVALID',
+            message: t('Location is required', 'الموقع مطلوب'),
+          })
         }
         break
     }
