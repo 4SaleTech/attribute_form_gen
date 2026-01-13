@@ -1816,7 +1816,7 @@ export const FormView: React.FC<{
                     <li>Maximum of 5 photos allowed per upload.</li>
                     <li>4Sale handles ad design and photo selection.</li>
                     <li>
-                      Ads are published within 24 business hours of completing the order
+                      Ads are published within 24 working hours of completing the order
                       and payment.
                     </li>
                   </>
