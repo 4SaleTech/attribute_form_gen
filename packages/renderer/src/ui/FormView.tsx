@@ -1370,13 +1370,23 @@ export const FormView: React.FC<{
                 margin: 0,
               }}
             >
-              {effectiveLocale === 'ar'
-                ? `الحين تقدر توصل إعلان سيارتك لجمهور أضخم على إنستغرام من خلال حساب 4Sale
-إعلانك راح يوصل حق الفئة المهتمة مباشرة.
-نتكفّل بالتصميم، والاستهداف، والترويج… وإنت عليك بس تختار الباقة المناسبة وترفع إعلانك.`
-                : `Now you can reach a larger audience on Instagram through the official 4Sale account.
-Your ad will reach the interested audience directly.
-We handle the design, targeting, and promotion... you just need to choose the right package and upload your ad.`}
+              {effectiveLocale === 'ar' ? (
+                <>
+                  الحين تقدر توصل إعلان سيارتك لجمهور أضخم على إنستغرام من خلال حساب 4Sale
+                  <br /><br />
+                  إعلانك راح يوصل حق الفئة المهتمة مباشرة.
+                  <br /><br />
+                  نتكفّل بالتصميم، والاستهداف، والترويج… وإنت عليك بس تختار الباقة المناسبة وترفع إعلانك.
+                </>
+              ) : (
+                <>
+                  Now you can reach a larger audience on Instagram through the official 4Sale account.
+                  <br /><br />
+                  Your ad will reach the interested audience directly.
+                  <br /><br />
+                  We handle the design, targeting, and promotion... you just need to choose the right package and upload your ad.
+                </>
+              )}
             </p>
           </div>
         </div>
