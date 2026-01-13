@@ -32,6 +32,7 @@ import {
   type ItemVariant,
 } from '../auth/authService'
 import { LoginModal } from './LoginModal'
+import FourSaleLogo from '../assets/4sale-logo.png'
 
 // Brand Colors
 const COLORS = {
@@ -1345,11 +1346,40 @@ export const FormView: React.FC<{
         <div
           style={{
             background: 'linear-gradient(135deg, #2E4BFF 0%, #1E3AD8 100%)',
-            padding: '2rem 1.5rem',
-            textAlign: 'center',
+            position: 'relative',
+            minHeight: '180px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.5rem',
           }}
         >
-          <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+          {/* Logo - absolute left, full height */}
+          <div
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              bottom: 0,
+              display: 'flex',
+              alignItems: 'center',
+              padding: '1rem',
+              direction: 'ltr',
+            }}
+          >
+            <img
+              src={FourSaleLogo}
+              alt="4Sale"
+              style={{
+                height: '100%',
+                maxHeight: '100px',
+                width: 'auto',
+                objectFit: 'contain',
+              }}
+            />
+          </div>
+          {/* Text content - centered */}
+          <div style={{ maxWidth: '640px', textAlign: 'center', paddingLeft: '120px', paddingRight: '120px' }}>
             <h1
               style={{
                 fontSize: '24px',
