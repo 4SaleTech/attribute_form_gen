@@ -1349,8 +1349,8 @@ export const FormView: React.FC<{
             padding: '1rem 1.5rem 2rem 1.5rem',
           }}
         >
-          {/* Logo - top left */}
-          <div style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'left', marginBottom: '1rem' }}>
+          {/* Logo - top left, full width */}
+          <div style={{ textAlign: 'left', marginBottom: '1rem' }}>
             <img
               src={FourSaleLogo}
               alt="4Sale"
