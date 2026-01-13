@@ -1379,7 +1379,7 @@ export const FormView: React.FC<{
             />
           </div>
           {/* Text content - centered */}
-          <div style={{ maxWidth: '640px', textAlign: 'center', paddingLeft: '120px', paddingRight: '120px' }}>
+          <div style={{ maxWidth: '800px', textAlign: 'center', paddingLeft: '140px', paddingRight: '20px' }}>
             <h1
               style={{
                 fontSize: '24px',
@@ -1387,7 +1387,7 @@ export const FormView: React.FC<{
                 color: '#FFFFFF',
                 letterSpacing: '-0.025em',
                 lineHeight: 1.3,
-                margin: '0 0 1rem 0',
+                margin: '0 0 0.75rem 0',
               }}
             >
               {form.title?.[effectiveLocale]}
@@ -1396,24 +1396,24 @@ export const FormView: React.FC<{
               style={{
                 fontSize: '15px',
                 color: 'rgba(255, 255, 255, 0.9)',
-                lineHeight: 1.8,
+                lineHeight: 1.6,
                 margin: 0,
               }}
             >
               {effectiveLocale === 'ar' ? (
                 <>
                   الحين تقدر توصل إعلان سيارتك لجمهور أضخم على إنستغرام من خلال حساب 4Sale
-                  <br /><br />
+                  <br />
                   إعلانك راح يوصل حق الفئة المهتمة مباشرة.
-                  <br /><br />
+                  <br />
                   نتكفّل بالتصميم، والاستهداف، والترويج… وإنت عليك بس تختار الباقة المناسبة وترفع إعلانك.
                 </>
               ) : (
                 <>
                   Now you can reach a larger audience on Instagram through the official 4Sale account.
-                  <br /><br />
+                  <br />
                   Your ad will reach the interested audience directly.
-                  <br /><br />
+                  <br />
                   We handle the design, targeting, and promotion... you just need to choose the right package and upload your ad.
                 </>
               )}
@@ -1790,7 +1790,7 @@ export const FormView: React.FC<{
                       عرضها.
                     </li>
                     <li>
-                      يتم نشر الإعلان خلال 24 ساعة من استكمال الطلب وإتمام عملية
+                      يتم نشر الإعلان خلال ٢٤ ساعة عمل من استكمال الطلب وإتمام عملية
                       الدفع.
                     </li>
                   </>
@@ -1816,7 +1816,7 @@ export const FormView: React.FC<{
                     <li>Maximum of 5 photos allowed per upload.</li>
                     <li>4Sale handles ad design and photo selection.</li>
                     <li>
-                      Ads are published within 24 hours of completing the order
+                      Ads are published within 24 business hours of completing the order
                       and payment.
                     </li>
                   </>
