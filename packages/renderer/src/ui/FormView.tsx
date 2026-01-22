@@ -1346,24 +1346,15 @@ export const FormView: React.FC<{
         <div
           style={{
             background: 'linear-gradient(135deg, #2E4BFF 0%, #1E3AD8 100%)',
-            position: 'relative',
-            minHeight: '180px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             padding: '1.5rem',
           }}
         >
-          {/* Logo - absolute left, full height */}
+          {/* Logo - top left, responsive */}
           <div
             style={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              bottom: 0,
               display: 'flex',
-              alignItems: 'center',
-              padding: '1rem',
+              justifyContent: 'flex-start',
+              marginBottom: '1rem',
               direction: 'ltr',
             }}
           >
@@ -1371,18 +1362,17 @@ export const FormView: React.FC<{
               src={FourSaleLogo}
               alt="4Sale"
               style={{
-                height: '100%',
-                maxHeight: '100px',
+                height: '50px',
                 width: 'auto',
                 objectFit: 'contain',
               }}
             />
           </div>
           {/* Text content - centered */}
-          <div style={{ maxWidth: '800px', textAlign: 'center', paddingLeft: '140px', paddingRight: '20px' }}>
+          <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
             <h1
               style={{
-                fontSize: '24px',
+                fontSize: '20px',
                 fontWeight: 800,
                 color: '#FFFFFF',
                 letterSpacing: '-0.025em',
@@ -1394,7 +1384,7 @@ export const FormView: React.FC<{
             </h1>
             <p
               style={{
-                fontSize: '15px',
+                fontSize: '14px',
                 color: 'rgba(255, 255, 255, 0.9)',
                 lineHeight: 1.6,
                 margin: 0,
