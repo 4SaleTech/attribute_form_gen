@@ -91,7 +91,10 @@ function validateClient(
 ): FieldError[] {
   const errs: FieldError[] = []
   const t = (en: string, ar: string) => ({ en, ar })
-  const isReq = (f: Field) => !!(f as any)?.props?.required
+  const isReq = (f: Field) => {
+    if (f.type === 'switch' || f.type === 'checkbox') return false
+    return !!(f as any)?.props?.required
+  }
   const get = (name: string) => answers[name]
   const isDynamicField = (name: string) =>
     dynamicOptionsFields?.includes(name) || false
