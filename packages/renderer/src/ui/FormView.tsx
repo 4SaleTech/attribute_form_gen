@@ -1519,6 +1519,7 @@ export const FormView: React.FC<{
 
             const handlers = createFieldHandlers(f)
             // Pass form, sessionId, and field for analytics tracking (FileUpload, LocationPicker)
+            const isToggleType = f.type === 'switch' || f.type === 'checkbox'
             const componentProps: any = {
               ...f,
               locale: effectiveLocale,
@@ -1526,7 +1527,7 @@ export const FormView: React.FC<{
               onChange: handlers.onChange,
               onFocus: handlers.onFocus,
               onBlur: () => handlers.onBlur(answers[f.name]),
-              required: !!(f as any)?.props?.required,
+              required: isToggleType ? false : !!(f as any)?.props?.required,
               hasError: fieldErrors.length > 0,
             }
             if (f.type === 'file_upload' || f.type === 'location') {

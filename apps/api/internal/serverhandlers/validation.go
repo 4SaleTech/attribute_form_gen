@@ -183,6 +183,9 @@ func validateSubmission(fields []types.Field, answers any) []FieldError {
 }
 
 func isRequired(f *types.Field) bool {
+    if f.Type == "switch" || f.Type == "checkbox" {
+        return false
+    }
     if f.Props == nil { return false }
     b, _ := json.Marshal(f.Props)
     var m map[string]any
