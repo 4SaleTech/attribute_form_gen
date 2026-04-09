@@ -1076,12 +1076,16 @@ export const FormView: React.FC<{
     const dynamicFields = purchaseAuthConfig?.adv_id_field
       ? [purchaseAuthConfig.adv_id_field]
       : []
+    console.log('[FormView] Submit answers:', JSON.stringify(answers, null, 2))
     const clientErrors = validateClient(
       form,
       answers,
       effectiveLocale,
       dynamicFields,
     )
+    if (clientErrors.length > 0) {
+      console.log('[FormView] Client validation errors:', JSON.stringify(clientErrors, null, 2))
+    }
 
     // Track validation errors
     clientErrors.forEach((error) => {
@@ -1178,7 +1182,10 @@ export const FormView: React.FC<{
         )
       }
     } catch (err: any) {
-      console.error('Submit error:', err)
+      console.error('[FormView] Submit error:', err)
+      if (err.errors) {
+        console.error('[FormView] Server validation errors:', JSON.stringify(err.errors, null, 2))
+      }
 
       // Track submission error
       const submissionTime = Math.round((Date.now() - formStartTime) / 1000)
@@ -1519,6 +1526,7 @@ export const FormView: React.FC<{
 
             const handlers = createFieldHandlers(f)
             // Pass form, sessionId, and field for analytics tracking (FileUpload, LocationPicker)
+            const isToggleType = f.type === 'switch' || f.type === 'checkbox'
             const componentProps: any = {
               ...f,
               locale: effectiveLocale,
@@ -1526,7 +1534,7 @@ export const FormView: React.FC<{
               onChange: handlers.onChange,
               onFocus: handlers.onFocus,
               onBlur: () => handlers.onBlur(answers[f.name]),
-              required: !!(f as any)?.props?.required,
+              required: isToggleType ? false : !!(f as any)?.props?.required,
               hasError: fieldErrors.length > 0,
             }
             if (f.type === 'file_upload' || f.type === 'location') {
