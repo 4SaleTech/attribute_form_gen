@@ -1,0 +1,15 @@
+curl ^"https://attribute-form-generator.q84sale.com/api/forms/933468de-44fd-424b-a3e2-6bcc136af460/1?lang=en^" ^
+  -H ^"accept: */*^" ^
+  -H ^"accept-language: en-US,en;q=0.7^" ^
+  -b ^"AMP_MKTG_dc5c91ff42=JTdCJTdE; AMP_MKTG_ea353a2eec=JTdCJTdE; device_id=web_user_5beaa823-832b-470c-918e-029c4359175f; AMP_dc5c91ff42=JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjJhOTAwOWI2MzgyMTQ4NzY4YWVmZDA2ZmNhODZjZGY3MCUyMiUyQyUyMnVzZXJJZCUyMiUzQTE3MTM1MDIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzc0NzgwMDE3NDE0JTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTc3NDc4MDQ1MzU0MSUyQyUyMmxhc3RFdmVudElkJTIyJTNBNDIxJTJDJTIycGFnZUNvdW50ZXIlMjIlM0E1JTdE; _xyzW=2294752^%^7CqsqxRQJFRwd4jEquKfPNtLb6re8G53ptizo40QFj; AMP_ea353a2eec=JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjI1NzE1YTI2ODQ5YWEyMTRiZmVkNGQ5ZGZhNGY3YzZjMCUyMiUyQyUyMnVzZXJJZCUyMiUzQSUyMjE3NjA0NjAlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzc1NzM3NzQwODk0JTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTc3NTczODQ2NTQ5MiUyQyUyMmxhc3RFdmVudElkJTIyJTNBNzI1JTJDJTIycGFnZUNvdW50ZXIlMjIlM0EyOCU3RA==; user_session=^%^7B^%^22status^%^22^%^3A^%^22logged_in^%^22^%^2C^%^22device_id^%^22^%^3A^%^22web_user_5beaa823-832b-470c-918e-029c4359175f^%^22^%^2C^%^22profile^%^22^%^3A^%^7B^%^22user_id^%^22^%^3A1760460^%^2C^%^22parent_user_id^%^22^%^3Anull^%^2C^%^22allow_follow^%^22^%^3A1^%^2C^%^22email^%^22^%^3A^%^22djdj^%^40djdj.skej^%^22^%^2C^%^22first_name^%^22^%^3A^%^22Adel^%^20^%^22^%^2C^%^22free_ads^%^22^%^3A^%^223^%^22^%^2C^%^22premium_ads^%^22^%^3A^%^220.000^%^22^%^2C^%^22image^%^22^%^3Anull^%^2C^%^22is_email_verified^%^22^%^3A0^%^2C^%^22number_of_followers^%^22^%^3A2^%^2C^%^22number_of_following^%^22^%^3A0^%^2C^%^22phone^%^22^%^3A^%^2296500000125^%^22^%^2C^%^22language^%^22^%^3Anull^%^2C^%^22member_since^%^22^%^3A^%^222018-11-04T14^%^3A42^%^3A05.000000Z^%^22^%^2C^%^22region_id^%^22^%^3A1^%^2C^%^22is_fresh^%^22^%^3A0^%^2C^%^22is_block^%^22^%^3A0^%^2C^%^22buckets^%^22^%^3A^%^5B^%^5D^%^2C^%^22user_type^%^22^%^3A^%^7B^%^22user_type_name^%^22^%^3A^%^22normal^%^22^%^2C^%^22user_type_id^%^22^%^3A6^%^2C^%^22target_cat_id^%^22^%^3Anull^%^2C^%^22allow_post_listing^%^22^%^3Atrue^%^2C^%^22not_allowed_categories^%^22^%^3A^%^5B3107^%^5D^%^2C^%^22permissions^%^22^%^3A^%^5B^%^22bundle_enabled^%^22^%^2C^%^22allow_post_listing^%^22^%^5D^%^7D^%^2C^%^22has_listings^%^22^%^3Atrue^%^7D^%^2C^%^22token^%^22^%^3A^%^222294752^%^7CqsqxRQJFRwd4jEquKfPNtLb6re8G53ptizo40QFj^%^22^%^7D^" ^
+  -H ^"dnt: 1^" ^
+  -H ^"priority: u=1, i^" ^
+  -H ^"referer: https://attribute-form-generator.q84sale.com/933468de-44fd-424b-a3e2-6bcc136af460/1?lang=en^&sessionId=1775737740894^" ^
+  -H ^"sec-ch-ua: ^\^"Chromium^\^";v=^\^"146^\^", ^\^"Not-A.Brand^\^";v=^\^"24^\^", ^\^"Brave^\^";v=^\^"146^\^"^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H ^"sec-fetch-dest: empty^" ^
+  -H ^"sec-fetch-mode: cors^" ^
+  -H ^"sec-fetch-site: same-origin^" ^
+  -H ^"sec-gpc: 1^" ^
+  -H ^"user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36^"

@@ -1,0 +1,248 @@
+{
+    "formId": "933468de-44fd-424b-a3e2-6bcc136af460",
+    "version": 1,
+    "title": {
+        "ar": "مقاول صحي",
+        "en": "Plumber"
+    },
+    "fields": [
+        {
+            "id": 24,
+            "attribute_key": "brief_description_optional",
+            "type": "textarea",
+            "name": "brief_description_optional",
+            "label": {
+                "ar": "وصف مختصر (اختياري)",
+                "en": "Brief description (optional)"
+            },
+            "props": {
+                "required": false
+            },
+            "status": "active",
+            "version": 5
+        },
+        {
+            "id": 23,
+            "attribute_key": "location_area_block_landmark",
+            "type": "location",
+            "name": "location_area_block_landmark",
+            "label": {
+                "ar": "الموقع",
+                "en": "Location"
+            },
+            "props": {
+                "required": true
+            },
+            "status": "active",
+            "version": 5
+        },
+        {
+            "id": 135,
+            "attribute_key": "number_of_fixtures_affected_if_applicable",
+            "type": "number",
+            "name": "number_of_fixtures_affected_if_applicable",
+            "label": {
+                "ar": "عدد التركيبات المتأثرة (إن وجدت)",
+                "en": "Number of fixtures affected (if applicable)"
+            },
+            "props": {
+                "required": false
+            },
+            "status": "active",
+            "version": 1
+        },
+        {
+            "id": 136,
+            "attribute_key": "plumber_access_constraints",
+            "type": "multiselect",
+            "name": "plumber_access_constraints",
+            "label": {
+                "ar": "قيود الوصول",
+                "en": "Access constraints"
+            },
+            "props": {
+                "options": [
+                    {
+                        "label": {
+                            "ar": "سقف",
+                            "en": "Roof"
+                        },
+                        "value": "Roof"
+                    },
+                    {
+                        "label": {
+                            "ar": "بئر",
+                            "en": "Shaft"
+                        },
+                        "value": "Shaft"
+                    },
+                    {
+                        "label": {
+                            "ar": "في السقف",
+                            "en": "In-ceiling"
+                        },
+                        "value": "In-ceiling"
+                    },
+                    {
+                        "label": {
+                            "ar": "بئر",
+                            "en": "Pit"
+                        },
+                        "value": "Pit"
+                    },
+                    {
+                        "label": {
+                            "ar": "تصريح شارع",
+                            "en": "Street permit"
+                        },
+                        "value": "Street permit"
+                    },
+                    {
+                        "label": {
+                            "ar": "لا شيء",
+                            "en": "None"
+                        },
+                        "value": "None"
+                    }
+                ],
+                "required": true
+            },
+            "status": "active",
+            "version": 1
+        },
+        {
+            "id": 134,
+            "attribute_key": "plumber_service",
+            "type": "select",
+            "name": "plumber_service",
+            "label": {
+                "ar": "الخدمة",
+                "en": "Service"
+            },
+            "props": {
+                "allow_other": true,
+                "options": [
+                    {
+                        "label": {
+                            "ar": "كشف تسرب",
+                            "en": "Leak detection"
+                        },
+                        "value": "Leak detection"
+                    },
+                    {
+                        "label": {
+                            "ar": "استبدال مضخة",
+                            "en": "Pump replacement"
+                        },
+                        "value": "Pump replacement"
+                    },
+                    {
+                        "label": {
+                            "ar": "تركيب غطاء بئر",
+                            "en": "Manhole cover install"
+                        },
+                        "value": "Manhole cover install"
+                    },
+                    {
+                        "label": {
+                            "ar": "صيانة/استبدال سخان",
+                            "en": "Heater maintenance/replacement"
+                        },
+                        "value": "Heater maintenance/replacement"
+                    },
+                    {
+                        "label": {
+                            "ar": "إصلاح مضخة البئر",
+                            "en": "Pit machine repair"
+                        },
+                        "value": "Pit machine repair"
+                    },
+                    {
+                        "label": {
+                            "ar": "كسر/تمديد",
+                            "en": "Breaking/extension"
+                        },
+                        "value": "Breaking/extension"
+                    },
+                    {
+                        "label": {
+                            "ar": "تشطيب كامل",
+                            "en": "Full finishing"
+                        },
+                        "value": "Full finishing"
+                    },
+                    {
+                        "label": {
+                            "ar": "إصلاح رائحة كريهة",
+                            "en": "Bad odor fix"
+                        },
+                        "value": "Bad odor fix"
+                    }
+                ],
+                "required": true
+            },
+            "status": "active",
+            "version": 1
+        },
+        {
+            "id": 137,
+            "attribute_key": "water_cutoff_possible",
+            "type": "switch",
+            "name": "water_cutoff_possible",
+            "label": {
+                "ar": "هل يمكن قطع الماء؟",
+                "en": "Water cutoff possible?"
+            },
+            "props": {
+                "required": true
+            },
+            "status": "active",
+            "version": 1
+        }
+    ],
+    "attributes": [
+        "plumber_service",
+        "water_cutoff_possible",
+        "brief_description_optional",
+        "location_area_block_landmark",
+        "number_of_fixtures_affected_if_applicable",
+        "plumber_access_constraints"
+    ],
+    "thankYou": {
+        "show": false,
+        "title": null,
+        "message": null,
+        "duration_ms": 0,
+        "close_behavior": ""
+    },
+    "submit": {
+        "actions": [
+            {
+                "type": "server_persist",
+                "enabled": true
+            },
+            {
+                "type": "redirect",
+                "enabled": true,
+                "url": "https://www.q84sale.com/en/listing/booking?categoryId=175\u0026formSubmissionId={{.submissionId}}"
+            }
+        ],
+        "ordering": [
+            "native_bridge",
+            "server_persist",
+            "webhooks",
+            "redirect"
+        ],
+        "idempotency": {
+            "enabled": true,
+            "key": "sessionId"
+        },
+        "timeout_ms": 6000,
+        "on_error": "continue"
+    },
+    "supported_locales": [
+        "en",
+        "ar"
+    ],
+    "default_locale": "en"
+}
